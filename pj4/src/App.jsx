@@ -5,7 +5,8 @@ import React, { useEffect } from 'react';
 import {  Routes, Route, useNavigate } from 'react-router-dom';
 import { setNavigate } from './cm/CmNavigateUtil';
 import CmRouteChangeNotifier from './cm/CmRouteChangeNotifier';
-
+import Home_Pet from './page/home/Home_Pet';
+import Home_Plant from './page/home/Home_Plant';
 import Main from './page/main';
 import Position from './page/position/dnlcl';
 import Combo from './page/combo/combo'
@@ -24,15 +25,20 @@ const App = () => {
 
   return (
     <>
-      <Routes>
+      <Routes>z
         {/* 각페이지로 이동하는 버튼구현 */}
         {/* 안드로이드에서 확인하려는데 기본페이지만떠서 */}
+s
+        
+
         <Route path="/" element={<Main />} />     
 
         <Route path="/position" element={<Position />} />
         <Route path="/combo" element={<Combo />} />
         <Route path="/camera" element={<Camera />} />
-        
+        {/* 홈화면 */}
+        <Route path="/Home_Pet.do" element={<Home_Pet />} />
+        <Route path="/Home_Plant.do" element={<Home_Plant />} />
 
       
       </Routes>
