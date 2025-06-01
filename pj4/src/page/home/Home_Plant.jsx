@@ -1,22 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box } from '@mui/material';
+import { Link } from 'react-router-dom';
+import Test from '../../image/Plant_Test_Main.png';
+import '../../css/home.css';
 
-const Home_Plant = () => {
+
+const Home_Plant= () => {
+  const [activeTab, setActiveTab] = useState(0);
+  const tabs = [
+    { name: "동물", link: "/Home_Pet.do" },
+    { name: "식물", link: "/Home_Plant.do" }
+  ];
+
   return (
-    <Box
-      sx={{
-        padding: 0, // padding을 0으로 설정하여 불필요한 여백 제거
-        margin: 0,  // margin도 제거
-        height: 'calc(100vh - 40px)', // 네비게이션(40px)를 고려하여 높이 설정
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        overflow: 'hidden', // 화면을 벗어난 부분이 스크롤로 표시되지 않도록 함
-      }}
-    >
-
-
-      
+    <Box className="Home_Layout">
+      <div style={{ position: "relative", display: "inline-block" }}>
+        <img className="Test_Image" src={Test} alt="Test_Image" />
+        <button className="Test_Button">테스트 시작</button>
+      </div>
+      <div className="Tab_Wrapper">
+        {tabs.map((tab, index) => (
+          <Link key={index} to={tab.link} onClick={() => setActiveTab(index)}>
+            <button className={`Tab_Buttons ${activeTab === index ? "active" : ""}`}>
+              {tab.name}
+            </button>
+          </Link>
+        ))}
+      </div>
     </Box>
   );
 };
