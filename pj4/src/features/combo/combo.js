@@ -30,6 +30,13 @@ export const comboApi = createApi({
         refetchOnMountOrArgChange: true,
         staleTime: 0, // 이건 RTK Query에서 직접 사용되진 않음. react-query에서 쓰는 용어
     }),
+    comboListByGroup: builder.query({
+      query: (groupId) => ({
+        url: '/combo/listByGroup.do',
+        method: 'POST',
+        body: { groupId },
+      }),
+    }),
   }),
 });
 
@@ -37,4 +44,5 @@ export const {
     useComboCreateMutation,
     useComboDeleteMutation,
     useComboListQuery,
+    useComboListByGroupQuery,
 } = comboApi;
