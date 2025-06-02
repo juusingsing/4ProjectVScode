@@ -10,10 +10,10 @@ import { clearUser } from '../../features/user/userSlice';
 import { persistor } from '../../app/store';
 
 const Login = () => {
-  const [userId, setUserId] = useState('');
-  const [password, setPassword] = useState('');
-  const userIdRef = useRef();
-  const passwordRef = useRef();
+  const [usersId, setUsersId] = useState('');
+  const [usersPassword, setUsersPassword] = useState('');
+  const usersIdRef = useRef();
+  const usersPasswordRef = useRef();
   const { showAlert } = useCmDialog();
   const [login] = useLoginMutation();
   const dispatch = useDispatch();
@@ -25,19 +25,19 @@ const Login = () => {
   }, [dispatch]);
 
   const handleLoginClick = async () => {
-     if (CmUtil.isEmpty(userId)) {
+     if (CmUtil.isEmpty(usersId)) {
       showAlert("ID를 입력해주세요.");
-      userIdRef.current?.focus();
+      usersIdRef.current?.focus();
       return;
     }
 
-     if (CmUtil.isEmpty(password)) {
+     if (CmUtil.isEmpty(usersPassword)) {
       showAlert("비밀번호를 입력해주세요.");
-      passwordRef.current?.focus();
+      usersPasswordRef.current?.focus();
       return;
     }
     try {
-      const response = await login({ userId, password }).unwrap();
+      const response = await login({ usersId, usersPassword }).unwrap();
       if (response.success) {
         showAlert("로그인 성공 홈으로 이동합니다.",() => {
           dispatch(setUser(response.data));
@@ -70,9 +70,9 @@ const Login = () => {
         label="아이디"
         fullWidth
         margin="normal"
-        value={userId}
-        inputRef={userIdRef}
-        onChange={(e) => setUserId(e.target.value)}
+        value={usersId}
+        inputRef={usersIdRef}
+        onChange={(e) => setUsersId(e.target.value)}
       />
 
       <TextField
@@ -80,9 +80,9 @@ const Login = () => {
         type="password"
         fullWidth
         margin="normal"
-        value={password}
-        inputRef={passwordRef}
-        onChange={(e) => setPassword(e.target.value)}
+        value={usersPassword}
+        inputRef={usersPasswordRef}
+        onChange={(e) => setUsersPassword(e.target.value)}
       />
 
       <Button

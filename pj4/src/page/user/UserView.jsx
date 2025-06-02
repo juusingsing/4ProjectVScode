@@ -6,7 +6,7 @@ import { Paper, Typography, Box, Button, CircularProgress, Alert } from '@mui/ma
 const UserView = () => {
   const [searchParams] = useSearchParams();
   const id = searchParams.get('id');
-  const { data, isLoading, error, isSuccess } = useViewQuery({userId:id});
+  const { data, isLoading, error, isSuccess } = useViewQuery({usersId:id});
   const [userInfo, setUserInfo] = useState(null);
   const navigate = useNavigate();
 
@@ -48,21 +48,21 @@ const UserView = () => {
             아이디
             </Typography>
             <Typography variant="body1" fontWeight="500" gutterBottom>
-            {userInfo.userId}
+            {userInfo.usersId}
             </Typography>
 
             <Typography variant="subtitle1" color="text.secondary" gutterBottom>
             이름
             </Typography>
             <Typography variant="body1" fontWeight="500" gutterBottom>
-            {userInfo.username}
+            {userInfo.usersName}
             </Typography>
 
             <Typography variant="subtitle1" color="text.secondary" gutterBottom>
             이메일
             </Typography>
             <Typography variant="body1" fontWeight="500" gutterBottom>
-            {userInfo.email}
+            {userInfo.userseMail}
             </Typography>
 
             <Typography variant="subtitle1" color="text.secondary" gutterBottom>

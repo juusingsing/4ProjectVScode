@@ -13,6 +13,13 @@ import Position from './page/position/dnlcl';
 import Combo from './page/combo/combo'
 import Camera from './page/camera/camera'
 
+import LayoutLogin from './layout/LayoutLogin';
+import LayoutNoLogin from './layout/LayoutNoLogin';
+import Login from './page/user/Login';
+import Register from './page/user/Register';
+import UserUpdate from './page/user/UserUpdate';
+import UserView from './page/user/UserView';
+
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
@@ -36,6 +43,11 @@ const App = () => {
         <Route path="/position" element={<Position />} />
         <Route path="/combo" element={<Combo />} />
         <Route path="/camera" element={<Camera />} />
+        {/* 회원가입, 로그인, 회원정보 */}
+        <Route path="/user/join.do" element={<LayoutNoLogin><Register /></LayoutNoLogin>} />
+        <Route path="/user/login.do" element={<LayoutNoLogin><Login /></LayoutNoLogin>} />
+        <Route path="/user/update.do" element={<LayoutLogin><UserUpdate /></LayoutLogin>} />
+        <Route path="/user/view.do" element={<LayoutLogin><UserView /></LayoutLogin>} />
         {/* 홈화면 */}
         <Route path="/Home_Pet.do" element={<Home_Pet />} />
         <Route path="/Home_Plant.do" element={<Home_Plant />} />

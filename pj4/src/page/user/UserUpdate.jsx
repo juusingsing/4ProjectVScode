@@ -10,57 +10,57 @@ const UserUpdate = () => {
   const user = useSelector((state) => state.user.user);
   const navigate = useNavigate();
 
-  const [userId, setUserId] = useState('');
-  const [password, setPassword] = useState('');
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
+  const [usersId, setUsersId] = useState('');
+  const [usersPassword, setUsersPassword] = useState('');
+  const [usersName, setUsersName] = useState('');
+  const [usersEmail, setUsersEmail] = useState('');
 
-  const userIdRef = useRef();
-  const passwordRef = useRef();
-  const usernameRef = useRef();
-  const emailRef = useRef();
+  const usersIdRef = useRef();
+  const usersPasswordRef = useRef();
+  const usersNameRef = useRef();
+  const usersEmailRef = useRef();
 
   const { showAlert } = useCmDialog();
 
   const [userUpdate] = useUserUpdateMutation();
   const [userDelete] = useUserDeleteMutation();
-  const { data, isSuccess } = useViewQuery({ userId: user?.userId });
+  const { data, isSuccess } = useViewQuery({ usersId: user?.usersId });
 
   useEffect(() => {
     if (isSuccess && data?.data) {
       const info = data.data;
-      setUserId(info.userId);
-      setUsername(info.username);
-      setEmail(info.email);
+      setUsersId(info.usersId);
+      setUsersName(info.usersName);
+      usersEmail(info.usersEmail);
     }
   }, [isSuccess, data]);
 
   const handleUpdateClick = async () => {
-    if (CmUtil.isEmpty(userId)) {
+    if (CmUtil.isEmpty(usersId)) {
       showAlert('아이디를 입력해주세요.');
-      userIdRef.current?.focus();
+      usersIdRef.current?.focus();
       return;
     }
 
-    if (CmUtil.isEmpty(username)) {
+    if (CmUtil.isEmpty(usersName)) {
       showAlert('이름을 입력해주세요.');
-      usernameRef.current?.focus();
+      usersNameRef.current?.focus();
       return;
     }
 
-    if (CmUtil.isEmpty(email)) {
+    if (CmUtil.isEmpty(usersEmail)) {
       showAlert('이메일을 입력해주세요.');
-      emailRef.current?.focus();
+      usersEmailRef.current?.focus();
       return;
     }
 
-    if (!CmUtil.isEmail(email)) {
+    if (!CmUtil.isEmail(usersEmail)) {
       showAlert('유효한 이메일 형식이 아닙니다.');
-      emailRef.current?.focus();
+      usersEmailRef.current?.focus();
       return;
     }
    
-    const response = await userUpdate({ userId, password, username, email }).unwrap();
+    const response = await userUpdate({ usersId, usersPassword, usersName, usersEmail }).unwrap();
     try {
       if (response.success) {
         showAlert("회원정보 수정에 성공 하셨습니다. 홈화면으로 이동합니다.", () => navigate('/'));
@@ -74,7 +74,7 @@ const UserUpdate = () => {
 
   const handleDeleteClick = async () => {
     try {
-      const response = await userDelete({ userId }).unwrap();
+      const response = await userDelete({ usersId }).unwrap();
       if (response.success) {
         showAlert("회원탈퇴에 성공 하셨습니다. 로그인화면으로 이동합니다.", () => navigate('/user/login.do'));
       
@@ -102,10 +102,10 @@ const UserUpdate = () => {
 
       <TextField
         label="아이디"
-        value={userId}
+        value={usersId}
         disabled
         fullWidth
-        inputRef={userIdRef}
+        inputRef={usersIdRef}
         margin="normal"
       />
 
@@ -114,18 +114,18 @@ const UserUpdate = () => {
         type="password"
         fullWidth
         margin="normal"
-        value={password}
-        inputRef={passwordRef}
-        onChange={(e) => setPassword(e.target.value)}
+        value={usersPassword}
+        inputRef={usersPasswordRef}
+        onChange={(e) => setUsersPassword(e.target.value)}
       />
 
       <TextField
         label="이름"
         fullWidth
         margin="normal"
-        value={username}
-        inputRef={usernameRef}
-        onChange={(e) => setUsername(e.target.value)}
+        value={usersName}
+        inputRef={usersNameRef}
+        onChange={(e) => setUsersName(e.target.value)}
       />
 
       <TextField
@@ -133,9 +133,9 @@ const UserUpdate = () => {
         type="email"
         fullWidth
         margin="normal"
-        value={email}
-        inputRef={emailRef}
-        onChange={(e) => setEmail(e.target.value)}
+        value={usersEmail}
+        inputRef={usersEmailRef}
+        onChange={(e) => setUsersEmail(e.target.value)}
       />
 
       <Button

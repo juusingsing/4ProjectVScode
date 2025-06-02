@@ -1,164 +1,109 @@
-import React, { useState, useRef } from 'react';
-import { useRegisterMutation } from '../../features/user/userApi';
+import React, { useState, useRef} from 'react';
+import { useRegisterMutation, useUserMMutation } from '../../features/user/userApi';
 import { useNavigate } from 'react-router-dom';
-import { TextField, Button, Box, Typography} from '@mui/material';
+import { TextField, Button, Box, Typography, FormControl,  RadioGroup, Radio,   FormControlLabel} from '@mui/material';
 import { useCmDialog } from '../../cm/CmDialogUtil';  
 import { CmUtil } from '../../cm/CmUtil';
-import { useEffect } from 'react';
-const Register = () => {
-  const [userId, setUserId] = useState('');
-  const [password, setPassword] = useState('');
-  const [password_confirm, setPassword_confirm] = useState('');
-  const [email, setEmail] = useState('');
-  const [nickname, setNickName] = useState('');
-  const userIdRef = useRef();
-  const passwordRef = useRef();
-  const password_confirmRef = useRef();
-  const emailRef = useRef();
-  const nicknameRef =useRef();
-  const [emailCode, setEmailCode] = useState('');
-  const [emailSent, setEmailSent] = useState(false);
-  const [isEmailVerified, setIsEmailVerified] = useState(false);
-  const [timer, setTimer] = useState(180); // 3분
-  const timerRef = useRef();
 
- 
-    useEffect(() => {
-    return () => clearInterval(timerRef.current);
-  }, []);
+const Register = () => {
+  const [usersId, setUsersId] = useState('');
+  const [usersPassword, setUsersPassword] = useState('');
+  const [usersName, setUsersName] = useState('');
+  const [usersEmail, setUsersEmail] = useState('');
+
+   const usersIdRef = useRef();
+   const usersPasswordRef = useRef();
+   const usersNameRef = useRef();
+   const usersEmailRef = useRef();
+
   
-  const formatTime = (seconds) => {
-    const min = String(Math.floor(seconds / 60)).padStart(2, '0');
-    const sec = String(seconds % 60).padStart(2, '0');
-    return `${min}:${sec}`;
-  };
   const { showAlert } = useCmDialog();
  
   const [register] = useRegisterMutation();
   const navigate = useNavigate();
 
+  const {data, refetch}=useUserMMutation({
+    usersId
+  });
+
+  
+
   const handleRegisterClick = async () => {
-    if (CmUtil.isEmpty(nickname)) {
-      showAlert('닉네임 입력해주세요.');
-      nicknameRef.current?.focus();
-      return;
+
+
+    if (CmUtil.isEmpty(usersName)) {
+    showAlert('닉네임을 입력해주세요.');
+    usersNameRef.current?.focus();
+    return;
     }
 
-    if (CmUtil.isEmpty(userId)) {
+
+
+    if (CmUtil.isEmpty(usersId)) {
       showAlert('아이디를 입력해주세요.');
-      userIdRef.current?.focus();
+      usersIdRef.current?.focus();
       return;
     }
 
-    if (CmUtil.isEmpty(password)) {
+
+    
+
+    if (CmUtil.isEmpty(usersPassword)) {
       showAlert('비밀번호를 입력해주세요.');
-      passwordRef.current?.focus();
-      return;
-    }
-    if (CmUtil.isEmpty(password_confirm)) {
-      showAlert('비밀번호를 다시 입력해주세요.');
-      password_confirmRef.current?.focus();
+      usersPasswordRef.current?.focus();
       return;
     }
 
-    
-    if (CmUtil.isEmpty(email)) {
+ 
+
+
+    if (CmUtil.isEmpty(usersEmail)) {
       showAlert('이메일을 입력해주세요.');
-      emailRef.current?.focus();
+      usersEmailRef.current?.focus();
       return;
     }
 
-    if (!CmUtil.isEmail(email)) {
+    if (!CmUtil.isEmail(usersEmail)) {
       showAlert('유효한 이메일 형식이 아닙니다.');
-      emailRef.current?.focus();
+      usersEmailRef.current?.focus();
       return;
     }
-
-   
-    
-   
+    if(isIdDuplicate===null){
+      showAlert('아이디 중복체크를 해주세요.')
+      return;
+    }
+    if(isIdDuplicate === true){
+      showAlert('이미 사용중인 아이디 입니다. 다른 아이디를 입력해주세요.');
+      usersIdRef.current?.focus();
+      return;
+    }
     try {
-      const response = await register({ nickname, userId, password, email}).unwrap();
+      const response = await register({ usersId, usersPassword, usersName, usersEmail}).unwrap();
       if (response.success) {
-        showAlert("회원가입에 성공 하셨습니다. 로그인화면으로 이동합니다.", () => { navigate('/user/login.do'); });
+        showAlert("회원가입에 성공 하셨습니다. 로그인화면으로 이동합니다.",()=>{navigate('/user/login.do');});
       } else {
         showAlert('회원가입에 실패했습니다. 다시 시도해주세요.');
       }
     } catch (error) {
       showAlert('회원가입에 실패했습니다. 다시 시도해주세요.');
-    }
+    } 
   };
-
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      handleRegisterClick();
-    }
-  };
-  const handleSendEmailCode = async () => {
-    if (!CmUtil.isEmail(email)) {
-      showAlert('유효한 이메일 형식이 아닙니다.');
+  const [isIdDuplicate, setIsIdDuplicate] = useState(null);
+  const handleIdDuplicate = async (usersId)=>{
+    if (CmUtil.isEmpty(usersId)) {
+      showAlert('아이디를 입력해주세요.');
+      usersIdRef.current?.focus();
       return;
     }
-
-    try {
-      const BACKEND_URL = 'http://localhost:8081/';
-      const res = await fetch(`${BACKEND_URL}/api/email/send-code.do`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
-      });
-      const data = await res.json();
-
-      if (data.success) {
-        // 기존 타이머 제거 및 초기화
-        clearInterval(timerRef.current);
-        setTimer(180);
-        setEmailSent(true);
-        setIsEmailVerified(false);
-        setEmailCode('');
-
-        // 타이머 새로 시작
-        timerRef.current = setInterval(() => {
-          setTimer((prev) => {
-            if (prev <= 1) {
-              clearInterval(timerRef.current);
-              setEmailSent(false);
-              showAlert("인증번호 입력 시간이 만료되었습니다. 다시 요청해주세요.");
-              return 0;
-            }
-            return prev - 1;
-          });
-        }, 1000);
-
-        showAlert('인증번호가 이메일로 전송되었습니다.');
-      } else {
-        showAlert('인증번호 전송에 실패했습니다.');
-      }
-    } catch (e) {
-      showAlert('서버 오류가 발생했습니다.');
+    const res = await refetch();
+    if(res?.data?.data?.exists){
+        showAlert("이미 사용중인 아이디입니다.");
+        setIsIdDuplicate(true);
+    } else {
+        showAlert("사용 가능한 아이디입니다.");
+        setIsIdDuplicate(false);
     }
   };
-
-  const handleVerifyEmailCode = async () => {
-    try {
-      const BACKEND_URL = 'http://localhost:8081'; // 백엔드 포트 맞게 수정
-      const res = await fetch(`${BACKEND_URL}/api/email/verify-code.do`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, code: emailCode })
-      });
-      const data = await res.json();
-      if (data.success) {
-        setIsEmailVerified(true);
-        showAlert('이메일 인증이 완료되었습니다.');
-      } else {
-        showAlert('인증번호가 일치하지 않습니다.');
-      }
-    } catch (e) {
-      showAlert('서버 오류가 발생했습니다.');
-    }
-  };
-
 
   return (
     <Box
@@ -173,95 +118,46 @@ const Register = () => {
       }}
     >
       <Typography variant="h4" gutterBottom>회원가입</Typography>
-      <TextField
-        label="닉네임*"
+
+       <TextField
+        label="닉네임"
         fullWidth
         margin="normal"
-        value={nickname}
-        inputRef={nicknameRef}
-        onChange={(e) => setNickName(e.target.value)}
-        onKeyPress={handleKeyPress}
+        value={usersName}
+        inputRef={usersNameRef}
+        onChange={(e) => setUsersName(e.target.value)}
       />
 
       <TextField
-        label="아이디*"
+        label="아이디"
         fullWidth
         margin="normal"
-        value={userId}
-        inputRef={userIdRef}
-        onChange={(e) => setUserId(e.target.value)}
-        onKeyPress={handleKeyPress}
+        value={usersId}
+        inputRef={usersIdRef}
+        onChange={(e) => setUsersId(e.target.value)}
       />
+      <Button onClick={()=>handleIdDuplicate(usersId)} variant="contained"
+        color="primary">중복체크</Button>
 
       <TextField
-        label="비밀번호*"
+        label="비밀번호"
         type="password"
         fullWidth
         margin="normal"
-        value={password}
-        inputRef={passwordRef}
-        onChange={(e) => setPassword(e.target.value)}
-        onKeyPress={handleKeyPress}
+        value={usersPassword}
+        inputRef={usersPasswordRef}
+        onChange={(e) => setUsersPassword(e.target.value)}
       />
       <TextField
-        label="비밀번호확인*"
-        type="password"
-        fullWidth
-        margin="normal"
-        value={password_confirm}
-        inputRef={password_confirmRef}
-        onChange={(e) => setPassword_confirm(e.target.value)}
-        onKeyPress={handleKeyPress}
-      />
-
-      <TextField
-        label="이메일*"
+        label="이메일"
         type="email"
         fullWidth
         margin="normal"
-        value={email}
-        inputRef={emailRef}
-        // 이메일 변경 시 인증 초기화
-        onChange={(e) => {
-          setEmail(e.target.value);
-          setIsEmailVerified(false);
-          setEmailSent(false);
-          setEmailCode('');
-        }}
-        onKeyPress={handleKeyPress}
+        value={usersEmail}
+        inputRef={usersEmailRef}
+        onChange={(e) => setUsersEmail(e.target.value)}
       />
-      <Button
-        onClick={handleSendEmailCode}
-        variant="outlined"
-        fullWidth
-        sx={{ mt: 1 }}
-      >
-        인증번호 전송
-      </Button>
 
-      {emailSent && (
-        <>
-          <Typography variant="body2" color="error" sx={{ mt: 1 }}>
-            남은 시간: {formatTime(timer)}
-          </Typography>
-          <TextField
-            label="인증번호 확인*"
-            fullWidth
-            margin="normal"
-            value={emailCode}
-            onChange={(e) => setEmailCode(e.target.value)}
-          />
-          <Button
-            onClick={handleVerifyEmailCode}
-            variant="contained"
-            color="success"
-            fullWidth
-          >
-            인증번호 확인
-          </Button>
-        </>
-      )}
-      
       <Button
         onClick={handleRegisterClick}
         variant="contained"
@@ -271,6 +167,16 @@ const Register = () => {
       >
         회원가입
       </Button>
+      <Button
+        onClick={() => navigate('/user/login.do')}
+        variant="contained"
+        color="primary"
+        fullWidth
+        sx={{ marginTop: 2 }}
+      >
+
+        로그인
+        </Button>
     </Box>
   );
 };
