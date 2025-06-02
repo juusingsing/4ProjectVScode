@@ -7,6 +7,7 @@ import { setNavigate } from './cm/CmNavigateUtil';
 import CmRouteChangeNotifier from './cm/CmRouteChangeNotifier';
 import Home_Pet from './page/home/Home_Pet';
 import Home_Plant from './page/home/Home_Plant';
+import DiaryCreate from './page/diary/DiaryCreate';
 import Main from './page/main';
 import Position from './page/position/dnlcl';
 import Combo from './page/combo/combo'
@@ -38,7 +39,7 @@ const App = () => {
         {/* 홈화면 */}
         <Route path="/Home_Pet.do" element={<Home_Pet />} />
         <Route path="/Home_Plant.do" element={<Home_Plant />} />
-
+        <Route path="/diaryCreate.do" element={<DiaryCreate/>}/>
       
       </Routes>
       <CmRouteChangeNotifier />
