@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box } from '@mui/material';
+import { Box} from '@mui/material'; //Grid
 import { Link } from 'react-router-dom';
 import Test from '../../image/Pet_Test_Main.png';
 import '../../css/home.css';
@@ -26,6 +26,13 @@ const Home_Pet = () => {
           </Link>
         ))}
       </div>
+      {/* <Grid container spacing={2} sx={{ mt: 2, justifyContent: 'center' }}>
+        {data?.data?.list?.map((item)=>(
+          <Grid item lg={4} key={item.animalId}>
+
+          </Grid>
+        ))}
+      </Grid> */}
     </Box>
   );
 };

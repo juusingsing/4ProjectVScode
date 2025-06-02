@@ -25,10 +25,9 @@ const App = () => {
 
   return (
     <>
-      <Routes>z
+      <Routes>
         {/* 각페이지로 이동하는 버튼구현 */}
         {/* 안드로이드에서 확인하려는데 기본페이지만떠서 */}
-s
         
 
         <Route path="/" element={<Main />} />     
