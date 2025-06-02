@@ -29,6 +29,16 @@
 
 .Tab_Buttons{
   width: 100%;
+}
+
+.Tab_Wrapper{
+  display:flex;
+  flex-direction: row;
+  width: 360px;
+}
+
+.Tab_Wrapper button{
+  width: 180px;
   background-color: #526B5C;
   color: white;
   border: none;
@@ -37,8 +47,20 @@
   cursor: pointer;
 }
 
-/* 선택된 탭을 더 강조하려면 */
-.Tab_Buttons.active {
-  background-color: #3e5447;
-  font-weight: bold;
+.Under_Line {
+  display: inline-block;
+  padding-bottom: 4px; /* 기본적으로 공간을 확보 */
 }
+
+.Tab_Buttons.active .Under_Line {
+  border-bottom: 2px solid white;
+  padding-bottom: 2px;
+}
+
+.Home_Selectbox{
+  width: 100%;
+  display: flex; 
+  justify-content:flex-end;
+  margin-top: 5px;
+}
+
