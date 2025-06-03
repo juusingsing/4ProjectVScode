@@ -1,5 +1,5 @@
 import React, { useState, useRef} from 'react';
-import { useRegisterMutation, useUserMMutation } from '../../features/user/userApi';
+import { useRegisterMutation, useCheckUsersIdQuery } from '../../features/user/userApi';
 import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Box, Typography, FormControl,  RadioGroup, Radio,   FormControlLabel} from '@mui/material';
 import { useCmDialog } from '../../cm/CmDialogUtil';  
@@ -22,7 +22,7 @@ const Register = () => {
   const [register] = useRegisterMutation();
   const navigate = useNavigate();
 
-  const {data, refetch}=useUserMMutation({
+  const {data, refetch}=useCheckUsersIdQuery({
     usersId
   });
 
