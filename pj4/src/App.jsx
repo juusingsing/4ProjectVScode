@@ -12,6 +12,7 @@ import Main from './page/main';
 import Position from './page/position/dnlcl';
 import Combo from './page/combo/combo'
 import Camera from './page/camera/camera'
+import PlantCreate from './page/plant/PlantCreate';
 
 import LayoutLogin from './layout/LayoutLogin';
 import LayoutNoLogin from './layout/LayoutNoLogin';
@@ -52,6 +53,7 @@ const App = () => {
         <Route path="/Home_Pet.do" element={<Home_Pet />} />
         <Route path="/Home_Plant.do" element={<Home_Plant />} />
         <Route path="/diaryCreate.do" element={<DiaryCreate/>}/>
+        <Route path="/PlantCreate.do" element={<PlantCreate/>}/>
       
       </Routes>
       <CmRouteChangeNotifier />
