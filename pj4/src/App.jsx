@@ -19,6 +19,8 @@ import Camera from './page/camera/camera'
 import Alarm from './page/alarm/alarm'
 import PlantCreate from './page/plant/PlantCreate';
 
+import DiaryList from './page/diary/DiaryList';
+
 import LayoutLogin from './layout/LayoutLogin';
 import LayoutNoLogin from './layout/LayoutNoLogin';
 import Login from './page/user/Login';
@@ -66,6 +68,9 @@ const App = () => {
         <Route path="/write/list.do" element={<LayoutLogin><WriteBoardList /></LayoutLogin>} />
         <Route path="/write/update.do" element={<LayoutLogin><WriteBoardUpdate /></LayoutLogin>} />
         <Route path="/write/view.do" element={<LayoutLogin><WriteBoardView /></LayoutLogin>} />
+        {/* 다이어리 */}
+         <Route path="/diary/create.do" element={<DiaryCreate/>}/>
+        <Route path="/diary/list.do" element={<DiaryList/>}/>
       </Routes>
       <CmRouteChangeNotifier />
       </>
