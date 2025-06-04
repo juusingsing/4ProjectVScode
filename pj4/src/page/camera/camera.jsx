@@ -92,6 +92,7 @@ const Camera = () => {
 
     return new Blob(byteArrays, { type: contentType });
   };
+  
 
   return (
     <>
@@ -146,13 +147,15 @@ const Camera = () => {
             slidesPerView={1}  // 한 번에 하나씩 슬라이드
           >
             {images.map((image, index) => (
-              <SwiperSlide key={index}>
+              <SwiperSlide key={index}> 
+
                 <img
-                  src={`http://192.168.0.32:8081${image.filePath}`}
+                  src={`http://192.168.0.32:8081${image.postFilePath}`}
                   alt={`img-${index}`}
                   style={{ width: '100%', height: 'auto', borderRadius: 8 }}
                 />
               </SwiperSlide>
+              
             ))}
           </Swiper>
         </div>
