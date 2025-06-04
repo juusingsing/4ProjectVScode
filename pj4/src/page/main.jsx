@@ -18,6 +18,9 @@ const Main = () => {
       <button onClick={() => navigate('/alarm')} style={{ padding: '12px 24px' }}>
         알람 페이지 이동
       </button>
+      <button onClick={() => navigate('/plantcreate.do')} style={{ padding: '12px 24px' }}>
+        식물 등록 페이지 이동
+      </button>
     </div>
   );
 };

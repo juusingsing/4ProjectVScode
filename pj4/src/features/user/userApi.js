@@ -68,6 +68,16 @@ export const userApi = createApi({
         body: credentials
       })
     }),
+    checkUsersId: builder.query({
+      query: (params) => ({
+        url: '/user/checkUsersId.do',
+        method: 'POST',
+        body: params,
+      }), 
+      keepUnusedDataFor: 0, // = cacheTime: 0
+      refetchOnMountOrArgChange: true,
+      staleTime: 0, // 이건 RTK Query에서 직접 사용되진 않음. react-query에서 쓰는 용어
+    }),
   })
 });
 
@@ -79,5 +89,6 @@ export const {
   useLogoutMutation,
   useViewQuery,
   useUserListQuery,
-  useUserMMutation
+  useUserMMutation,
+  useCheckUsersIdQuery
 } = userApi;

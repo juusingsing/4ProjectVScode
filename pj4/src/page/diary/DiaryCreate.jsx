@@ -11,6 +11,7 @@ import pet from '../../image/animalFootprintWhite.png';
 import plant from '../../image/plantWhite.png';
 import image from '../../image/imageAdd.png'
 import '../../css/toggleSwitch.css';
+import '../../css/diaryCreate.css';
 const DiaryCreate = () => {
   const [isOn, setIsOn] = useState(false);
 
@@ -19,7 +20,7 @@ const DiaryCreate = () => {
   return (
     <>
       <Box sx={{ maxWidth: 800}}>
-        <Box mt={3} mb={3} sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+        <Box mt={3} mb={3} className='diary-top-section'>
           <Button
             // variant="contained"
             sx={{
@@ -47,7 +48,7 @@ const DiaryCreate = () => {
           </div>
         </Box>
         <Box component="form">
-          <Box mr={1.5} gap={1} sx={{ display: 'flex', flexDirection: 'row' , justifyContent: 'end' }}>
+          <Box mr={1.5} gap={1} className='diary-title'>
             <Typography variant="h9" alignContent={"center"}>
               제목
             </Typography>
@@ -60,12 +61,13 @@ const DiaryCreate = () => {
                   textAlign: 'center',
                   height: '35px',
                   width: '280px',
-                  borderRadius: '15px'
+                  borderRadius: '15px',
+                  backgroundColor:'#F8F8F8'
                 }
               }}
             />
           </Box>
-          <Box mt={1} mr={1.5} gap={1} sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'end' }}>
+          <Box mt={1} mr={1.5} gap={1} className='diary-date'>
             <Typography variant="h9" alignContent={"center"}>날짜</Typography>
             <TextField
               type="date"
@@ -75,7 +77,8 @@ const DiaryCreate = () => {
                 sx: {
                   height: '35px',
                   borderRadius: '15px',
-                  paddingTop:'0px'
+                  paddingTop:'0px',
+                  backgroundColor:'#F8F8F8'
                 }
               }}
             />
@@ -110,7 +113,8 @@ const DiaryCreate = () => {
               inputProps={{ maxLength: 1300, style: { textAlign: 'center' }}}
               sx={{
                 '& .MuiOutlinedInput-root': {
-                  borderRadius: '15px'
+                  borderRadius: '15px',
+                  backgroundColor: '#F8F8F8'
                 }
               }}
             />
@@ -118,7 +122,6 @@ const DiaryCreate = () => {
           <Box display="flex" gap={1} mt={2} justifyContent={"center"}>
 
             <Button
-              variant="contained"
               sx={{
                 display: 'flex',
                 justifyContent: 'center',
@@ -132,7 +135,7 @@ const DiaryCreate = () => {
                 backgroundColor: '#4B6044'
               }}
             >
-              <Typography sx={{ letterSpacing: 3, fontSize: 16, fontWeight: 400 }}>
+              <Typography className="diary-save-text">
                 저장
               </Typography>
             </Button>
