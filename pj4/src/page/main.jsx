@@ -15,6 +15,9 @@ const Main = () => {
       <button onClick={() => navigate('/camera')} style={{ padding: '12px 24px' }}>
         카메라 페이지 이동
       </button>
+      <button onClick={() => navigate('/alarm')} style={{ padding: '12px 24px' }}>
+        알람 페이지 이동
+      </button>
     </div>
   );
 };

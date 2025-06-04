@@ -12,6 +12,7 @@ import Main from './page/main';
 import Position from './page/position/dnlcl';
 import Combo from './page/combo/combo'
 import Camera from './page/camera/camera'
+import Alarm from './page/alarm/alarm'
 
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -36,6 +37,7 @@ const App = () => {
         <Route path="/position" element={<Position />} />
         <Route path="/combo" element={<Combo />} />
         <Route path="/camera" element={<Camera />} />
+        <Route path="/alarm" element={<Alarm/>}/>
         {/* 홈화면 */}
         <Route path="/Home_Pet.do" element={<Home_Pet />} />
         <Route path="/Home_Plant.do" element={<Home_Plant />} />

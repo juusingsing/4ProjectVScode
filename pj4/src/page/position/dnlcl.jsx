@@ -173,12 +173,12 @@ const Dnlcl = () => {
 
   // 주변 병원 요청 버튼 클릭
   const btnClick = () => {
-    if (!markerPosition) {
-      console.warn("위치 정보가 없습니다.");
-      return;
-    }
+    // if (!markerPosition) {
+    //   console.warn("위치 정보가 없습니다.");
+    //   return;
+    // }
 
-    const { lat, lng } = markerPosition;
+    const { lat, lng } = center;
 
     if (window.Android?.getNearbyPlaces) {
       try {
