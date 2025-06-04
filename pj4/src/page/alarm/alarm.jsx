@@ -11,7 +11,7 @@ const Alarm = () => {
   useEffect(() => {
   const alarmData = {
     type: "SET_ALARM",
-    time: "2025-06-04T13:44:45",
+    time: "2025-06-04T14:00:30",
     message: "물 주는 시간입니다!"
   };
 
