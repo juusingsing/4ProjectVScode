@@ -1,0 +1,41 @@
+.diary-top-section{
+     display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items :center;
+    margin:15px 5px;
+}
+.diary-top-section-button{
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+margin:0px;
+
+}
+.diary-add-button{
+    /* padding:0;
+    height:38px;
+    width: 38px;
+    min-width: 38px; */
+}
+.diary-add{
+    padding:0;
+    height: 28px;
+    width: 28px;
+}
+.diary-list{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid gray;
+}
+.diary-title{
+padding:10px 4px 10px 4px;
+    white-space: nowrap;
+}
+.diary-date{
+padding-top:20px;
+    white-space: nowrap;
+}

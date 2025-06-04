@@ -4,7 +4,12 @@ import {
   Typography,
   Button
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
+import { CmUtil } from "../../cm/CmUtil";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useCmDialog } from "../../cm/CmDialogUtil";
+
 
 import back from '../../image/back.png';
 import pet from '../../image/animalFootprintWhite.png';
@@ -12,16 +17,90 @@ import plant from '../../image/plantWhite.png';
 import image from '../../image/imageAdd.png'
 import '../../css/toggleSwitch.css';
 import '../../css/diaryCreate.css';
-const DiaryCreate = () => {
-  const [isOn, setIsOn] = useState(false);
+import { useDiaryCreateMutation } from "../../features/diary/diaryApi";
 
-  const handleToggle = () => setIsOn(prev => !prev);
+const DiaryCreate = () => {
+  const user = useSelector((state) => state.user.user);
+  const titleRef = useRef();
+  const contentRef = useRef();
+  const dateRef = useRef();
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [date, setDate] = useState("");
+  const [diaryType, setDiaryType] = useState('N02');
+  const [files, setFiles] = useState([]);
+
+  const [diaryCreate] = useDiaryCreateMutation();
+  const { showAlert } = useCmDialog();
+
+  const navigate = useNavigate();
+  const handleFileChange = (e) => {
+    setFiles((prevFiles) => [...prevFiles, ...Array.from(e.target.files)]);
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (CmUtil.isEmpty(title)) {
+      showAlert("제목을 입력해주세요");
+      titleRef.current?.focus();
+      return;
+    }
+    if (!CmUtil.maxLength(title, 100)) {
+      showAlert("제목을 최대 100자까지 입력할 수 있습니다.");
+      titleRef.current?.focus();
+      return;
+    }
+    if (CmUtil.isEmpty(date)) {
+      showAlert("날짜를 입력해주세요");
+      dateRef.current?.focus();
+      return;
+    }
+    if (CmUtil.isEmpty(content)) {
+      showAlert("내용을 입력해주세요", () => { contentRef?.current?.focus(); });
+      return;
+    }
+    if (!CmUtil.maxLength(content, 2000)) {
+      showAlert("내용은 최대 2000자까지 입력할 수 있습니다.",
+        () => { contentRef?.current?.focus(); });
+      return;
+    }
+
+    // const [uploadedFiles, setUploadedFiles]=useState([]);
+    const formData = new FormData();
+    formData.append("diaryTitle", title);
+    formData.append("diaryDate", date);
+    formData.append("diaryContent", content);
+    formData.append("diaryType", diaryType);
+
+    files.forEach(files => formData.append("files", files));
+
+
+    try {
+      const res = await diaryCreate(formData).unwrap();
+      console.log("응답 내용 >>", res); // 여기에 찍히는 걸 확인해야 해!
+
+      showAlert("일기 저장 성공! 일기 목록으로 이동합니다.", () => navigate("/diary/list.do"));
+    } catch (error) {
+      console.error("요청 실패:", error);
+      showAlert("서버 오류가 발생했습니다.");
+    }
+  }
+
+
+  const [isOn, setIsOn] = useState(false);
+  const handleToggle = () => {
+    const newState = !isOn;
+    setIsOn(newState);
+    setDiaryType(newState ? "N01" : "N02");
+    //true=동물=N01
+    //false=식물=N02
+  };
 
   return (
     <>
-      <Box sx={{ maxWidth: 800}}>
+      <Box sx={{ maxWidth: 800 }}>
         <Box mt={3} mb={3} className='diary-top-section'>
           <Button
+            onClick={() => navigate('/diary/list.do')}
             // variant="contained"
             sx={{
               display: 'flex',
@@ -47,13 +126,18 @@ const DiaryCreate = () => {
             {<img src={isOn ? pet : plant} alt="toggle icon" className={`toggle-img ${isOn ? 'pet' : 'plant'}`} />}
           </div>
         </Box>
+        {/* <Typography mt={1} fontSize="14px" align="center">
+          현재 선택된 다이어리 타입: {diaryType === "D01" ? "반려동물" : "반려식물"}
+        </Typography> */}
         <Box component="form">
           <Box mr={1.5} gap={1} className='diary-title'>
-            <Typography variant="h9" alignContent={"center"}>
+            <Typography variant="h6" alignContent={"center"}>
               제목
             </Typography>
             <TextField
-
+              inputRef={titleRef}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
               variant="outlined"
               inputProps={{ maxLength: 100, style: { textAlign: 'center' } }}
               InputProps={{
@@ -62,14 +146,17 @@ const DiaryCreate = () => {
                   height: '35px',
                   width: '280px',
                   borderRadius: '15px',
-                  backgroundColor:'#F8F8F8'
+                  backgroundColor: '#F8F8F8'
                 }
               }}
             />
           </Box>
           <Box mt={1} mr={1.5} gap={1} className='diary-date'>
-            <Typography variant="h9" alignContent={"center"}>날짜</Typography>
+            <Typography variant="h6" alignContent={"center"}>날짜</Typography>
             <TextField
+              inputRef={dateRef}
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
               type="date"
               InputLabelProps={{ shrink: true }}
               className='textField'
@@ -77,40 +164,96 @@ const DiaryCreate = () => {
                 sx: {
                   height: '35px',
                   borderRadius: '15px',
-                  paddingTop:'0px',
-                  backgroundColor:'#F8F8F8'
+                  paddingTop: '0px',
+                  backgroundColor: '#F8F8F8'
                 }
               }}
             />
           </Box>
-          <Box m={2}>
-            <Button
-                  // variant="contained"
-                  sx={{
-                    display: 'flex', 
-                    justifyContent:'center',
-                    borderRadius: '5px',
-                    height:'140px',
-                    minWidth:'0',
-                    width: '140px',
-                    '&:hover': {
-                      backgroundColor: '#363636'
-                    },
-                    backgroundColor: 'rgba(54, 54, 54, 0.2)'
-                    
+
+          {/* 사진 리스트 */}
+          <Box
+            m={2}
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              overflowX: 'auto',//가로 스크롤
+              gap: 2,
+              padding: 1,
+              '&::-webkit-scrollbar': {
+                height: '1px',
+              },
+              '&::-webkit-scrollbar-thumb': {
+                backgroundColor: '#ccc',
+                borderRadius: '4px',
+              }
+            }}
+          >
+            {/* 이미지 미리보기 리스트 */}
+            {files.map((file, index) => (
+              <Box
+                sx={{
+                  minWidth: 140,
+                  height: 140,
+                  borderRadius: '5px',
+                  overflow: 'hidden',
+                  backgroundColor: '#ccc',
+                  scrollSnapAlign: 'start',
+                  flexShrink: 0,
+                }}
+              >
+                <img
+                  src={URL.createObjectURL(file)}
+                  alt={`preview-${index}`}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    display: 'block',
                   }}
-                  >
-                  <img src={image} alt=""></img>
-                </Button>
+                />
+              </Box>
+            ))}
+
+            {/* 사진 추가 버튼 */}
+            <label htmlFor="fileInput">
+              <Button
+                component="span"
+                sx={{
+                  minWidth: 0,
+                  width: 140,
+                  height: 140,
+                  borderRadius: '5px',
+                  backgroundColor: 'rgba(54, 54, 54, 0.2)',
+                  '&:hover': { backgroundColor: '#363636' },
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                <img src={image} alt="add" />
+              </Button>
+            </label>
+
+            <input
+              id="fileInput"
+              type="file"
+              multiple
+              style={{ display: 'none' }}
+              onChange={handleFileChange}
+            />
           </Box>
           <Box m={3} >
             <Typography gutterBottom>내용</Typography>
             <TextField
+              inputRef={contentRef}
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
               multiline
               rows={10}
               fullWidth
               variant="outlined"
-              inputProps={{ maxLength: 1300, style: { textAlign: 'center' }}}
+              inputProps={{ maxLength: 1300, style: { textAlign: 'center' } }}
               sx={{
                 '& .MuiOutlinedInput-root': {
                   borderRadius: '15px',
@@ -120,25 +263,27 @@ const DiaryCreate = () => {
             />
           </Box>
           <Box display="flex" gap={1} mt={2} justifyContent={"center"}>
-
-            <Button
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                borderRadius: '20px',
-                height: '38px',
-                width: '170px',
-                textTransform: 'none',
-                '&:hover': {
-                  backgroundColor: '#3B4C34'
-                },
-                backgroundColor: '#4B6044'
-              }}
-            >
-              <Typography className="diary-save-text">
-                저장
-              </Typography>
-            </Button>
+            {user && (
+              <Button
+                onClick={handleSubmit}
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  borderRadius: '20px',
+                  height: '38px',
+                  width: '170px',
+                  textTransform: 'none',
+                  '&:hover': {
+                    backgroundColor: '#3B4C34'
+                  },
+                  backgroundColor: '#4B6044'
+                }}
+              >
+                <Typography className="diary-save-text">
+                  저장
+                </Typography>
+              </Button>
+            )}
 
           </Box>
         </Box>

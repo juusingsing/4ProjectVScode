@@ -42,8 +42,9 @@ export const DialogProvider = ({ children }) => {
   );
 
   return (
-    <DialogContext.Provider value={{ showAlert, showConfirm, DialogComponent }}>
+    <DialogContext.Provider value={{ showAlert, showConfirm}}>
       {children}
+      {DialogComponent}
     </DialogContext.Provider>
   );
 };
