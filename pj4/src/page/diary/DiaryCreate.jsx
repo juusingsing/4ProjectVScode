@@ -2,6 +2,7 @@ import {
   Box,
   TextField,
   Typography,
+  IconButton,
   Button
 } from "@mui/material";
 import React, { useRef, useState } from "react";
@@ -14,7 +15,8 @@ import { useCmDialog } from "../../cm/CmDialogUtil";
 import back from '../../image/back.png';
 import pet from '../../image/animalFootprintWhite.png';
 import plant from '../../image/plantWhite.png';
-import image from '../../image/imageAdd.png'
+import image from '../../image/imageAdd.png';
+import imgDelete from '../../image/imageDelete.png';
 import '../../css/toggleSwitch.css';
 import '../../css/diaryCreate.css';
 import { useDiaryCreateMutation } from "../../features/diary/diaryApi";
@@ -27,7 +29,7 @@ const DiaryCreate = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [date, setDate] = useState("");
-  const [diaryType, setDiaryType] = useState('N02');
+  const [diaryType, setDiaryType] = useState('N01');
   const [files, setFiles] = useState([]);
 
   const [diaryCreate] = useDiaryCreateMutation();
@@ -37,6 +39,11 @@ const DiaryCreate = () => {
   const handleFileChange = (e) => {
     setFiles((prevFiles) => [...prevFiles, ...Array.from(e.target.files)]);
   };
+  const handleFileDelete = (indexToRemove) => {
+    setFiles((prevFiles) =>
+      prevFiles.filter((_, index) => index !== indexToRemove)
+    );
+  }
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (CmUtil.isEmpty(title)) {
@@ -51,6 +58,11 @@ const DiaryCreate = () => {
     }
     if (CmUtil.isEmpty(date)) {
       showAlert("날짜를 입력해주세요");
+      dateRef.current?.focus();
+      return;
+    }
+    if (CmUtil.isDateFuture(date)){
+      showAlert("미래 날짜는 선택할 수 없습니다.")
       dateRef.current?.focus();
       return;
     }
@@ -86,7 +98,7 @@ const DiaryCreate = () => {
   }
 
 
-  const [isOn, setIsOn] = useState(false);
+  const [isOn, setIsOn] = useState(true);
   const handleToggle = () => {
     const newState = !isOn;
     setIsOn(newState);
@@ -193,6 +205,7 @@ const DiaryCreate = () => {
             {files.map((file, index) => (
               <Box
                 sx={{
+                  position: 'relative',
                   minWidth: 140,
                   height: 140,
                   borderRadius: '5px',
@@ -212,6 +225,20 @@ const DiaryCreate = () => {
                     display: 'block',
                   }}
                 />
+                <IconButton
+                  onClick={() => handleFileDelete(index)}
+                  sx={{
+                    position: 'absolute',
+                    top: 0,
+                    right: 0,
+                    padding:0,
+                    '&:hover': {
+                      backgroundColor: 'rgba(255, 100, 100, 0.8)',
+                    }
+                  }}
+                >
+                  <img src={imgDelete} alt="삭제" style={{ width: 20, height: 20 }} />
+                </IconButton>
               </Box>
             ))}
 
