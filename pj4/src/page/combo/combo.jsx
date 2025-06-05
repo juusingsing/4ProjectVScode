@@ -13,8 +13,7 @@ import {
     useComboListByGroupQuery,
  } from '../../features/combo/combo';
 
-const Combo = () => {
-  const groupId = "Medical"; // 가져오는 그룹아이디
+const Combo = ({ groupId}) => {
   const { data, isLoading, error } = useComboListByGroupQuery(groupId);
   const [items, setItems] = useState([]);
   const [selected, setSelected] = useState('');
@@ -25,16 +24,16 @@ const Combo = () => {
   // const { data, isLoading, error } = useComboListQuery();
 
   // ✅ 불러온 데이터로 items 설정
-  useEffect(() => {
-    console.log('리스트 응답:', data);  // 가져오는데이터
+   useEffect(() => {
+    console.log(`groupId(${groupId}) 응답:`, data);
     if (Array.isArray(data?.data)) {
       const formattedItems = data.data.map(item => ({
-      value: item.codeId,
-      label: item.codeName,
+        value: item.codeId,
+        label: item.codeName,
       }));
       setItems(formattedItems);
     }
-  }, [data]);
+  }, [data, groupId]); // ✅ groupId 변경에도 반응
 
 
     // 컬럼에 추가
@@ -127,16 +126,16 @@ const Combo = () => {
           추가
         </Button>
       </Box> */}
-
+      {/* 선택 박스 */}
       <CommonComboBox options={items} value={selected} onChange={setSelected} />
 
       {/* <Button variant="outlined" color="error" onClick={handleDeleteItem}>
         삭제
       </Button>   */}
       
-      <Typography variant="body1" sx={{ mt: 2 }}>
+      {/* <Typography variant="body1" sx={{ mt: 2 }}>
         선택된 값: {selected || '없음'}
-      </Typography>
+      </Typography> */}
     </Box>
   );
 };

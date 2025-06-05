@@ -20,44 +20,73 @@
 .image-wrapper img {
   width: 80%;
   height: 80%;
-  object-fit: cover; /* 이미지가 꽉 차도록 */
-  border-radius: 230%; /* 동그랗게 */
-  border: 2px solid #ffffff; /* 연두색 테두리 (원하는 색으로 바꿔도 됨) */
-  box-shadow: 0 0 5px rgba(0,0,0,0.2); /* 살짝 그림자 */
+  object-fit: cover; 
+  border-radius: 230%; 
+  border: 2px solid #ffffff; 
+  box-shadow: 0 0 5px rgba(0,0,0,0.2); 
 }
 
 .plant-image {
-  width: 96px;
-  height: 96px;
+  width: 300px;
+  height: 300px;
   border-radius: 50%;
   object-fit: cover;
 }
 
 .camera-icon {
   position: absolute;
-  bottom: 0;
-  right: 38%;
+  top: 55%;
+  right: 5%;
   background-color: white;
   padding: 4px;
   border-radius: 50%;
+  width: 30px;
+  height: 30px;
 }
 
-.form-section {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.form-section input,
-.form-section select,
-.form-section textarea {
+input,
+select {
   border: 1px solid #ddd;
   border-radius: 10px;
   background-color: #D9D9D9;
-  width: 148px;
+  width: 154px;
   height: 24px;
   margin: 0 auto;
   text-align: center;
+  display: block;
+}
+
+textarea {
+  width: 300px;
+  min-height: 80px;
+  padding: 8px;
+  border-radius: 10px;
+  background-color: #D9D9D9;
+  border: 1px solid #ddd;
+  resize: vertical;
+  font-size: 14px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+label + textarea {
+  margin-top: 4px;
+  margin-bottom: 12px;
+}
+
+.inline-form-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.inline-form-row label {
+  width: 100px;
+  text-align: right;
+  font-weight: 500;
 }
 
 .date-wrapper {

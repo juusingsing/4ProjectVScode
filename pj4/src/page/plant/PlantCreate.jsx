@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Box } from '@mui/material';
-import { FaChevronLeft, FaCalendarAlt, FaCamera } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { FaCamera } from 'react-icons/fa';
 import '../../css/plant.css';
-import DefaultImage from '../../image/default-plant.png'; // 기본 이미지 경로
+import DefaultImage from '../../image/default-plant.png';
+import { useCreatePlantMutation } from '../../features/plant/plantApi';
+import Combo from '../combo/combo';
 
 const PlantCreate = () => {
   const [plantName, setPlantName] = useState('');
@@ -11,93 +12,105 @@ const PlantCreate = () => {
   const [sunlight, setSunlight] = useState('');
   const [entryDate, setEntryDate] = useState('');
   const [status, setStatus] = useState('');
-  const [image,setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [createPlant] = useCreatePlantMutation(); // 추가
+  const [plantPurchaseDate, setPlantPurchaseDate] = useState('');
+
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    if(file) {
-      setImage(URL.createObjectURL(file));
+    if (file) {
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleSubmit = async () => {
+    const formData = new FormData();
+    formData.append('plantName', plantName);
+    formData.append('plantType', plantType);
+  if (plantPurchaseDate) {
+    formData.append('plantPurchaseDate', plantPurchaseDate);
+  }
+    formData.append('plantSunPreference', sunlight);
+    formData.append('plantGrowStatus', status);
+
+    const fileInput = document.getElementById('imageUpload');
+    if (fileInput.files.length > 0) {
+      formData.append('file', fileInput.files[0]);
+    }
+
+    try {
+      const res = await createPlant(formData).unwrap();
+      alert('등록 성공');
+    } catch (err) {
+      console.error('식물 등록 오류:', err);
+      alert('등록 실패');
     }
   };
 
   return (
     <Box className="plant-layout">
-
-    {/* 이미지 영역 */}
       <div className="image-wrapper relative">
         <img
-          src={image || DefaultImage}
+          src={imagePreview || DefaultImage}
           alt="plant"
           className="w-32 h-32 rounded-full object-cover"
         />
-
-        {/* 카메라 아이콘 버튼 (라벨로 연결) */}
         <label
           htmlFor="imageUpload"
-          className="absolute bottom-0 right-0 bg-white p-1 rounded-full cursor-pointer"
+          className="absolute bottom-0 right-0 bg-white p-2 rounded-full shadow-md cursor-pointer"
         >
-          <FaCamera />
+          <FaCamera className="camera-icon" />
         </label>
+        <input
+          id="imageUpload"
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+          style={{ display: 'none' }}
+        />
       </div>
 
-      {/* 실제 파일 업로드 input (숨김 처리) */}
-      <input
-        id="imageUpload"
-        type="file"
-        accept="image/*"
-        onChange={handleImageChange}
-        className="hidden"
+      <div className="inline-form-row">
+        <label>식물 이름</label>
+        <input value={plantName} onChange={(e) => setPlantName(e.target.value)} />
+      </div>
+      <br />
+
+      <div className="inline-form-row">
+        <label>식물 종류</label>
+        <Combo groupId="PlantType" />
+      </div>
+
+
+      <div className="inline-form-row">
+        <label>식물 입수일</label>
+        <input 
+          type="date" 
+          value={plantPurchaseDate} 
+          onChange={(e) => setPlantPurchaseDate(e.target.value)} />
+      </div>
+      <br />
+
+      <div className="inline-form-row">
+        <label>햇빛/그늘 선호</label>
+        <Combo groupId="SunType"/>
+      </div>
+      <br />
+
+      <label>생육상태</label>
+      <textarea
+        value={status}
+        onChange={(e) => setStatus(e.target.value)}
+        rows={3}
+        className="w-full"
       />
 
-
-      {/* 입력 폼 */}
-      <div className="form-section">
-        <label>식물 이름</label>
-        <input
-          value={plantName}
-          onChange={(e) => setPlantName(e.target.value)}
-        />
-
-        <label>식물 종류</label>
-        <select value={plantType} onChange={(e) => setPlantType(e.target.value)}>
-          <option>관엽식물</option>
-          <option>다육식물</option>
-          <option>공기정화식물</option>
-          <option>수경식물</option>
-          <option>기타</option>
-        </select>
-
-        <label>식물 입수일</label>
-        <div className="date-wrapper">
-          <input
-            type="date"
-            value={entryDate}
-            onChange={(e) => setEntryDate(e.target.value)}
-          />
-          <FaCalendarAlt className="calendar-icon" />
-        </div>
-
-        <label>햇빛/그늘 선호</label>
-        <select value={sunlight} onChange={(e) => setSunlight(e.target.value)}>
-          <option>햇빛 직사광선</option>
-          <option>밝은 간접광</option>
-          <option>반그늘</option>
-          <option>그늘</option>
-        </select>
-
-        <label>생육상태</label>
-        <textarea
-          value={status}
-          onChange={(e) => setStatus(e.target.value)}
-          rows={3}
-        />
-      </div>
-
-      {/* 등록 버튼 */}
       <div className="submit-button-wrapper">
-        <button className="submit-button">식물 등록</button>
+        <button className="submit-button" onClick={handleSubmit}>
+          식물 등록
+        </button>
       </div>
-
     </Box>
   );
 };
