@@ -18,8 +18,17 @@ const Main = () => {
       <button onClick={() => navigate('/alarm')} style={{ padding: '12px 24px' }}>
         알람 페이지 이동
       </button>
+      <button onClick={() => navigate('/alarmdb')} style={{ padding: '12px 24px' }}>
+        알람db조회 페이지 이동
+      </button>
       <button onClick={() => navigate('/plantcreate.do')} style={{ padding: '12px 24px' }}>
         식물 등록 페이지 이동
+      </button>
+      <button onClick={() => navigate('/diary/create.do')} style={{ padding: '12px 24px' }}>
+        일기 등록 페이지 이동
+      </button>
+      <button onClick={() => navigate('/user/join.do')} style={{ padding: '12px 24px' }}>
+        로그인 페이지 이동
       </button>
       <button onClick={() => navigate('/plantwatering.do')} style={{ padding: '12px 24px' }}>
         식물 물주기 페이지 이동

@@ -77,6 +77,16 @@ const Alarm = () => {
         // }}
       />
 
+      <button onClick={() => {
+          if (window.Android && window.Android.cancelAlarm) {
+              window.Android.cancelAlarm();
+          } else {
+              alert("AndroidInterface is not available.");
+          }
+      }}>
+          알람 취소
+      </button>
+
 
 
     </>

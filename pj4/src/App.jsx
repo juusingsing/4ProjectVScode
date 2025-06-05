@@ -17,6 +17,7 @@ import Position from './page/position/dnlcl';
 import Combo from './page/combo/combo'
 import Camera from './page/camera/camera'
 import Alarm from './page/alarm/alarm'
+import Alarmdb from './page/alarm/alarmdb'
 import PlantCreate from './page/plant/PlantCreate';
 import PlantWatering from './page/plant/PlantWatering';
 import PlantSunlighting from './page/plant/PlantSunlighting';
@@ -55,6 +56,7 @@ const App = () => {
         <Route path="/combo" element={<Combo />} />
         <Route path="/camera" element={<Camera />} />
         <Route path="/alarm" element={<Alarm/>}/>
+        <Route path="/alarmdb" element={<Alarmdb/>}/>
         {/* 회원가입, 로그인, 회원정보 */}
         <Route path="/user/join.do" element={<LayoutNoLogin><Register /></LayoutNoLogin>} />
         <Route path="/user/login.do" element={<LayoutNoLogin><Login /></LayoutNoLogin>} />

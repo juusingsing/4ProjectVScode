@@ -6,6 +6,7 @@ import { fileApi } from '../features/file/fileApi';
 import { comboApi  } from '../features/combo/combo';
 import { imgApi  } from '../features/img/imgApi';
 import { diaryApi } from '../features/diary/diaryApi';
+import { alarmApi } from '../features/alarm/alarmApi';
 import { plantApi } from '../features/plant/plantApi';
 
 import userReducer from '../features/user/userSlice';
@@ -27,6 +28,7 @@ const rootReducer = combineReducers({
   [comboApi.reducerPath]: comboApi.reducer,
   [imgApi.reducerPath]: imgApi.reducer,
   [diaryApi.reducerPath]: diaryApi.reducer,
+  [alarmApi.reducerPath]: alarmApi.reducer,
   [plantApi.reducerPath]: plantApi.reducer,
 
 });
@@ -38,7 +40,16 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false
-    }).concat(userApi.middleware, writeApi.middleware, fileApi.middleware, comboApi.middleware, imgApi.middleware, diaryApi.middleware, plantApi.middleware)
+    }).concat(
+      userApi.middleware,
+      writeApi.middleware,
+      fileApi.middleware,
+      comboApi.middleware,
+      imgApi.middleware,
+      diaryApi.middleware,
+      alarmApi.middleware,
+      plantApi.middleware
+    )
 });
 
 export const persistor = persistStore(store);
