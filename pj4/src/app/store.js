@@ -6,6 +6,7 @@ import { fileApi } from '../features/file/fileApi';
 import { comboApi  } from '../features/combo/combo';
 import { imgApi  } from '../features/img/imgApi';
 import { diaryApi } from '../features/diary/diaryApi';
+import { alarmApi } from '../features/alarm/alarmApi';
 
 import userReducer from '../features/user/userSlice';
 import storageSession from 'redux-persist/lib/storage/session'; // sessionStorage로 변경
@@ -26,6 +27,7 @@ const rootReducer = combineReducers({
   [comboApi.reducerPath]: comboApi.reducer,
   [imgApi.reducerPath]: imgApi.reducer,
   [diaryApi.reducerPath]: diaryApi.reducer,
+  [alarmApi.reducerPath]: alarmApi.reducer,
 
 });
 
@@ -36,7 +38,14 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false
-    }).concat(userApi.middleware, boardApi.middleware, fileApi.middleware, comboApi.middleware, imgApi.middleware, diaryApi.middleware)
+    }).concat(
+      userApi.middleware,
+      boardApi.middleware,
+      fileApi.middleware,
+      comboApi.middleware,
+      imgApi.middleware,
+      diaryApi.middleware,
+      alarmApi.middleware)
 });
 
 export const persistor = persistStore(store);
