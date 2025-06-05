@@ -1,12 +1,13 @@
 // src/app/store.js
 import { configureStore } from '@reduxjs/toolkit';
 import { userApi } from '../features/user/userApi';
-import { boardApi } from '../features/board/boardApi'; 
+import { writeApi } from '../features/write/writeApi'; 
 import { fileApi } from '../features/file/fileApi'; 
 import { comboApi  } from '../features/combo/combo';
 import { imgApi  } from '../features/img/imgApi';
 import { diaryApi } from '../features/diary/diaryApi';
 import { alarmApi } from '../features/alarm/alarmApi';
+import { plantApi } from '../features/plant/plantApi';
 
 import userReducer from '../features/user/userSlice';
 import storageSession from 'redux-persist/lib/storage/session'; // sessionStorage로 변경
@@ -22,12 +23,13 @@ const persistConfig = {
 const rootReducer = combineReducers({
   user: userReducer,
   [userApi.reducerPath]: userApi.reducer,
-  [boardApi.reducerPath]: boardApi.reducer,
+  [writeApi.reducerPath]: writeApi.reducer,
   [fileApi.reducerPath]: fileApi.reducer,
   [comboApi.reducerPath]: comboApi.reducer,
   [imgApi.reducerPath]: imgApi.reducer,
   [diaryApi.reducerPath]: diaryApi.reducer,
   [alarmApi.reducerPath]: alarmApi.reducer,
+  [plantApi.reducerPath]: plantApi.reducer,
 
 });
 
@@ -40,12 +42,14 @@ export const store = configureStore({
       serializableCheck: false
     }).concat(
       userApi.middleware,
-      boardApi.middleware,
+      writeApi.middleware,
       fileApi.middleware,
       comboApi.middleware,
       imgApi.middleware,
       diaryApi.middleware,
-      alarmApi.middleware)
+      alarmApi.middleware,
+      plantApi.middleware
+    )
 });
 
 export const persistor = persistStore(store);

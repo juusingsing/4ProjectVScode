@@ -1,40 +1,95 @@
 import React, { useState, useEffect } from "react";
 import {
-  Box,
-  Button,
-  TextField,
-  Typography,
+  Box
+  // Button,
+  // TextField,
+  // Typography,
 } from '@mui/material';
 import CommonComboBox from './CommonComboBox';
 import {
-    useComboCreateMutation,
-    useComboDeleteMutation,
-    useComboListQuery,
+    // useComboCreateMutation,
+    // useComboDeleteMutation,
+    // useComboListQuery,
     useComboListByGroupQuery,
  } from '../../features/combo/combo';
 
-const Combo = () => {
-  const groupId = "Medical"; // 가져오는 그룹아이디
+const Combo = ({ groupId, onSelectionChange }) => {
   const { data, isLoading, error } = useComboListByGroupQuery(groupId);
   const [items, setItems] = useState([]);
   const [selected, setSelected] = useState('');
-  // const [inputValue, setInputValue] = useState('');
+ 
+  // ✅ 불러온 데이터로 items 설정
+   useEffect(() => {
+    console.log(`groupId(${groupId}) 응답:`, data);
+    if (Array.isArray(data?.data)) {
+      const formattedItems = data.data.map(item => ({
+        value: item.codeId,
+        label: item.codeName,
+      }));
+      setItems(formattedItems);
+    }
+  }, [data, groupId]); // ✅ groupId 변경에도 반응
+
+
+  // ✅ CommonComboBox에서 값이 변경될 때 호출될 함수
+  const handleComboBoxChange = (newValue) => {
+    setSelected(newValue); // 자신의 상태 업데이트
+    // 선택된 값을 부모 컴포넌트 (WriteCreate)로 전달
+    if (onSelectionChange) {
+      onSelectionChange(newValue);
+    }
+  };
+
+  return (
+    <Box sx={{ mt: 2 }}>
+      {/* CommonComboBox에 options, value, onChange prop을 전달 */}
+      <CommonComboBox
+        options={items}
+        value={selected} // 현재 선택된 값
+        onChange={handleComboBoxChange} // 값이 변경될 때 호출될 함수
+        placeholder="선택하세요" // 기본 플레이스홀더
+        disabled={isLoading} // 데이터 로딩 중에는 비활성화
+      />
+    </Box>
+  );
+};
+
+export default Combo;
+
+
+
+
+ // const [inputValue, setInputValue] = useState('');
   // const [inputLabel, setInputLabel] = useState('');
   // const [comboCreate] = useComboCreateMutation();
   // const [comboDelete] = useComboDeleteMutation();
   // const { data, isLoading, error } = useComboListQuery();
 
-  // ✅ 불러온 데이터로 items 설정
-  useEffect(() => {
-    console.log('리스트 응답:', data);  // 가져오는데이터
-    if (Array.isArray(data?.data)) {
-      const formattedItems = data.data.map(item => ({
-      value: item.codeId,
-      label: item.codeName,
-      }));
-      setItems(formattedItems);
-    }
-  }, [data]);
+
+
+
+
+  // {/* <Typography variant="h6">항목 추가</Typography>
+  //     <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+  //       <TextField
+  //         label="Value"
+  //         value={inputValue}
+  //         onChange={(e) => setInputValue(e.target.value)}
+  //         size="small"
+  //       />
+  //       <TextField
+  //         label="Label"
+  //         value={inputLabel}
+  //         onChange={(e) => setInputLabel(e.target.value)}
+  //         size="small"
+  //       />
+  //       <Button variant="contained" onClick={handleAddItem}>
+  //         추가
+  //       </Button>
+  //     </Box> */}
+
+
+
 
 
     // 컬럼에 추가
@@ -107,38 +162,30 @@ const Combo = () => {
   // };
 
 
-  return (
-    <Box sx={{ mt: 2 }}>
-      {/* <Typography variant="h6">항목 추가</Typography>
-      <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-        <TextField
-          label="Value"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          size="small"
-        />
-        <TextField
-          label="Label"
-          value={inputLabel}
-          onChange={(e) => setInputLabel(e.target.value)}
-          size="small"
-        />
-        <Button variant="contained" onClick={handleAddItem}>
-          추가
-        </Button>
-      </Box> */}
+  // {/* 선택 박스 */}
+  //     <CommonComboBox 
+  //     options={items} 
+  //     value={selected} 
+  //     onChange={setSelected} />
 
-      <CommonComboBox options={items} value={selected} onChange={setSelected} />
 
-      {/* <Button variant="outlined" color="error" onClick={handleDeleteItem}>
-        삭제
-      </Button>   */}
+  // {/* <Button variant="outlined" color="error" onClick={handleDeleteItem}>
+  //       삭제
+  //     </Button>   */}
       
-      <Typography variant="body1" sx={{ mt: 2 }}>
-        선택된 값: {selected || '없음'}
-      </Typography>
-    </Box>
-  );
-};
+  //     {/* <Typography variant="body1" sx={{ mt: 2 }}>
+  //       선택된 값: {selected || '없음'}
+  //     </Typography> */}
 
-export default Combo;
+
+
+
+
+
+
+
+
+
+
+
+  

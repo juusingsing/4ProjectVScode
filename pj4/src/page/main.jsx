@@ -30,6 +30,9 @@ const Main = () => {
       <button onClick={() => navigate('/user/join.do')} style={{ padding: '12px 24px' }}>
         로그인 페이지 이동
       </button>
+      <button onClick={() => navigate('/plantwatering.do')} style={{ padding: '12px 24px' }}>
+        식물 물주기 페이지 이동
+      </button>
     </div>
   );
 };

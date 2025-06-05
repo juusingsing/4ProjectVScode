@@ -81,4 +81,17 @@ export class CmUtil {
         const day = String(newDate.getDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
     }
+
+    //미래 날짜 선택 방지
+    static isDateFuture(date){
+        if(!date) return false;
+        const selectedDate = new Date(date);
+        const today = new Date();
+
+        //시간 초기화
+        today.setHours(0, 0, 0, 0);
+        selectedDate.setHours(0, 0, 0, 0);
+
+        return selectedDate > today;
+    }
 }

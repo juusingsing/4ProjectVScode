@@ -7,10 +7,10 @@ import { setNavigate } from './cm/CmNavigateUtil';
 import CmRouteChangeNotifier from './cm/CmRouteChangeNotifier';
 import Home_Pet from './page/home/Home_Pet';
 import Home_Plant from './page/home/Home_Plant';
-import WriteBoardCreate from './page/write/WriteBoardCreate';
-import WriteBoardList from './page/write/WriteBoardList';
-import WriteBoardUpdate from './page/write/WriteBoardUpdate';
-import WriteBoardView from './page/write/WriteBoardView';
+import WriteCreate from './page/write/WriteCreate';
+import WriteList from './page/write/WriteList';
+import WriteUpdate from './page/write/WriteUpdate';
+import WriteView from './page/write/WriteView';
 import DiaryCreate from './page/diary/DiaryCreate';
 import Main from './page/main';
 import Position from './page/position/dnlcl';
@@ -19,6 +19,9 @@ import Camera from './page/camera/camera'
 import Alarm from './page/alarm/alarm'
 import Alarmdb from './page/alarm/alarmdb'
 import PlantCreate from './page/plant/PlantCreate';
+import PlantWatering from './page/plant/PlantWatering';
+import PlantSunlighting from './page/plant/PlantSunlighting';
+import PlantRepotting from './page/plant/PlantRepotting';
 
 import DiaryList from './page/diary/DiaryList';
 
@@ -64,12 +67,17 @@ const App = () => {
         <Route path="/Home_Plant.do" element={<Home_Plant />} />
         <Route path="/diaryCreate.do" element={<DiaryCreate/>}/>
         <Route path="/PlantCreate.do" element={<PlantCreate/>}/>
+        <Route path="/PlantWatering.do" element={<PlantWatering/>}/>
+        <Route path="/PlantSunlighting.do" element={<PlantSunlighting/>}/>
+        <Route path="/PlantRepotting.do" element={<PlantRepotting/>}/>
+
+        
       
         {/* 게시판 */}
-        <Route path="/write/create.do" element={<LayoutLogin><WriteBoardCreate /></LayoutLogin>} />
-        <Route path="/write/list.do" element={<LayoutLogin><WriteBoardList /></LayoutLogin>} />
-        <Route path="/write/update.do" element={<LayoutLogin><WriteBoardUpdate /></LayoutLogin>} />
-        <Route path="/write/view.do" element={<LayoutLogin><WriteBoardView /></LayoutLogin>} />
+        <Route path="/write/create.do" element={<LayoutLogin><WriteCreate /></LayoutLogin>} />
+        <Route path="/write/list.do" element={<LayoutLogin><WriteList /></LayoutLogin>} />
+        <Route path="/write/update.do" element={<LayoutLogin><WriteUpdate /></LayoutLogin>} />
+        <Route path="/write/view.do" element={<LayoutLogin><WriteView /></LayoutLogin>} />
         {/* 다이어리 */}
          <Route path="/diary/create.do" element={<DiaryCreate/>}/>
         <Route path="/diary/list.do" element={<DiaryList/>}/>

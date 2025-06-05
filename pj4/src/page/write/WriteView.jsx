@@ -1,3 +1,5 @@
+
+
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -10,17 +12,17 @@ import {
   Button,
   Divider
 } from '@mui/material';
-import { useBoardViewQuery } from '../../features/board/boardApi'; 
+import { useWriteViewQuery } from '../../features/write/writeApi'; 
 import CmComment from '../../cm/CmComment';
 
-const WriteBoardView = () =>{
+const WriteView = () =>{
      const [searchParams] = useSearchParams();
-      const id = searchParams.get('id'); 
+      const writingId = searchParams.get('writingId'); 
       
       const user = useSelector((state) => state.user.user); // 로그인된 사용자 정보
-      const { data, isLoading, error, isSuccess, refetch } = useBoardViewQuery({ boardId: id });
+      const { data, isLoading, error, isSuccess, refetch } = useWriteViewQuery({ writingId: writingId });
     
-      const [board, setBoard] = useState(null);
+      const [write, setBoard] = useState(null);
       const navigate = useNavigate();
     
       useEffect(() => {
@@ -44,29 +46,29 @@ const WriteBoardView = () =>{
             <CircularProgress />
           ) : error ? (
             <Alert severity="error">게시글을 불러오는 데 실패했습니다.</Alert>
-          ) : board ? (
+          ) : write ? (
             <>
               <Typography variant="h4" gutterBottom>
-                {board.title}
+                {write.title}
               </Typography>
     
               <Box display="flex" justifyContent="space-between" color="text.secondary" fontSize={14}>
-                <span>작성자: {board.createId}</span>
-                <span>{board.createDt}</span>
+                <span>작성자: {write.createId}</span>
+                <span>{write.createDt}</span>
               </Box>
     
               <Divider sx={{ my: 2 }} />
     
               <Paper elevation={2} sx={{ p: 2, minHeight: '200px', maxHeight: '500px', overflow: 'auto' }}>
-                <div dangerouslySetInnerHTML={{ __html: board.content }} />
+                <div dangerouslySetInnerHTML={{ __html: write.content }} />
               </Paper>
     
-              {board.postFiles && board.postFiles.length > 0 && (
+              {write.postFiles && write.postFiles.length > 0 && (
                 <Box>
                   <Typography variant="subtitle1" sx={{ mt: 2 }}>
                     첨부파일
                   </Typography>
-                  {board.postFiles.map((file) => (
+                  {write.postFiles.map((file) => (
                     <Typography key={file.fileId}>
                       <a
                         href={`${process.env.REACT_APP_API_BASE_URL}/file/down.do?fileId=${file.fileId}`}
@@ -80,12 +82,12 @@ const WriteBoardView = () =>{
                 </Box>
               )}
               <Box display="flex" gap={1} mt={2}>
-                {user?.userId === board?.createId && (
+                {user?.usersId === write?.createId && (
                   
                     <Button
                       variant="contained"
                       color="primary"
-                      onClick={() => navigate(`/renewboard/update.do?id=${board.boardId}`, { state: { reset: true } })}
+                      onClick={() => navigate(`/write/update.do?id=${write.writingId}`, { state: { reset: true } })}
                     >
                       수정
                     </Button>
@@ -95,7 +97,7 @@ const WriteBoardView = () =>{
                 <Button
                   variant="contained"
                   color="primary"
-                  onClick={() => navigate('/renewboard/list.do')}
+                  onClick={() => navigate('/write/list.do')}
                 >
                   목록으로
                 </Button>
@@ -103,7 +105,7 @@ const WriteBoardView = () =>{
               <CmComment
                 comments={data?.data?.comments || []}
                 user={user}
-                boardId={board.boardId}
+                writingId={write.writingId}
                 refetchComments={refetch}  
               />
             </>
@@ -112,4 +114,4 @@ const WriteBoardView = () =>{
       );
 }
 
-export default WriteBoardView;
+export default WriteView;
