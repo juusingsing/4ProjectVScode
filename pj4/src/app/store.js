@@ -1,7 +1,7 @@
 // src/app/store.js
 import { configureStore } from '@reduxjs/toolkit';
 import { userApi } from '../features/user/userApi';
-import { boardApi } from '../features/board/boardApi'; 
+import { writeApi } from '../features/write/writeApi'; 
 import { fileApi } from '../features/file/fileApi'; 
 import { comboApi  } from '../features/combo/combo';
 import { imgApi  } from '../features/img/imgApi';
@@ -22,7 +22,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   user: userReducer,
   [userApi.reducerPath]: userApi.reducer,
-  [boardApi.reducerPath]: boardApi.reducer,
+  [writeApi.reducerPath]: writeApi.reducer,
   [fileApi.reducerPath]: fileApi.reducer,
   [comboApi.reducerPath]: comboApi.reducer,
   [imgApi.reducerPath]: imgApi.reducer,
@@ -38,7 +38,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false
-    }).concat(userApi.middleware, boardApi.middleware, fileApi.middleware, comboApi.middleware, imgApi.middleware, diaryApi.middleware, plantApi.middleware)
+    }).concat(userApi.middleware, writeApi.middleware, fileApi.middleware, comboApi.middleware, imgApi.middleware, diaryApi.middleware, plantApi.middleware)
 });
 
 export const persistor = persistStore(store);
