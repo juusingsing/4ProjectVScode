@@ -39,6 +39,7 @@ const Login = () => {
     try {
       const response = await login({ usersId, usersPassword }).unwrap();
       if (response.success) {
+        console.log(response);
         showAlert("로그인 성공 홈으로 이동합니다.",() => {
           dispatch(setUser(response.data));
           navigate("/");

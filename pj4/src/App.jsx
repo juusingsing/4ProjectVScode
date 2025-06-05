@@ -67,8 +67,8 @@ const App = () => {
         <Route path="/Home_Plant.do" element={<Home_Plant />} />
         <Route path="/diaryCreate.do" element={<DiaryCreate/>}/>
         <Route path="/PlantCreate.do" element={<PlantCreate/>}/>
-        <Route path="/PlantWatering.do" element={<PlantWatering/>}/>
-        <Route path="/PlantSunlighting.do" element={<PlantSunlighting/>}/>
+        <Route path="/PlantWatering.do" element={<LayoutLogin><PlantWatering/></LayoutLogin>} />
+        <Route path="/PlantSunlighting.do" element={<PlantSunlighting/>} />
         <Route path="/PlantRepotting.do" element={<PlantRepotting/>}/>
 
         

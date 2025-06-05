@@ -10,13 +10,39 @@ import { FaTint } from 'react-icons/fa';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import '../../css/plantWatering.css'; // Make sure this CSS file exists
 import Combo from '../combo/combo'; // 이 경로가 정확한지 확인하세요.
+import { useAlarmCreateMutation } from "../../features/alarm/alarmApi";
+import { useSelector } from "react-redux";
 
 const PlantWatering = () => {
+  const user = useSelector((state) => state.user.user);
   const [alarmCycle, setAlarmCycle] = useState('');   // 선택된 물주기
+  const [AlarmCreate] = useAlarmCreateMutation({});
   const [alarmDate, setAlarmDate] = useState(dayjs());
   const [alarmTime, setAlarmTime] = useState(dayjs().hour(9).minute(0));
   const [alarmToggle, setAlarmToggle] = useState(true);
-  const [cycle, setCycle] = useState('주1회');
+
+  const AlarmSave = async () => {
+
+    const data = {
+      startDate: alarmDate.format('YY/MM/DD'),
+      alarmTime: alarmTime.format('HH:mm'),
+      alarmCycle: alarmCycle,
+    };
+     
+    try {
+      const response = await AlarmCreate(data).unwrap();
+      console.log("응답 내용 >>", response); // 여기에 찍히는 걸 확인해야 해!
+      alert("등록성공ㅎㅎㅎ");
+      
+
+    } catch (error) {
+      console.error("요청 실패:", error);
+      alert("등록실패!!!!!!!!!!");
+    }
+
+    
+
+  };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -28,7 +54,7 @@ const PlantWatering = () => {
             {/* <Select
               size="small"
               value={cycle}
-              onChange={(e) => setCycle(e.target.value)}v
+              onChange={(e) => setCycle(e.target.value)}
               className="alarm-select"
             > */}
             <Combo groupId="AlarmCycle"
@@ -63,10 +89,18 @@ const PlantWatering = () => {
           </Box>
 
           <Box className="save-button-container">
-            <Button variant="contained" className="save-button">저장</Button>
+            {user && (
+            <Button variant="contained" className="save-button" onClick={AlarmSave}>저장</Button>
+            )}
           </Box>
         </CardContent>
       </Card>
+
+      <Box className="log-entry">
+        알람 날짜: {alarmDate ? alarmDate.format('YY/MM/DD') : '날짜 없음'}   <br/>
+        알람 주기: {alarmCycle ? alarmCycle : '주기 없음'}                      <br/>
+        알람 시간: {alarmTime ? alarmTime.format('HH:mm') : '시간 없음'}        <br/>
+      </Box>
 
       <Card className="care-section-card">
         <CardContent>
@@ -80,22 +114,7 @@ const PlantWatering = () => {
             <Typography className="record-list-title">📋 기록 리스트</Typography>
 
             <Box className="log-entry">
-              <IconButton className="log-checkbox">
-                <CheckBoxIcon sx={{ fontSize: 20 }} />
-              </IconButton>
-              <div className="log-details">
-                <Typography className="log-date-icon">
-                  <FaTint style={{ marginRight: 4, fontSize: '0.9rem' }} />
-                  2025.03.25
-                </Typography>
-                <Typography className="log-description">
-                  물 주기 완료.
-                </Typography>
-              </div>
-              <div className="log-actions">
-                <Button variant="text" className="log-action-button">삭제</Button>
-                <Button variant="text" className="log-action-button">수정</Button>
-              </div>
+              
             </Box>
           </Box>
         </CardContent>
