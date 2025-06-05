@@ -9,6 +9,7 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import '../../css/plantSunlighting.css';
 import PlantWatering from './PlantWatering';
+import PlantSunlighting from './PlantSunlighting';
 
 const PlantRepotting = () => {
   const [currentTab, setCurrentTab] = useState(1);

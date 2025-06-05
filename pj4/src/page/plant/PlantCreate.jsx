@@ -13,10 +13,10 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import { FaCamera } from 'react-icons/fa';
-import DefaultImage from '../../image/default-plant.png'; // 이 경로가 정확한지 확인하세요.
-import { useCreatePlantMutation } from '../../features/plant/plantApi'; // 이 경로가 정확한지 확인하세요.
-import Combo from '../combo/combo'; // 이 경로가 정확한지 확인하세요.
-import '../../css/plantCreate.css'; // 새로 정의할 CSS 파일
+import DefaultImage from '../../image/default-plant.png';
+import { useCreatePlantMutation } from '../../features/plant/plantApi';
+import Combo from '../combo/combo';
+import '../../css/plantCreate.css';
 
 const PlantCreate = () => {
   const [plantName, setPlantName] = useState('');
@@ -155,7 +155,7 @@ const PlantCreate = () => {
                   {...params}
                   variant="outlined"
                   size="small"
-                  className="input-field-wrapper" // CSS 클래스 적용
+                  className="input-field-wrapper"
                   InputProps={{
                     sx: {
                       borderRadius: '8px', // 이미지 에 맞게 모서리 둥글게
@@ -195,7 +195,6 @@ const PlantCreate = () => {
               rows={3}
               variant="outlined"
               size="small"
-              placeholder="잎이 진한 초록색이며 광택이 있어 현재 매우 건강해 보임"
               className="input-field-wrapper" // CSS 클래스 적용
               InputProps={{
                 sx: {
@@ -221,14 +220,11 @@ const PlantCreate = () => {
             onClick={handleSubmit}
             className="register-button" // CSS 클래스 적용
             sx={{
-              backgroundColor: '#6dbf67',
+              backgroundColor: '#4B6044',
               borderRadius: 20, // 이미지 와 같이 둥근 모서리
               padding: '10px 24px',
               fontSize: '1rem',
               fontWeight: 'bold',
-              '&:hover': {
-                backgroundColor: '#5aa659',
-              },
             }}
           >
             식물 등록

@@ -20,7 +20,7 @@ import Alarm from './page/alarm/alarm'
 import PlantCreate from './page/plant/PlantCreate';
 import PlantWatering from './page/plant/PlantWatering';
 import PlantSunlighting from './page/plant/PlantSunlighting';
-import PlantRepotting from './page/plant/PlantRepotting';
+import PlantRepotting from './page/plant/PlantRepotting.jsx';
 
 import DiaryList from './page/diary/DiaryList';
 
