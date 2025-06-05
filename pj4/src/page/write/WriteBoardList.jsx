@@ -1,16 +1,14 @@
-
-
 import { TextField, Button, Box } from "@mui/material";
 import {CmUtil} from '../../cm/CmUtil';
 import React, { useEffect, useRef, useState } from 'react';
 import {useNavigate } from 'react-router-dom';
-import {useWriteListQuery} from '../../features/write/writeApi';
+import {useBoardListQuery} from '../../features/board/boardApi';
 import {DataGrid} from '@mui/x-data-grid';
 import {Pagination} from '@mui/material';
 import { useSelector } from 'react-redux';
 import { useCmDialog } from '../../cm/CmDialogUtil';  
 
-const WriteList = () => {
+const WriteBoardList = () => {
     const [search, setSearch] = useState({
         searchText: '',
         startDate: CmUtil.addDate(CmUtil.getToday(), { months: -3 }),
@@ -27,7 +25,7 @@ const WriteList = () => {
 
     const [sort, setSort] = useState({ field: 'create_dt', order: 'desc' });
 
-    const { data, isLoading, refetch } = useWriteListQuery({
+    const { data, isLoading, refetch } = useBoardListQuery({
         ...search,
         page,
         sortField: sort.field,
@@ -47,7 +45,7 @@ const WriteList = () => {
      const { showAlert } = useCmDialog();
     const rowsWithId = (data?.data?.list || []).map((row) => ({
         ...row,
-        id: row.writingId,
+        id: row.boardId,
     }));
     const handleSearch = () => {
         const { startDate, endDate } = search;
@@ -81,16 +79,16 @@ const WriteList = () => {
 
     const columns = [
         { field: 'rn', headerName: '번호', width: 90, sortable: false },
-        { field: 'writingTitle', headerName: '제목', width: 300, dbName: 'writing_title' },
+        { field: 'title', headerName: '제목', width: 300, dbName: 'title' },
         { field: 'createId', headerName: '작성자', width: 150, dbName: 'create_id' },
-        { field: 'writingViewCount', headerName: '조회수', width: 100, dbName: 'writing_view_count' },
+        { field: 'viewCount', headerName: '조회수', width: 100, dbName: 'view_count' },
         { field: 'createDt', headerName: '작성일', width: 180, dbName: 'create_dt' },
         {
           field: 'action',
           headerName: '상세보기',
           width: 100,
           renderCell: (params) => (
-            <Button onClick={(e) => navigate(`/write/view.do?id=${params.row.writingId}`)}>보기</Button>
+            <Button onClick={(e) => navigate(`/renewboard/view.do?id=${params.row.boardId}`)}>보기</Button>
           ),
           sortable: false,
         },
@@ -127,7 +125,7 @@ const WriteList = () => {
         {user && (
            <Button
             variant="contained"
-            onClick={() => navigate(`/write/create.do`)}
+            onClick={() => navigate(`/renewBoard/create.do`)}
           >
            글쓰기
          </Button>
@@ -150,7 +148,7 @@ const WriteList = () => {
             <Pagination 
             variant="outlined" 
             shape="rounded"
-            count={data?.data?.write?.totalPages || 1}
+            count={data?.data?.board?.totalPages || 1}
             page={page}
             showFirstButton
             showLastButton
@@ -161,7 +159,4 @@ const WriteList = () => {
     );
 };
 
-export default WriteList;
-
-
-
+export default WriteBoardList;

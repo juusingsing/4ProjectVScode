@@ -1,13 +1,10 @@
-
-
-
 import React, { useEffect, useRef, useState } from "react";
 import CmTinyMCEEditor from "../../cm/CmTinyMCEEditor";
 import {
-  useWriteViewQuery,
-  useWriteUpdateMutation,
-  useWriteDeleteMutation
-} from "../../features/write/writeApi";
+  useBoardViewQuery,
+  useBoardUpdateMutation,
+  useBoardDeleteMutation
+} from "../../features/board/boardApi";
 import { CmUtil } from "../../cm/CmUtil";
 import { useCmDialog } from "../../cm/CmDialogUtil";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -16,7 +13,7 @@ import { Box, TextField, Typography, List, ListItem, ListItemText, IconButton, P
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useSelector } from "react-redux";
 
-const WriteUpdate = () => {
+const WriteBoardUpdate = () => {
   const user = useSelector((state)=>state.user.user);
   const editorRef = useRef();
   const titleRef = useRef();
@@ -24,13 +21,13 @@ const WriteUpdate = () => {
   const [title, setTitle] = useState("");
 
 
-  const [writeUpdate] = useWriteUpdateMutation();
-  const [writeDelete] = useWriteDeleteMutation();
-  const {data } = useWriteViewQuery({writeId : id});
+  const [boardUpdate] = useBoardUpdateMutation();
+  const [boardDelete] = useBoardDeleteMutation();
+  const {data } = useBoardViewQuery({boardId : id});
   const [searchParams] = useSearchParams();
   const id = searchParams.get('id');
 
-  const [write, setWrite] = useState(null);
+  const [board, setBoard] = useState(null);
 
   const [existingFiles, setExistingFiles] = useState("");
   const [remainingFileIds, setRemainingFileIds] = useState("");
@@ -38,7 +35,7 @@ const WriteUpdate = () => {
     useEffect(() => {
     if (data?.success) {
         console.log(data.data);
-        setWrite(data.data);
+        setBoard(data.data);
         setTitle(data.data.title);
         setEditor(data.data.content);
         setExistingFiles(data.data.postFiles || []);
@@ -93,9 +90,9 @@ const WriteUpdate = () => {
    formData.append("files", file);
     });
 
-   const res = await writeUpdate(formData).unwrap();
+   const res = await boardUpdate(formData).unwrap();
    if(res.success){
-    showAlert("게시글 수정 성공! 게시판 목록으로 이동합니다.", ()=>navigate("/write/list.do"));
+    showAlert("게시글 수정 성공! 게시판 목록으로 이동합니다.", ()=>navigate("/renewBoard/list.do"));
 
    } else {
     showAlert("게시글 수정 실패 했습니다.");
@@ -123,9 +120,9 @@ const WriteUpdate = () => {
     
     const handleDelete = async () => {
         showConfirm("정말 삭제하시겠습니까?", async () => {
-            const res = await writeDelete({ writeId: id }).unwrap();
+            const res = await boardDelete({ boardId: id }).unwrap();
             if (res.success) {
-                showAlert("게시글 삭제 성공! 게시판 목록으로 이동합니다.", () => navigate("/write/list.do"));
+                showAlert("게시글 삭제 성공! 게시판 목록으로 이동합니다.", () => navigate("/renewBoard/list.do"));
             } else {
                 showAlert("게시글 삭제 실패했습니다.");
             }
@@ -222,7 +219,7 @@ const WriteUpdate = () => {
         )}
         </Box>
         <Box display="flex" gap={1} mt={2}>
-             {user?.userId === write?.createId && (
+             {user?.userId === board?.createId && (
                         <>
                         <Button 
                             variant="contained" 
@@ -244,7 +241,7 @@ const WriteUpdate = () => {
             <button
             variant="contained"
             color="primary"
-            onClick={()=>navigate('/write/list/do')}
+            onClick={()=>navigate('/renewBoard/list/do')}
             >
             목록
             </button>
@@ -254,4 +251,4 @@ const WriteUpdate = () => {
     </Box>
   );
 };
-  export default WriteUpdate;
+  export default WriteBoardUpdate;

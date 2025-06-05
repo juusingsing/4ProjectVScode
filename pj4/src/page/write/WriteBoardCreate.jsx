@@ -1,28 +1,21 @@
-
-
-
 import React, { useRef, useState } from "react";
 import CmTinyMCEEditor from "../../cm/CmTinyMCEEditor";
-import { useWriteCreateMutation } from "../../features/write/writeApi";
+import { useBoardCreateMutation } from "../../features/board/boardApi";
 import { CmUtil } from "../../cm/CmUtil";
 import { useCmDialog } from "../../cm/CmDialogUtil";
 import { useNavigate } from "react-router-dom";
 import { useDropzone } from "react-dropzone";
-import { Box, TextField, Typography, List, ListItem, ListItemText, IconButton, Paper, Button, FormControl, MenuItem, Select, InputLabel} from '@mui/material';
+import { Box, TextField, Typography, List, ListItem, ListItemText, IconButton, Paper, Button} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useSelector } from "react-redux";
-import Combo from"../../page/combo/combo";
 
-const WriteCreate = () => {
- 
+const WriteBoardCreate = () => {
   const user = useSelector((state)=>state.user.user);
   const editorRef = useRef();
-  const writingTitleRef = useRef();
+  const titleRef = useRef();
   const [editor, setEditor] = useState("");
-  const [writingTitle, setWritingTitle] = useState("");
-  const [writingSortation, setWritingSortation] = useState(''); // 선택된 게시판 종류
-  const [writingCategory, setWritingCategory] = useState('');  // 선택된 카테고리
-  const [writeCreate] = useWriteCreateMutation();
+  const [title, setTitle] = useState("");
+  const [boardCreate] = useBoardCreateMutation();
   const {showAlert} = useCmDialog();
   const navigate = useNavigate();
 
@@ -32,16 +25,16 @@ const WriteCreate = () => {
     const contentHtml = editorRef.current?.getContent();
   
     // 제목이 비어있는지 체크
-    if (CmUtil.isEmpty(writingTitle)) {
+    if (CmUtil.isEmpty(title)) {
       showAlert("제목을 입력해주세요.");
-      writingTitleRef.current?.focus();
+      titleRef.current?.focus();
       return;
     }
   
     // 제목 길이 체크
-    if (!CmUtil.maxLength(writingTitle, 100)) {
+    if (!CmUtil.maxLength(title, 100)) {
       showAlert("제목은 최대 100자까지 입력할 수 있습니다.");
-      writingTitleRef.current?.focus();
+      titleRef.current?.focus();
       return;
     }
   
@@ -55,25 +48,21 @@ const WriteCreate = () => {
     if (!CmUtil.maxLength(contentText, 2000)) {
       showAlert("내용은 최대 2000자까지 입력할 수 있습니다.", () => editorRef.current?.focus());
       return;
-
-      
     }
  
    
    const formData = new FormData();
-   formData.append("writingTitle", writingTitle);
-   formData.append("writingContent", contentHtml);
-   formData.append("writingSortation", writingSortation); // WRITING_SORTATION 추가
-   formData.append("writingCategory", writingCategory);   // WRITING_CATEGORY 추가
-   formData.append("writingViewCount", 0);
+   formData.append("title", title);
+   formData.append("content", contentHtml);
+   formData.append("viewCount", 0);
    
    uploadedFiles.forEach((file) => {
    formData.append("files", file);
     });
 
-   const res = await writeCreate(formData).unwrap();
+   const res = await boardCreate(formData).unwrap();
    if(res.success){
-    showAlert("게시글 생성 성공! 게시판 목록으로 이동합니다.", ()=>navigate("/write/list.do"));
+    showAlert("게시글 생성 성공! 게시판 목록으로 이동합니다.", ()=>navigate("/renewBoard/list.do"));
 
    } else {
     showAlert("게시글 생성 실패 했습니다.");
@@ -99,17 +88,6 @@ const WriteCreate = () => {
 
   return (
     <Box sx={{ maxWidth: 800, mx: 'auto', p: 3 }}>
-            {/* onSelectionChange prop을 통해 Combo에서 선택된 값을 받아 writingSortation 상태에 업데이트 */}
-            <Combo
-                groupId="EntityType" 
-                onSelectionChange={setWritingSortation}
-            />
-            {/* onSelectionChange prop을 통해 Combo에서 선택된 값을 받아 writingCategory 상태에 업데이트 */}
-            <Combo
-                groupId="Community" 
-                onSelectionChange={setWritingCategory}
-            />
-
       <Typography variant="h5" gutterBottom>
         게시글 작성
       </Typography>
@@ -122,9 +100,9 @@ const WriteCreate = () => {
             label="제목"
             variant="outlined"
             inputProps={{ maxLength: 100 }}
-            inputRef={writingTitleRef}
-            value={writingTitle}
-            onChange={(e) => setWritingTitle(e.target.value)}
+            inputRef={titleRef}
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
           />
         </Box>
         <Box mb={3}>
@@ -180,7 +158,7 @@ const WriteCreate = () => {
             <button
             variant="contained"
             color="primary"
-            onClick={()=>navigate('/write/list/do')}
+            onClick={()=>navigate('/renewBoard/list/do')}
             >
             목록
             </button>
@@ -190,4 +168,4 @@ const WriteCreate = () => {
     </Box>
   );
 };
-  export default WriteCreate;
+  export default WriteBoardCreate;
