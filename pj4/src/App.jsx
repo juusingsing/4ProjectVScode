@@ -18,6 +18,9 @@ import Combo from './page/combo/combo'
 import Camera from './page/camera/camera'
 import Alarm from './page/alarm/alarm'
 import PlantCreate from './page/plant/PlantCreate';
+import PlantWatering from './page/plant/PlantWatering';
+import PlantSunlighting from './page/plant/PlantSunlighting';
+import PlantRepotting from './page/plant/PlantRepotting';
 
 import DiaryList from './page/diary/DiaryList';
 
@@ -62,6 +65,11 @@ const App = () => {
         <Route path="/Home_Plant.do" element={<Home_Plant />} />
         <Route path="/diaryCreate.do" element={<DiaryCreate/>}/>
         <Route path="/PlantCreate.do" element={<PlantCreate/>}/>
+        <Route path="/PlantWatering.do" element={<PlantWatering/>}/>
+        <Route path="/PlantSunlighting.do" element={<PlantSunlighting/>}/>
+        <Route path="/PlantRepotting.do" element={<PlantRepotting/>}/>
+
+        
       
         {/* 게시판 */}
         <Route path="/write/create.do" element={<LayoutLogin><WriteCreate /></LayoutLogin>} />

@@ -1,21 +1,31 @@
 import React, { useState } from 'react';
-import { Box } from '@mui/material';
+import {
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Stack,
+  Avatar,
+  IconButton,
+} from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
 import { FaCamera } from 'react-icons/fa';
-import '../../css/plant.css';
-import DefaultImage from '../../image/default-plant.png';
-import { useCreatePlantMutation } from '../../features/plant/plantApi';
-import Combo from '../combo/combo';
+import DefaultImage from '../../image/default-plant.png'; // 이 경로가 정확한지 확인하세요.
+import { useCreatePlantMutation } from '../../features/plant/plantApi'; // 이 경로가 정확한지 확인하세요.
+import Combo from '../combo/combo'; // 이 경로가 정확한지 확인하세요.
+import '../../css/plantCreate.css'; // 새로 정의할 CSS 파일
 
 const PlantCreate = () => {
   const [plantName, setPlantName] = useState('');
-  const [plantType, setPlantType] = useState('');
-  const [sunlight, setSunlight] = useState('');
-  const [entryDate, setEntryDate] = useState('');
-  const [status, setStatus] = useState('');
+  const [plantType, setPlantType] = useState('');   // 선택된 식물종류
+  const [plantPurchaseDate, setPlantPurchaseDate] = useState(null);
+  const [sunlightPreference, setSunlightPreference] = useState('');   // 선택된 햇빛종류
+  const [plantGrowthStatus, setPlantGrowthStatus] = useState('');
   const [imagePreview, setImagePreview] = useState(null);
-  const [createPlant] = useCreatePlantMutation(); // 추가
-  const [plantPurchaseDate, setPlantPurchaseDate] = useState('');
-
+  const [createPlant] = useCreatePlantMutation();
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -28,11 +38,11 @@ const PlantCreate = () => {
     const formData = new FormData();
     formData.append('plantName', plantName);
     formData.append('plantType', plantType);
-  if (plantPurchaseDate) {
-    formData.append('plantPurchaseDate', plantPurchaseDate);
-  }
-    formData.append('plantSunPreference', sunlight);
-    formData.append('plantGrowStatus', status);
+    if (plantPurchaseDate) {
+      formData.append('plantPurchaseDate', dayjs(plantPurchaseDate).format('YYYY.MM.DD'));
+    }
+    formData.append('plantSunPreference', sunlightPreference);
+    formData.append('plantGrowStatus', plantGrowthStatus);
 
     const fileInput = document.getElementById('imageUpload');
     if (fileInput.files.length > 0) {
@@ -40,8 +50,14 @@ const PlantCreate = () => {
     }
 
     try {
-      const res = await createPlant(formData).unwrap();
+      await createPlant(formData).unwrap();
       alert('등록 성공');
+      setPlantName('');
+      setPlantType('');
+      setPlantPurchaseDate(null);
+      setSunlightPreference('');
+      setPlantGrowthStatus('');
+      setImagePreview(null);
     } catch (err) {
       console.error('식물 등록 오류:', err);
       alert('등록 실패');
@@ -49,69 +65,177 @@ const PlantCreate = () => {
   };
 
   return (
-    <Box className="plant-layout">
-      <div className="image-wrapper relative">
-        <img
-          src={imagePreview || DefaultImage}
-          alt="plant"
-          className="w-32 h-32 rounded-full object-cover"
-        />
-        <label
-          htmlFor="imageUpload"
-          className="absolute bottom-0 right-0 bg-white p-2 rounded-full shadow-md cursor-pointer"
-        >
-          <FaCamera className="camera-icon" />
-        </label>
-        <input
-          id="imageUpload"
-          type="file"
-          accept="image/*"
-          onChange={handleImageChange}
-          style={{ display: 'none' }}
-        />
-      </div>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <Box className="plant-create-container">
+        {/* 뒤로가기 버튼 */}
+        <div className="header-icon-container">
+          <IconButton className="back-button" aria-label="back">
+            &lt;
+          </IconButton>
+        </div>
 
-      <div className="inline-form-row">
-        <label>식물 이름</label>
-        <input value={plantName} onChange={(e) => setPlantName(e.target.value)} />
-      </div>
-      <br />
+        <Stack spacing={2} className="plant-form-stack">
+          {/* 이미지 업로드 섹션 */}
+          <Box sx={{ textAlign: 'center', position: 'relative', marginBottom: 3 }}>
+            <Avatar
+              src={imagePreview || DefaultImage}
+              sx={{ width: 100, height: 100, margin: 'auto' }}
+            />
+            <input
+              id="imageUpload"
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              style={{ display: 'none' }}
+            />
+            <label htmlFor="imageUpload">
+              <IconButton
+                component="span"
+                sx={{
+                  position: 'absolute',
+                  // 이미지에 맞게 카메라 아이콘 위치 조정
+                  top: '65px', // 아바타 하단에 가깝게
+                  left: 'calc(50% + 15px)', // 아바타 오른쪽 아래에 위치
+                  backgroundColor: 'white',
+                  boxShadow: 1,
+                  width: 30,
+                  height: 30,
+                  '&:hover': { backgroundColor: '#e0e0e0' },
+                }}
+              >
+                <FaCamera style={{ fontSize: '1rem' }} />
+              </IconButton>
+            </label>
+          </Box>
 
-      <div className="inline-form-row">
-        <label>식물 종류</label>
-        <Combo groupId="PlantType" />
-      </div>
+          {/* 식물 이름 */}
+          <Box className="form-row">
+            <Typography className="label-text">식물 이름</Typography>
+            <TextField
+              value={plantName}
+              onChange={(e) => setPlantName(e.target.value)}
+              variant="outlined"
+              size="small"
+              className="input-field-wrapper" // CSS 클래스 적용
+              InputProps={{
+                sx: {
+                  borderRadius: '8px', // 이미지 에 맞게 모서리 둥글게
+                  backgroundColor: '#f0f0f0', // 이미지 와 동일한 회색 배경
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'transparent', // 테두리 제거
+                  },
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'transparent', // 호버 시 테두리 제거
+                  },
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'transparent', // 포커스 시 테두리 제거
+                  },
+                },
+              }}
+            />
+          </Box>
 
+          {/* 식물 종류 */}
+          <Box className="form-row">
+            <Typography className="label-text">식물 종류</Typography>
+            <Combo groupId="PlantType"
+            onSelectionChange={setPlantType}
+            />
+          </Box>
 
-      <div className="inline-form-row">
-        <label>식물 입수일</label>
-        <input 
-          type="date" 
-          value={plantPurchaseDate} 
-          onChange={(e) => setPlantPurchaseDate(e.target.value)} />
-      </div>
-      <br />
+          {/* 식물 입수일 */}
+          <Box className="form-row">
+            <Typography className="label-text">식물 입수일</Typography>
+            <DatePicker
+              value={plantPurchaseDate}
+              onChange={(newValue) => setPlantPurchaseDate(newValue)}
+              inputFormat="YYYY.MM.DD"
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  size="small"
+                  className="input-field-wrapper" // CSS 클래스 적용
+                  InputProps={{
+                    sx: {
+                      borderRadius: '8px', // 이미지 에 맞게 모서리 둥글게
+                      backgroundColor: '#f0f0f0', // 이미지 와 동일한 회색 배경
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        borderColor: 'transparent', // 테두리 제거
+                      },
+                      '&:hover .MuiOutlinedInput-notchedOutline': {
+                        borderColor: 'transparent', // 호버 시 테두리 제거
+                      },
+                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                        borderColor: 'transparent', // 포커스 시 테두리 제거
+                      },
+                    },
+                  }}
+                />
+              )}
+            />
+          </Box>
 
-      <div className="inline-form-row">
-        <label>햇빛/그늘 선호</label>
-        <Combo groupId="SunType"/>
-      </div>
-      <br />
+          {/* 햇빛/그늘 선호 */}
+          <Box className="form-row">
+            <Typography className="label-text">햇빛/그늘 선호</Typography>
+            <Combo
+              groupId="SunType"
+              onSelectionChange={setSunlightPreference}
+            />
+          </Box>
 
-      <label>생육상태</label>
-      <textarea
-        value={status}
-        onChange={(e) => setStatus(e.target.value)}
-        rows={3}
-        className="w-full"
-      />
+          {/* 생육 상태 */}
+          <Box className="form-row status-field">
+            <Typography className="label-text">생육 상태</Typography>
+            <TextField
+              value={plantGrowthStatus}
+              onChange={(e) => setPlantGrowthStatus(e.target.value)}
+              multiline
+              rows={3}
+              variant="outlined"
+              size="small"
+              placeholder="잎이 진한 초록색이며 광택이 있어 현재 매우 건강해 보임"
+              className="input-field-wrapper" // CSS 클래스 적용
+              InputProps={{
+                sx: {
+                  borderRadius: '8px', // 이미지 에 맞게 모서리 둥글게
+                  backgroundColor: '#f0f0f0', // 이미지 와 동일한 회색 배경
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'transparent', // 테두리 제거
+                  },
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'transparent', // 호버 시 테두리 제거
+                  },
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'transparent', // 포커스 시 테두리 제거
+                  },
+                },
+              }}
+            />
+          </Box>
 
-      <div className="submit-button-wrapper">
-        <button className="submit-button" onClick={handleSubmit}>
-          식물 등록
-        </button>
-      </div>
-    </Box>
+          {/* 등록 버튼 */}
+          <Button
+            variant="contained"
+            onClick={handleSubmit}
+            className="register-button" // CSS 클래스 적용
+            sx={{
+              backgroundColor: '#6dbf67',
+              borderRadius: 20, // 이미지 와 같이 둥근 모서리
+              padding: '10px 24px',
+              fontSize: '1rem',
+              fontWeight: 'bold',
+              '&:hover': {
+                backgroundColor: '#5aa659',
+              },
+            }}
+          >
+            식물 등록
+          </Button>
+        </Stack>
+      </Box>
+    </LocalizationProvider>
   );
 };
 
