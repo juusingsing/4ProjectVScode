@@ -16,7 +16,7 @@ const PlantSunlighting = () => {
   // '일조량' 탭이 기본으로 선택되도록 1로 설정합니다.
   const [currentTab, setCurrentTab] = useState(1);
   // 일조상태 텍스트의 초기값을 설정합니다.
-  const [sunlightStatusText, setSunlightStatusText] = useState();
+  const [sunlightStatusText, setSunlightStatusText] = useState('');
 
   // 탭 변경 핸들러
   const handleTabChange = (event, newValue) => {
@@ -49,10 +49,7 @@ const PlantSunlighting = () => {
         />
       </Box>
 
-      <Button variant="contained" className="save-button"
-      sx={{
-        background: '#4B6044'
-      }}>
+      <Button variant="contained" className="save-button">
         저장
       </Button>
 
@@ -68,9 +65,7 @@ const PlantSunlighting = () => {
         </Box>
 
         <Box className="log-entry">
-          <IconButton className="log-checkbox">
-            <CheckBoxIcon sx={{ fontSize: 20 }} />
-          </IconButton>
+        
           <Box className="log-details">
       
           </Box>
@@ -96,22 +91,13 @@ const PlantSunlighting = () => {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Box className="plant-care-container">
-        <Button variant="contained" className="edit-top-button"
-        sx={{
-          position: 'relative',
-          width: '40px',
-          height: '28px',
-          left: '310px',
-          top: '-3px',
-          background: '#889F7F'
-        }}>수정</Button>
+        <Button variant="contained" className="edit-top-button">수정</Button>
         <Box className="plant-info-header">
           <Box className="plant-details">
             <Box className="plant-detail-row">
               <Typography className="plant-label">식물 이름</Typography>
               <Box className="plant-value-box"
               sx={{
-                position: 'relative',
                 width: '93px',
                 height: '24px',
                 left: '10px',
@@ -124,7 +110,6 @@ const PlantSunlighting = () => {
               <Typography className="plant-label">입수일 날짜</Typography>
               <Box className="plant-value-box"
               sx={{
-                position: 'relative',
                 width: '93px',
                 height: '24px',
                 left: '10px',
@@ -156,9 +141,9 @@ const PlantSunlighting = () => {
         </Box>
 
         <Box className="tab-content-display">
-          {currentTab === 0 && <PlantWatering />}
-          {currentTab === 1 && <SunlightContent />} {/* 여기서 PlantSunlighting 대신 SunlightContent를 렌더링 */}
-          {currentTab === 2 && <PlantRepotting />}
+          {currentTab === 0 && <PlantWatering tabName="물주기"/>}
+          {currentTab === 1 && <SunlightContent tabName="일조량"/>}
+          {currentTab === 2 && <PlantRepotting tabName="분갈이"/>}
           {currentTab === 3 && <OtherTabContent tabName="병충해" />}
         </Box>
       </Box>

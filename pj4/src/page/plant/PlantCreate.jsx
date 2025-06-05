@@ -149,7 +149,7 @@ const PlantCreate = () => {
             <DatePicker
               value={plantPurchaseDate}
               onChange={(newValue) => setPlantPurchaseDate(newValue)}
-              inputFormat="YYYY.MM.DD"
+              inputFormat="YYYY-MM-DD"
               renderInput={(params) => (
                 <TextField
                   {...params}
