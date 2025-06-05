@@ -11,22 +11,18 @@
 }
 
 .edit-top-button {
-  position: absolute !important;
-  top: 10px;
-  right: 10px;
-  background-color: #e0e0e0 !important;
-  color: #555 !important;
-  font-size: 0.8rem !important;
-  padding: 4px 10px !important;
-  min-width: unset !important;
-  border-radius: 20px !important;
-  box-shadow: none !important;
-  text-transform: none !important;
+  position: relative;
+  background-color: #889F7F !important;
+  color: #f1efef;
+  font-size: 12px;
+  border-radius: 250px !important;
+  width: 36px;
+  height: 40px;
+  left: 270px;
+  top: -30px;
 }
 
-.edit-top-button:hover {
-  background-color: #d0d0d0 !important;
-}
+
 
 .plant-info-header {
   display: flex;
@@ -50,7 +46,7 @@
 
 .plant-label {
   font-size: 0.9rem !important;
-  color: #757575 !important;
+  color: #020202 !important;
   min-width: 80px;
 }
 
@@ -159,7 +155,7 @@
 }
 
 .save-button {
-  background-color: #6a9b6c !important;
+  background-color: #4B6044 !important;
   color: white !important;
   padding: 8px 20px !important;
   font-size: 0.9rem !important;
