@@ -5,10 +5,10 @@ import {
   IconButton,
   Button
 } from "@mui/material";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { CmUtil } from "../../cm/CmUtil";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useCmDialog } from "../../cm/CmDialogUtil";
 
 
@@ -19,9 +19,9 @@ import image from '../../image/imageAdd.png';
 import imgDelete from '../../image/imageDelete.png';
 import '../../css/toggleSwitch.css';
 import '../../css/diaryCreate.css';
-import { useDiaryCreateMutation } from "../../features/diary/diaryApi";
+import { useDiaryUpdateMutation, useDiaryDeleteMutation, useDiaryViewQuery } from "../../features/diary/diaryApi";
 
-const DiaryCreate = () => {
+const DiaryUpdate = () => {
   const user = useSelector((state) => state.user.user);
   const titleRef = useRef();
   const contentRef = useRef();
@@ -32,8 +32,31 @@ const DiaryCreate = () => {
   const [diaryType, setDiaryType] = useState('N01');
   const [files, setFiles] = useState([]);
 
-  const [diaryCreate] = useDiaryCreateMutation();
-  const { showAlert } = useCmDialog();
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get('id');
+
+  const [diaryUpdate] = useDiaryUpdateMutation();
+  const [diaryDelete] = useDiaryDeleteMutation();
+  const { data, isLoading } = useDiaryViewQuery({ diaryId: id });
+  const [diary, setDiary] = useState(null);
+  const [existingFiles, setExistingFiles] = useState([]);
+  const [remainingFileIds, setRemainingFileIds] = useState([]);
+
+  useEffect(() => {
+    if (data?.success) {
+      setDiary(data.data);
+      setTitle(data.data.diaryTitle);
+      setContent(data.data.diaryContent);
+      setDate(data.data.diaryDate?.substring(0, 10));
+      setDiaryType(data.data.diaryType);
+      setIsOn(data.data.diaryType === "N01");
+      setExistingFiles(data.data.postFiles || []);
+      setRemainingFileIds(data.data.postFiles?.map(file => file.fileId) || []);
+      console.log("📦 data from useDiaryViewQuery", data);
+    }
+  }, [data]);
+
+  const { showAlert, showConfirm } = useCmDialog();
 
   const navigate = useNavigate();
   const handleFileChange = (e) => {
@@ -44,7 +67,7 @@ const DiaryCreate = () => {
       prevFiles.filter((_, index) => index !== indexToRemove)
     );
   }
-  const handleSubmit = async (e) => {
+  const handleEdit = async (e) => {
     e.preventDefault();
     if (CmUtil.isEmpty(title)) {
       showAlert("제목을 입력해주세요");
@@ -61,7 +84,7 @@ const DiaryCreate = () => {
       dateRef.current?.focus();
       return;
     }
-    if (CmUtil.isDateFuture(date)){
+    if (CmUtil.isDateFuture(date)) {
       showAlert("미래 날짜는 선택할 수 없습니다.")
       dateRef.current?.focus();
       return;
@@ -78,20 +101,17 @@ const DiaryCreate = () => {
 
     // const [uploadedFiles, setUploadedFiles]=useState([]);
     const formData = new FormData();
+    formData.append("diaryId", id);
     formData.append("diaryTitle", title);
     formData.append("diaryDate", date);
     formData.append("diaryContent", content);
     formData.append("diaryType", diaryType);
-    formData.append("postFileCategory", diaryType);
+    formData.append("remainingFileIds", remainingFileIds.join(","));
     files.forEach(file => formData.append("files", file));
 
-console.log("업로드할 파일들:");
-files.forEach((file, idx) => {
-  console.log(`[${idx}] name:`, file?.name);
-});
+
     try {
-      const res = await diaryCreate(formData).unwrap();
-      console.log("응답 내용 >>", res); // 여기에 찍히는 걸 확인해야 해!
+      const res = await diaryUpdate(formData).unwrap();
 
       showAlert("일기 저장 성공! 일기 목록으로 이동합니다.", () => navigate("/diary/list.do"));
     } catch (error) {
@@ -100,6 +120,16 @@ files.forEach((file, idx) => {
     }
   }
 
+  const handleDelete = async () => {
+    showConfirm('정말 삭제하시겠습니까?', async () => {
+      const res = await diaryDelete({ diaryId: id }).unwrap();
+      if (res.success) {
+        showAlert("일기 삭제가 삭제되었습니다.", () => navigate("/diary/list.do"));
+      } else {
+        showAlert("일기 삭제 실패했습니다.");
+      }
+    });
+  }
 
   const [isOn, setIsOn] = useState(true);
   const handleToggle = () => {
@@ -115,7 +145,7 @@ files.forEach((file, idx) => {
       <Box sx={{ maxWidth: 800 }}>
         <Box mt={3} mb={3} className='diary-top-section'>
           <Button
-            onClick={() => navigate('/diary/list.do')}
+            onClick={() => navigate(`/diary/view.do?id=${id}`)}
             // variant="contained"
             sx={{
               display: 'flex',
@@ -133,8 +163,8 @@ files.forEach((file, idx) => {
           >
             <img src={back} alt="" sx={{ pl: '2px' }}></img>
           </Button>
-          <Typography variant="h5" gutterBottom  sx={{ml:'28px'}}>
-            일기 작성
+          <Typography variant="h5" gutterBottom sx={{ ml: '28px' }}>
+            일기 수정
           </Typography>
           <div className={`toggle-container ${isOn ? 'on' : ''}`} onClick={handleToggle}>
             <div className="toggle-circle" />
@@ -144,14 +174,14 @@ files.forEach((file, idx) => {
         {/* <Typography mt={1} fontSize="14px" align="center">
           현재 선택된 다이어리 타입: {diaryType === "D01" ? "반려동물" : "반려식물"}
         </Typography> */}
-        <Box component="form">
+        <Box component="form" onSubmit={handleEdit} noValidate>
           <Box mr={1.5} gap={1} className='diary-title'>
             <Typography variant="h6" alignContent={"center"}>
               제목
             </Typography>
             <TextField
               inputRef={titleRef}
-              value={title}
+              value={title ?? ""}
               onChange={(e) => setTitle(e.target.value)}
               variant="outlined"
               inputProps={{ maxLength: 100, style: { textAlign: 'center' } }}
@@ -170,7 +200,7 @@ files.forEach((file, idx) => {
             <Typography variant="h6" alignContent={"center"}>날짜</Typography>
             <TextField
               inputRef={dateRef}
-              value={date}
+              value={date ?? ""}
               onChange={(e) => setDate(e.target.value)}
               type="date"
               InputLabelProps={{ shrink: true }}
@@ -186,7 +216,8 @@ files.forEach((file, idx) => {
             />
           </Box>
 
-          {/* 사진 리스트 */}
+
+
           <Box
             m={2}
             sx={{
@@ -204,10 +235,50 @@ files.forEach((file, idx) => {
               }
             }}
           >
+            {/* 사진 리스트 */}
+            {existingFiles.map((file, index) => (
+              <Box key={`existing-${index}`}
+                sx={{
+                  position: 'relative',
+                  minWidth: 140,
+                  height: 140,
+                  borderRadius: '5px',
+                  overflow: 'hidden',
+                  backgroundColor: '#ccc',
+                  scrollSnapAlign: 'start',
+                  flexShrink: 0,
+                }}
+              >
+                <img src={`${process.env.REACT_APP_API_BASE_URL}/file/imgDown.do?fileId=${file.postFileId}`}
+                  alt={`file-${index}`}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    display: 'block',
+                  }} />
+                <IconButton onClick={() => {
+                  setExistingFiles(prev => prev.filter((_, i) => i !== index));
+                  setRemainingFileIds(prev => prev.filter(id => id !== file.fileId));
+                }}
+                  sx={{
+                    position: 'absolute',
+                    top: 0,
+                    right: 0,
+                    padding: 0,
+                    '&:hover': {
+                      backgroundColor: 'rgba(255, 100, 100, 0.8)',
+                    }
+                  }}
+                >
+                  <img src={imgDelete} alt="삭제" style={{ width: 20, height: 20 }} />
+                </IconButton>
+              </Box>
+            ))}
             {/* 이미지 미리보기 리스트 */}
             {files.map((file, index) => (
               <Box
-               key={index}
+                key={index}
                 sx={{
                   position: 'relative',
                   minWidth: 140,
@@ -235,7 +306,7 @@ files.forEach((file, idx) => {
                     position: 'absolute',
                     top: 0,
                     right: 0,
-                    padding:0,
+                    padding: 0,
                     '&:hover': {
                       backgroundColor: 'rgba(255, 100, 100, 0.8)',
                     }
@@ -278,7 +349,7 @@ files.forEach((file, idx) => {
             <Typography gutterBottom>내용</Typography>
             <TextField
               inputRef={contentRef}
-              value={content}
+              value={content ?? ""}
               onChange={(e) => setContent(e.target.value)}
               multiline
               rows={3}
@@ -293,10 +364,10 @@ files.forEach((file, idx) => {
               }}
             />
           </Box>
-          <Box display="flex" gap={1} mt={2} justifyContent={"center"}>
+          <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', gap: 2, mt: 2 }}>
             {user && (
               <Button
-                onClick={handleSubmit}
+                onClick={handleEdit}
                 sx={{
                   display: 'flex',
                   justifyContent: 'center',
@@ -305,15 +376,38 @@ files.forEach((file, idx) => {
                   width: '170px',
                   textTransform: 'none',
                   '&:hover': {
-                    backgroundColor: '#3B4C34'
+                    backgroundColor: '#57866a'
                   },
-                  backgroundColor: '#4B6044'
+                  backgroundColor: '#88AE97'
                 }}
               >
                 <Typography className="diary-save-text">
-                  저장
+                  수정
                 </Typography>
               </Button>
+
+            )}
+            {user && (
+              <Button
+                onClick={handleDelete}
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  borderRadius: '20px',
+                  height: '38px',
+                  width: '170px',
+                  textTransform: 'none',
+                  '&:hover': {
+                    backgroundColor: '#7a3636'
+                  },
+                  backgroundColor: '#A44D4D'
+                }}
+              >
+                <Typography className="diary-save-text">
+                  삭제
+                </Typography>
+              </Button>
+
             )}
 
           </Box>
@@ -322,4 +416,4 @@ files.forEach((file, idx) => {
     </>
   );
 };
-export default DiaryCreate
+export default DiaryUpdate
