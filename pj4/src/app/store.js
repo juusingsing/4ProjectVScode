@@ -8,7 +8,7 @@ import { imgApi  } from '../features/img/imgApi';
 import { diaryApi } from '../features/diary/diaryApi';
 import { alarmApi } from '../features/alarm/alarmApi';
 import { plantApi } from '../features/plant/plantApi';
-
+import { findApi } from '../features/find/findApi';
 import userReducer from '../features/user/userSlice';
 import storageSession from 'redux-persist/lib/storage/session'; // sessionStorage로 변경
 import { persistReducer, persistStore } from 'redux-persist';
@@ -30,7 +30,7 @@ const rootReducer = combineReducers({
   [diaryApi.reducerPath]: diaryApi.reducer,
   [alarmApi.reducerPath]: alarmApi.reducer,
   [plantApi.reducerPath]: plantApi.reducer,
-
+  [findApi.reducerPath]: findApi.reducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -48,7 +48,8 @@ export const store = configureStore({
       imgApi.middleware,
       diaryApi.middleware,
       alarmApi.middleware,
-      plantApi.middleware
+      plantApi.middleware,
+      findApi.middleware
     )
 });
 
