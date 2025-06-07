@@ -13,6 +13,7 @@ import userReducer from '../features/user/userSlice';
 import storageSession from 'redux-persist/lib/storage/session'; // sessionStorage로 변경
 import { persistReducer, persistStore } from 'redux-persist';
 import { combineReducers } from 'redux';
+import { petApi } from '@/features/pet/petApi';
 
 const persistConfig = {
   key: 'root',
@@ -30,7 +31,8 @@ const rootReducer = combineReducers({
   [diaryApi.reducerPath]: diaryApi.reducer,
   [alarmApi.reducerPath]: alarmApi.reducer,
   [plantApi.reducerPath]: plantApi.reducer,
-  [findApi.reducerPath]: findApi.reducer
+  [findApi.reducerPath]: findApi.reducer,
+  [petApi.reducerPath]: petApi.reducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -49,7 +51,8 @@ export const store = configureStore({
       diaryApi.middleware,
       alarmApi.middleware,
       plantApi.middleware,
-      findApi.middleware
+      findApi.middleware,
+      petApi.middleware
     )
 });
 
