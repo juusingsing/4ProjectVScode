@@ -91,7 +91,7 @@ const App = () => {
         {/* 동물 탭*/}
         <Route path="/pet/petForm.do" element={<Pet_Form/>}/>
         <Route path="/pet/petFormUpdate.do" element={<Pet_Form_Update/>}/>
-        <Route path="/pet/petHospital.do" element={<Pet_Form_Hospital/>}/>
+        <Route path="/pet/petFormHospital.do" element={<Pet_Form_Hospital/>}/>
 
 
         {/*아이디, 비번 찾기*/}

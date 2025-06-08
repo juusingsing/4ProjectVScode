@@ -122,8 +122,8 @@ const Pet_Form = () => {
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
         <Typography sx={{ width: '90px', fontSize: 14, fontWeight: 500 }}>성별</Typography>
         <RadioGroup row name="gender" value={gender} onChange={(e) => setGender(e.target.value)}>
-          <FormControlLabel value="암컷" control={<Radio size="small" />} label="암컷" />
-          <FormControlLabel value="수컷" control={<Radio size="small" />} label="수컷" />
+          <FormControlLabel value="F" control={<Radio size="small" />} label="암컷" />
+          <FormControlLabel value="M" control={<Radio size="small" />} label="수컷" />
         </RadioGroup>
       </Box>
 

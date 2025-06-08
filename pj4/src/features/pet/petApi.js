@@ -27,11 +27,18 @@ export const petApi = createApi({
         body: formData,
       }),
     }),
+    deletePet: builder.mutation({
+      query: (petId) => ({
+        url: `/petDelete.do?petId=${petId}`,
+        method: 'DELETE',
+      }),
+    }),
   }),
 });
 
 export const {
   usePet_FormMutation,
   usePet_Form_UpdateMutation,
-  usePet_Form_HospitalMutation
+  usePet_Form_HospitalMutation,
+  useDeletePetMutation
 } = petApi;

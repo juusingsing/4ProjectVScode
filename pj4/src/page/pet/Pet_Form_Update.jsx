@@ -6,44 +6,98 @@ import {
 } from '@mui/material';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-
+import { usePet_Form_UpdateMutation } from '../../features/pet/petApi';  // RTK Query 훅 임포트
+import { useDeletePetMutation } from '../../features/pet/petApi';
+import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
 import { CmUtil } from '../../cm/CmUtil';
 import { useCmDialog } from '../../cm/CmDialogUtil';  
-const Pet_Form_Update = () => {
-  const [name, setName] = useState('');
-  const nameRef = useRef();
-  const [species, setSpecies] = useState('');
-  const speciesRef = useRef();
-  const [notes, setNotes] = useState('');
-  const notesRef = useRef();
-  const [adoptionDate, setAdoptionDate] = useState(null);
-  const [birthDate, setBirthDate] = useState(null);
-  const [gender, setGender] = useState('');
+const Pet_Form_Update = ({ pet }) => {
+  const [animalName, setAnimalName] = useState(pet?.animalName || '');
+  const animalNameRef = useRef();
+  const [animalSpecies, setAnimalSpecies] = useState(pet?.animalSpecies || '');
+  const animalSpeciesRef = useRef();
+  const [animalMemo, setAnimalMemo] = useState(pet?.animalMemo || '');
+  const animalMemoRef = useRef();
+  const [animalAdoptionDate, setAnimalAdoptionDate] = useState(pet?.animalAdoptionDate ? dayjs(pet.adoptionDate) : null);
+  const [birthDate, setBirthDate] = useState(pet?.birthDate ? dayjs(pet.birthDate) : null);
+  const [gender, setGender] = useState(pet?.gender || '');
   const [imageFile, setImageFile] = useState(null);
   const { showAlert } = useCmDialog();
-   
+  // RTK Query mutation 훅
+  const [petFormUpdate, { isLoading }] = usePet_Form_UpdateMutation();
+  const [deletePet, { isLoading: isDeleting }] = useDeletePetMutation(); 
   const handleImageChange = (e) => {
     const file = e.target.files?.[0];
     if (file) setImageFile(file);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (CmUtil.isEmpty(name)) {
+    if (CmUtil.isEmpty(animalName)) {
       showAlert('이름을 입력해주세요.');
-      nameRef.current?.focus();
+      animalNameRef.current?.focus();
       return;
     }
-    if (CmUtil.isEmpty(species)) {
+    if (CmUtil.isEmpty(animalSpecies)) {
       showAlert('종류를 입력해주세요.');
-      speciesRef.current?.focus();
+      animalSpeciesRef.current?.focus();
       return;
     }
-    // TODO: submit logic 추가
+
+    try {
+      const formData = new FormData();
+
+      // Pet 객체를 JSON 문자열로 직렬화해서 data라는 key에 넣기
+      const petData = {
+        animalName: animalName,
+        animalSpecies: animalSpecies,
+        animalMemo: animalMemo,
+        gender,
+        animalAdoptionDate: animalAdoptionDate ? animalAdoptionDate.format('YYYY-MM-DD') : null,
+        birthDate: birthDate ? birthDate.format('YYYY-MM-DD') : null,
+      };
+      formData.append('data', new Blob([JSON.stringify(petData)], { type: 'application/json' }));
+
+      if (imageFile) {
+        formData.append('imageFile', imageFile);
+      }
+
+      // RTK Query mutation 호출
+      const result = await petFormUpdate(formData).unwrap();
+
+      if (result.success) {
+        showAlert('수정 성공!');
+      } else {
+        showAlert(result.message || '수정 실패');
+      }
+    } catch (err) {
+      console.error(err);
+      showAlert('오류가 발생했습니다.');
+    }
   };
 
+  // 삭제 함수
+  const handleDelete = async () => {
+  if (!pet?.animalName) {
+    showAlert('삭제할 동물 이름이 없습니다.');
+    return;
+  }
+  console.log(pet.animalName);
+  try {
+    const result = await deletePet(pet.animalName).unwrap();
+    if (result.success) {
+      showAlert('삭제 성공!');
+      // 리디렉션 또는 상태 초기화
+    } else {
+      showAlert(result.message || '삭제 실패');
+    }
+  } catch (err) {
+    console.error(err);
+    showAlert('삭제 중 오류가 발생했습니다.');
+  }
+};
   return (
     <Box
       component="form"
@@ -81,27 +135,27 @@ const Pet_Form_Update = () => {
         </IconButton>
       </Box>
 
-      <FormRow label="동물 이름" value={name} onChange={setName} inputRef={nameRef} />
-      <FormRow label="동물 종류" value={species} onChange={setSpecies} inputRef={speciesRef} />
+      <FormRow label="동물 이름" value={animalName} onChange={setAnimalName} inputRef={animalNameRef} />
+      <FormRow label="동물 종류" value={animalSpecies} onChange={setAnimalSpecies} inputRef={animalSpeciesRef} />
       
 
-      <DateInputRow label="동물 입양일" value={adoptionDate} onChange={setAdoptionDate} />
+      <DateInputRow label="동물 입양일" value={animalAdoptionDate} onChange={setAnimalAdoptionDate} />
       <DateInputRow label="생일" value={birthDate} onChange={setBirthDate} />
 
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
         <Typography sx={{ width: '90px', fontSize: 14, fontWeight: 500 }}>성별</Typography>
         <RadioGroup row name="gender" value={gender} onChange={(e) => setGender(e.target.value)}>
-          <FormControlLabel value="암컷" control={<Radio size="small" />} label="암컷" />
-          <FormControlLabel value="수컷" control={<Radio size="small" />} label="수컷" />
+          <FormControlLabel value="F" control={<Radio size="small" />} label="암컷" />
+          <FormControlLabel value="M" control={<Radio size="small" />} label="수컷" />
         </RadioGroup>
       </Box>
 
       <Box sx={{ display: 'flex', flexDirection: 'column', mb: 2 }}>
         <Typography sx={{ fontSize: 14, fontWeight: 500, mb: 1 }}>특이 사항</Typography>
           <InputBase
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            inputRef={notesRef}
+            value={animalMemo}
+            onChange={(e) => setAnimalMemo(e.target.value)}
+            inputRef={animalMemoRef}
             multiline
             inputProps={{
               style: {
@@ -148,11 +202,9 @@ const Pet_Form_Update = () => {
             px: 6,
             py: 1,
             fontSize: 14
-            
           }}
-          onClick={() => {
-            // 삭제 로직 추가 예정
-          }}
+          onClick={handleDelete}
+          disabled={isDeleting}
         >
           삭제
         </Button>
