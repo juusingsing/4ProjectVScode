@@ -13,7 +13,7 @@ import userReducer from '../features/user/userSlice';
 import storageSession from 'redux-persist/lib/storage/session'; // sessionStorage로 변경
 import { persistReducer, persistStore } from 'redux-persist';
 import { combineReducers } from 'redux';
-import { petApi } from '@/features/pet/petApi';
+import { petApi } from '../features/pet/petApi';
 
 const persistConfig = {
   key: 'root',

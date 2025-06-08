@@ -32,11 +32,15 @@ import Login from './page/user/Login';
 import Register from './page/user/Register';
 import UserUpdate from './page/user/UserUpdate';
 import UserView from './page/user/UserView';
-
+import Pet_Form from './page/pet/Pet_Form';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-
+import Pet_Form_Update from './page/pet/Pet_Form_Update';
+import Pet_Form_Hospital from './page/pet/Pet_Form_Hospital';
+import FindId from './page/find/FindId';
+import FindPw from './page/find/FindPw';
+import ResetPassword from './page/find/ResetPassword';
 const App = () => {
   const navigate = useNavigate();
 
@@ -84,6 +88,16 @@ const App = () => {
         <Route path="/diary/list.do" element={<DiaryList/>}/>
         <Route path="/diary/view.do" element={<DiaryView/>}/>
         <Route path="/diary/update.do" element={<DiaryUpdate/>}/>
+        {/* 동물 탭*/}
+        <Route path="/pet/petForm.do" element={<Pet_Form/>}/>
+        <Route path="/pet/petFormUpdate.do" element={<Pet_Form_Update/>}/>
+        <Route path="/pet/petHospital.do" element={<Pet_Form_Hospital/>}/>
+
+
+        {/*아이디, 비번 찾기*/}
+        <Route path="/find/findId.do" element={<FindId/>} />
+        <Route path="/find/findPw.do" element={<FindPw/>} />
+        <Route path="/find/resetPassword.do" element={<ResetPassword/>} />
       </Routes>
       <CmRouteChangeNotifier />
       </>
