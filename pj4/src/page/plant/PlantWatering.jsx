@@ -24,9 +24,13 @@ const PlantWatering = () => {
   const AlarmSave = async () => {
 
     const data = {
-      startDate: alarmDate.format('YY/MM/DD'),
-      alarmTime: alarmTime.format('HH:mm'),
+      petId: 1,     // << 변수값 넣으면됨  
+      alarmName: "WaterAlarm",
       alarmCycle: alarmCycle,
+      alarmTime: alarmTime.format('HH:mm'),
+      startDate: alarmDate.format('YY/MM/DD'),
+      type: "WAT",           // 먹이종류 때문에 NOT NULL 이라 임의값 넣음.
+      category: "PLA",       // 식물물주기는 PLA    동물먹이는 ANI
     };
      
     try {
