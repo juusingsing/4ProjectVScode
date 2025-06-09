@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   TextField,
@@ -26,6 +27,7 @@ const PlantCreate = () => {
   const [plantGrowthStatus, setPlantGrowthStatus] = useState('');
   const [imagePreview, setImagePreview] = useState(null);
   const [createPlant] = useCreatePlantMutation();
+  const navigate = useNavigate();
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -39,7 +41,7 @@ const PlantCreate = () => {
     formData.append('plantName', plantName);
     formData.append('plantType', plantType);
     if (plantPurchaseDate) {
-      formData.append('plantPurchaseDate', dayjs(plantPurchaseDate).format('YYYY.MM.DD'));
+      formData.append('plantPurchaseDate', dayjs(plantPurchaseDate).format('YYYY-MM-DD'));
     }
     formData.append('plantSunPreference', sunlightPreference);
     formData.append('plantGrowStatus', plantGrowthStatus);
@@ -52,6 +54,7 @@ const PlantCreate = () => {
     try {
       await createPlant(formData).unwrap();
       alert('등록 성공');
+      navigate('/PlantSunlighting')
       setPlantName('');
       setPlantType('');
       setPlantPurchaseDate(null);
@@ -59,7 +62,6 @@ const PlantCreate = () => {
       setPlantGrowthStatus('');
       setImagePreview(null);
     } catch (err) {
-      console.error('식물 등록 오류:', err);
       alert('등록 실패');
     }
   };
@@ -94,8 +96,8 @@ const PlantCreate = () => {
                 sx={{
                   position: 'absolute',
                   // 이미지에 맞게 카메라 아이콘 위치 조정
-                  top: '65px', // 아바타 하단에 가깝게
-                  left: 'calc(50% + 15px)', // 아바타 오른쪽 아래에 위치
+                  top: '65px',
+                  left: 'calc(50% + 15px)',
                   backgroundColor: 'white',
                   boxShadow: 1,
                   width: 30,
@@ -116,19 +118,19 @@ const PlantCreate = () => {
               onChange={(e) => setPlantName(e.target.value)}
               variant="outlined"
               size="small"
-              className="input-field-wrapper" // CSS 클래스 적용
+              className="input-field-wrapper"
               InputProps={{
                 sx: {
                   borderRadius: '8px', // 이미지 에 맞게 모서리 둥글게
-                  backgroundColor: '#f0f0f0', // 이미지 와 동일한 회색 배경
+                  backgroundColor: '#f0f0f0',
                   '& .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'transparent', // 테두리 제거
+                    borderColor: 'transparent',
                   },
                   '&:hover .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'transparent', // 호버 시 테두리 제거
+                    borderColor: 'transparent',
                   },
                   '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'transparent', // 포커스 시 테두리 제거
+                    borderColor: 'transparent',
                   },
                 },
               }}
@@ -139,7 +141,7 @@ const PlantCreate = () => {
           <Box className="form-row">
             <Typography className="label-text">식물 종류</Typography>
             <Combo groupId="PlantType"
-            onSelectionChange={setPlantType}
+              onSelectionChange={setPlantType}
             />
           </Box>
 
@@ -158,16 +160,16 @@ const PlantCreate = () => {
                   className="input-field-wrapper"
                   InputProps={{
                     sx: {
-                      borderRadius: '8px', // 이미지 에 맞게 모서리 둥글게
-                      backgroundColor: '#f0f0f0', // 이미지 와 동일한 회색 배경
+                      borderRadius: '8px',
+                      backgroundColor: '#f0f0f0',
                       '& .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'transparent', // 테두리 제거
+                        borderColor: 'transparent',
                       },
                       '&:hover .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'transparent', // 호버 시 테두리 제거
+                        borderColor: 'transparent',
                       },
                       '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'transparent', // 포커스 시 테두리 제거
+                        borderColor: 'transparent',
                       },
                     },
                   }}
@@ -218,10 +220,10 @@ const PlantCreate = () => {
           <Button
             variant="contained"
             onClick={handleSubmit}
-            className="register-button" // CSS 클래스 적용
+            className="register-button"
             sx={{
               backgroundColor: '#4B6044',
-              borderRadius: 20, // 이미지 와 같이 둥근 모서리
+              borderRadius: 20,
               padding: '10px 24px',
               fontSize: '1rem',
               fontWeight: 'bold',

@@ -1,5 +1,3 @@
-// src/components/PlantRepotting.js
-
 import React, { useState } from 'react';
 import {
   Box, Typography, TextField, Button, Avatar, Tabs, Tab, IconButton
@@ -9,97 +7,72 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { FaSun, FaTint, FaCloud, FaSnowflake } from 'react-icons/fa';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import '../../css/plantSunlighting.css';
+import '../../css/plantRepotting.css';
 
 import PlantWatering from './PlantWatering'; // 물주기 탭
-import PlantSunlighting from './PlantSunlighting'; // ✅ 누락된 컴포넌트 추가 import
-
-// 분갈이 탭 내용 컴포넌트
-const PlantRepottingContent = () => {
-
-  return (
-      <Box className="repotting-tab-content">
-        <Typography variant="h6">분갈이 날짜</Typography>
-        <TextField type="date" fullWidth sx={{ mt: 2, mb: 2 }} />
-
-        <Typography variant="h6">분갈이 메모</Typography>
-        <TextField multiline rows={4} fullWidth variant="outlined" />
-
-        <Button variant="contained" sx={{ mt: 2 }}>저장</Button>
-      </Box>
-    );
-  };
-
-// 병충해 등 다른 탭 공통 컴포넌트
-const OtherTabContent = ({ tabName }) => (
-  <Box className="generic-tab-content">
-    <Typography variant="h6">{tabName} 기록</Typography>
-    <Box sx={{ mt: 2 }}>
-      <Typography>{tabName} 관련 기록은 여기에 표시됩니다.</Typography>
-    </Box>
-  </Box>
-);
+import PlantSunlighting from './PlantSunlighting'; // 일조량 탭
+import PlantPest from './PlantPest'; // 병충해 탭
 
 // 메인 컴포넌트
 const PlantRepotting = () => {
   const [currentTab, setCurrentTab] = useState(2); // 일조량 탭이 기본 선택
-
+  const [repottingSoilText,setRepottingSoilText] = useState('');
   const handleTabChange = (event, newValue) => {
     setCurrentTab(newValue);
   };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Box className="plant-care-container">
-        <Button variant="contained" className="edit-top-button">수정</Button>
+      <Box className="repotting-tab-content">
+        <Typography className="repotting-label">분갈이 날짜</Typography>
+        <TextField type="date" fullWidth sx={{ mt: 2, mb: 2 }} />
+
+        <Typography className="plant-repotting-soil-condition">흙종류</Typography>
+        <TextField
+          className="repotting-soil-textfield"
+          multiline
+          rows={5}
+          value={repottingSoilText}
+          onChange={(e) => setRepottingSoilText(e.target.value)}
+          variant="outlined"
+         />
+
+        <Typography className="plant-repotting-memo">메모</Typography>
+        <TextField
+          className="repotting-soil-textfield"
+          multiline
+          rows={5}
+          value={repottingSoilText}
+          onChange={(e) => setRepottingSoilText(e.target.value)}
+          variant="outlined"
+         />
+
+        <Button variant="contained" className="save-button">저장</Button>
         
-        <Box className="plant-info-header">
-          <Box className="plant-details">
-            <Box className="plant-detail-row">
-              <Typography className="plant-label">식물 이름</Typography>
-              <Box className="plant-value-box" sx={{
-                position: 'relative',
-                width: '93px',
-                height: '24px',
-                left: '10px',
-                background: '#D9D9D9',
-                borderRadius: '10px'
-              }} />
-            </Box>
-            <Box className="plant-detail-row">
-              <Typography className="plant-label">입수일 날짜</Typography>
-              <Box className="plant-value-box" sx={{
-                position: 'relative',
-                width: '93px',
-                height: '24px',
-                left: '10px',
-                top: '2px',
-                background: '#D9D9D9',
-                borderRadius: '10px'
-              }} />
-            </Box>
-          </Box>
-          <Avatar src="/plant.png" className="plant-avatar" />
-        </Box>
-
-        <Box className="tab-menu-container">
-           {/* 탭 메뉴 */}
-        <Tabs value={currentTab} onChange={handleTabChange}>
-          <Tab label="물주기" />
-          <Tab label="일조량" />
-          <Tab label="분갈이" />
-          <Tab label="병충해" />
-        </Tabs>
-        </Box>
-
-        <Box className="tab-content-display">
-          {currentTab === 0 && <PlantWatering />}
-          {currentTab === 1 && <PlantSunlighting />}
-          {currentTab === 2 && <PlantRepottingContent />}
-          {currentTab === 3 && <OtherTabContent tabName="병충해" />}
-        </Box>
-
+        <Typography className="log-title">기록리스트</Typography>
+                <IconButton className="log-dropdown-arrow">
+                  <ArrowDropDownIcon />
+                </IconButton>
       </Box>
+        
+      <Box className="log-entry">
+        <Box className="log-details">
+          {/* 로그 내용 추가 예정 */}
+        </Box>
+        <Box className="log-actions">
+          <Button variant="text" className="log-action-button">삭제</Button>
+          <Button variant="text" className="log-action-button">수정</Button>
+        </Box>
+      </Box>
+        
+     
+        <Box className="tab-content-display">
+          {currentTab === 0 && <PlantWatering tabName="물주기" />}
+          {currentTab === 1 && <PlantSunlighting tabName="일조량" />}
+          {currentTab === 3 && <PlantPest tabName="병충해" />}
+        </Box>
+
+
     </LocalizationProvider>
   );
 };

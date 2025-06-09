@@ -1,0 +1,30 @@
+.plant-repotting-soil-condition {
+    margin-bottom: 20px;
+}
+
+.repotting-soil-textfield{
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    color: #333 !important;
+    margin-bottom: 10px !important;
+}
+
+.save-button {
+  background-color: #4B6044 !important;
+  color: white !important;
+  padding: 8px 20px !important;
+  font-size: 0.9rem !important;
+  border-radius: 8px !important;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  text-transform: none !important;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.repotting-lable {
+    font-weight: 600 !important;
+  color: #333 !important;
+  margin-right: 20px;
+  min-width: 80px;
+  font-size: 0.95rem !important;
+}
