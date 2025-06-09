@@ -3,88 +3,93 @@ import { GoogleMap, LoadScript, Marker, Polyline } from '@react-google-maps/api'
 import { Button, Box, Typography } from '@mui/material';
 import { useCmDialog } from '../../cm/CmDialogUtil';  
 import 'react-toastify/dist/ReactToastify.css';
-import { useAlarmListQuery } from "../../features/alarm/alarmApi";
+import {
+  useAlarmListQuery,
+  useAlarmUpdateMutation
+} from "../../features/alarm/alarmApi";
+import { Switch } from '@mui/material';
 
 
 const Alarmdb = () => {
-  // const [alarmId, setAlarmId] = useState(null);
-  // const [year, setYear] = useState('');
-  // const [month, setMonth] = useState('');
-  // const [day, setDay] = useState('');
-  // const [hour, setHour] = useState('');
-  // const [min, setMin] = useState('');
-  // const [alarmCycle, setAlarmCycle] = useState('');
   const { showAlert } = useCmDialog();
-  const [formattedTime, setFormattedTime] = useState('');
   const { data, error, isLoading, refetch } = useAlarmListQuery({});
+  const [alarmUpdate] = useAlarmUpdateMutation();
+  const [alarmList, setAlarmList] = useState([]);
+  const [formattedTimes, setFormattedTimes] = useState([]);
+  const [alarmData, setAlarmData] = useState([]);
+  const newFormattedTimes = [];
+
+  useEffect(() => {
+    alarmSet();
+  }, []);
 
   const alarmSet = async () => {
      
     try {
       const response = await refetch();
-      if (response.data && Array.isArray(response.data?.data) && response.data.success) {
-        console.log('response:', response);
+      console.log('aaaaaaa', response);
+      console.log("response.data:", response.data);
+      console.log("response.data.success:", response.data.success, typeof response.data.success);
+      console.log("response.data.data:", response.data.data, Array.isArray(response.data.data));
 
-        const alarm = response.data.data[0]; // 첫 번째 알람 데이터
+      if (response.data && Array.isArray(response.data?.data) && response.data.success) {
+      console.log('전체 알람 리스트:', response.data.data);
+
+      const alarms = response.data.data.map((alarm) => {
         const alarmId = parseInt(alarm.alarmId, 10);
         const year = 2000 + parseInt(alarm.year, 10);
         const month = alarm.month;
-        const day = parseInt(alarm.day, 10);  // 05 -> 5
+        const day = parseInt(alarm.day, 10);
         const hour = parseInt(alarm.hour, 10);
-        const min = parseInt(alarm.min);
+        const min = parseInt(alarm.min, 10);
 
-          let cycleDays = 0;
-          switch (alarm.alarmCycle) {
-            case 'A01': cycleDays = 1; break;
-            case 'A02': cycleDays = 2; break;
-            case 'A03': cycleDays = 3; break;
-            case 'A04': cycleDays = 5; break;
-            case 'A05': cycleDays = 7; break;
-            case 'A06': cycleDays = 14; break;
-            default: cycleDays = 0; // 또는 null
-          }
-        const alarmCycle = cycleDays;
+        let cycleDays = 0;
+        switch (alarm.alarmCycle) {
+          case 'A01': cycleDays = 1; break;
+          case 'A02': cycleDays = 2; break;
+          case 'A03': cycleDays = 3; break;
+          case 'A04': cycleDays = 5; break;
+          case 'A05': cycleDays = 7; break;
+          case 'A06': cycleDays = 14; break;
+          default: cycleDays = 0;
+        }
 
+        let isactive;
+        switch (alarm.activeYn) {
+          case 'Y': isactive = true; break;
+          case 'N': isactive = false; break;
+        }
 
-        // const alarmData = {
-        //   type: "SET_ALARM",
-        //   time: "2025-06-04T14:00:30",
-        //   message: "물 주는 시간입니다!"
-        // };
+        // 시간 문자열 생성
+        const formatted = `${year}-${month}-${day} ${hour}:${min} (주기: ${cycleDays}일)`;
+        newFormattedTimes.push(formatted);
 
-        const alarmData = {
+        return {
           type: "SET_ALARM",
-          alarmId : alarmId,      // 숫자
-          year : year,            // 숫자
-          month : month,          // 문자
-          day : day,              // 숫자
-          hour : hour,            // 숫자
-          min : min,              // 숫자
-          alarmCycle : alarmCycle,// 숫자
-          message: "물 주는 시간입니다!"
+          alarmId,
+          year,
+          month,
+          day,
+          hour,
+          min,
+          alarmCycle: cycleDays,
+          enabled: isactive,  // 초기에는 켜져있다고 가정
+          message: "알람아이디 : " + alarmId + " // " + cycleDays + "분주기"
+          // message: "물 주는 시간입니다!"
         };
+      });
 
-        const jsonString = JSON.stringify(alarmData);
-        console.log("전달할 알람 JSON:", jsonString);
+      setAlarmList(alarms);
+      
 
-        // // 시간 포맷 변환
-        //   const date = new Date(alarmData.time);
-        //   const formatted = `${date.getFullYear()}.
-        //                     ${String(date.getMonth() + 1).padStart(2, '0')}.
-        //                     ${String(date.getDate()).padStart(2, '0')}
-        //                     ${String(date.getHours()).padStart(2, '0')}:
-        //                     ${String(date.getMinutes()).padStart(2, '0')}:
-        //                     ${String(date.getSeconds()).padStart(2, '0')}`;
-        //   setFormattedTime(formatted);
+      // Android로 넘길 때는 enabled=true인 것만 필터해서 JSON 변환
+      const activeData = alarms.filter(alarm => alarm.enabled === true);
+      const alarmData = JSON.stringify(activeData);
 
-        // 시간 포맷 변환
-
-          const formattedTime = year+month+day+hour+min+alarmCycle;
-          setFormattedTime(formattedTime);
 
         try {
           if (window.Android && window.Android.AlarmSet) {
-            window.Android.AlarmSet(jsonString);
+            window.Android.AlarmSet(alarmData);
           } else {
             console.warn("Android 인터페이스를 찾을 수 없습니다.");
           }
@@ -102,33 +107,72 @@ const Alarmdb = () => {
       showAlert('데이터조회실패2');
       console.error(error);
     }
-
-    
-
   };
 
+
+  const toggleAlarm = (alarmId) => {
+  setAlarmList(prevList =>
+    prevList.map(alarm => {
+      if (alarm.alarmId === alarmId) {
+        const newEnabled = !alarm.enabled;
+
+        if (newEnabled) {
+          // 알람 켜기 - Android AlarmSet 호출
+          if (window.Android && window.Android.AlarmSet) {
+            const alarmData = JSON.stringify([alarm]);
+            window.Android.AlarmSet(alarmData);
+          }
+        } else {
+          // 알람 끄기 - Android cancelAlarm 호출
+          if (window.Android && window.Android.cancelAlarm) {
+            window.Android.cancelAlarm(String(alarmId));
+          }
+        }
+
+        // 2. 서버 상태 업데이트
+        alarmUpdate({
+          alarmId: alarm.alarmId,
+          activeYn: newEnabled ? 'Y' : 'N'
+        }).unwrap()
+          .then(() => {
+            console.log(`서버 알람 ${alarmId} 상태 업데이트 완료`);
+          })
+          .catch(err => {
+            console.error('알람 업데이트 실패', err);
+            showAlert('알람 상태 업데이트 실패');
+          });
+
+        // 3. 프론트 상태 변경
+        return { ...alarm, enabled: newEnabled };
+      }
+      return alarm;
+    })
+  );
+};
 
 
   return (
     <>
       
       <Typography variant="h6" gutterBottom>
-        알람 시간: {formattedTime}
+        알람 시간 목록:
       </Typography>
+      {alarmList.map((alarm, idx) => (
+        <Typography key={idx} variant="body1" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          • {`${alarm.year}-${alarm.month}-${alarm.day} ${alarm.hour}:${alarm.min} (주기: ${alarm.alarmCycle}일)`} 
+          <Switch
+            checked={alarm.enabled}
+            onChange={() => toggleAlarm(alarm.alarmId)}
+            color="primary"
+            inputProps={{ 'aria-label': 'toggle alarm' }}
+          />
+        </Typography>
+      ))}
 
       <button onClick={alarmSet}>
           알람 조회
       </button>
 
-      <button onClick={() => {
-          if (window.Android && window.Android.cancelAlarm) {
-              window.Android.cancelAlarm();
-          } else {
-              alert("AndroidInterface is not available.");
-          }
-      }}>
-          알람 취소
-      </button>
 
 
 
