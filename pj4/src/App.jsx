@@ -81,10 +81,10 @@ const App = () => {
         
       
         {/* 게시판 */}
-        <Route path="/write/create.do" element={<LayoutLogin><WriteCreate /></LayoutLogin>} />
-        <Route path="/write/list.do" element={<LayoutLogin><WriteList /></LayoutLogin>} />
-        <Route path="/write/update.do" element={<LayoutLogin><WriteUpdate /></LayoutLogin>} />
-        <Route path="/write/view.do" element={<LayoutLogin><WriteView /></LayoutLogin>} />
+        <Route path="/write/create.do" element={<WriteCreate />} />
+        <Route path="/write/list.do" element={<WriteList />} />
+        <Route path="/write/update.do" element={<WriteUpdate />} />
+        <Route path="/write/view.do" element={<WriteView />} />
         {/* 다이어리 */}
          <Route path="/diary/create.do" element={<DiaryCreate/>}/>
         <Route path="/diary/list.do" element={<DiaryList/>}/>

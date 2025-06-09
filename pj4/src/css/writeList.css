@@ -44,35 +44,61 @@ padding-top:40px;
     white-space: nowrap;
 }
 
+/* writeList.css */
 
-.tab_Buttons{
-  width: 100%;
+/* 전체 탭 래퍼 */
+.tab-wrapper {
+    display: flex;
+    flex-direction: row;
+    width: 360px;
+    overflow: hidden;
+    margin-top: 10px; 
+    margin-bottom: 0px; 
 }
 
-.tab_wrapper{
-  display:flex;
-  flex-direction: row;
-  width: 360px;
+/* 각 탭 버튼 */
+.tab-buttons {
+    width: 120px;
+    background-color: #526b5c; 
+    color: white; 
+    border: none;
+    padding: 12px 0;
+    font-size: 16px;
+    cursor: pointer;
+    outline: none; 
+    position: relative; 
+    overflow: hidden; 
+    flex-grow: 1;
+    text-align: center; 
+    transition: background-color 0.3s ease;
 }
 
-.tab_wrapper button{
-  width: 120px;
-  background-color: #526B5C;
-  color: white;
-  border: none;
-  padding: 12px 16px;
-  font-size: 16px;
-  cursor: pointer;
+.tab-buttons:hover {
+    background-color: #6a8c75; /* 호버 시 배경색 변경 (선택 사항) */
 }
 
-.under_line {
-  display: inline-block;
-  padding-bottom: 4px; /* 기본적으로 공간을 확보 */
+/* 텍스트를 감싸는 under_line div (여기서는 단순히 텍스트 중앙 정렬을 위해 사용) */
+.tab-buttons .under-line {
+    display: block;
 }
 
-.tab_buttons.active .under_Line {
-  border-bottom: 2px solid white;
-  padding-bottom: 2px;
+
+
+.tab-buttons::after {
+    content: '';
+    position: absolute;
+    bottom:5px;
+    left: 50%; /* 중앙 정렬을 위한 시작점 */
+    transform: translateX(-50%); /* 정확한 중앙 정렬 */
+    height: 1px; /* 언더라인의 두께 */
+    width: 0; /* 기본 너비 0 (초기에는 보이지 않음) */
+    background-color: white; 
+    transition: width 0.3s ease-in-out; /* 너비 변화에 애니메이션 적용 */
+}
+
+/* active 클래스가 적용된 버튼의 ::after 가상 요소 스타일 */
+.tab-buttons.active::after {
+    width: 40%;
 }
 
 .home_selectbox{

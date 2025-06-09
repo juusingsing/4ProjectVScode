@@ -4,23 +4,14 @@ import { useWriteCreateMutation } from "../../features/write/writeApi";
 import { CmUtil } from "../../cm/CmUtil";
 import { useCmDialog } from "../../cm/CmDialogUtil";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useDropzone } from "react-dropzone";
 import {
   Box,
   TextField,
   Typography,
-  List,
-  ListItem,
-  ListItemText,
   IconButton,
-  Paper,
   Button,
-  FormControl,
-  MenuItem,
-  Select,
-  InputLabel,
+  Divider,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { useSelector } from "react-redux";
 import Combo from "../combo/combo";
 import back from "../../image/back.png";
@@ -41,7 +32,6 @@ const WriteCreate = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [files, setFiles] = useState([]);
-  // const [uploadedFiles, setUploadedFiles] = useState([]);
 
   // ToggleCombo에서 값이 변경될 때 호출될 핸들러
   const handleWritingSortationChange = (newValue) => {
@@ -125,86 +115,135 @@ const WriteCreate = () => {
     }
   };
 
-
-  // const { getRootProps, getInputProps } = useDropzone({
-  //   onDrop: (acceptedFiles) => {
-  //     setUploadedFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
-  //   },
-  //   multiple: true,
-  //   maxSize: 10 * 1024 * 1024,
-  // });
-
-  // const handleRemoveFile = (indexToRemove) => {
-  //   setUploadedFiles((prevFiles) =>
-  //     prevFiles.filter((_, index) => index !== indexToRemove)
-  //   );
-  // };
-
   return (
-    <Box sx={{ maxWidth: 360, width: "100%", mx: "auto", p: 3 }}>
-      <Button
-        onClick={() => window.history.back()}
-        // variant="contained"
+    <Box sx={{ maxWidth: 360, width: "100%", mx: "auto"}}>
+      <Box
         sx={{
           display: "flex",
-          justifyContent: "center",
-          borderRadius: "10px",
-          height: "35px",
-          minWidth: "0",
-          width: "35px",
-          "&:hover": {
-            backgroundColor: "#363636",
-          },
-          backgroundColor: "rgba(54, 54, 54, 0.4)",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          mb: "5px",
         }}
       >
-        <img src={back} alt="" sx={{ pl: "2px" }}></img>
-      </Button>
-      {/* onSelectionChange prop을 통해 Combo에서 선택된 값을 받아 writingSortation 상태에 업데이트 */}
-      <ToggleCombo
-        onToggleChange={handleWritingSortationChange}
-        defaultValue={writingSortation}
-      />
-      <Combo
-        groupId="Community"
-        onSelectionChange={setWritingCategory}
-        defaultValue={writingCategory}
-      />
+        {/*뒤로가기 버튼*/}
+        <Button
+          onClick={() => window.history.back()}
+          // variant="contained"
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            borderRadius: "10px",
+            height: "35px",
+            minWidth: "0",
+            width: "35px",
+            "&:hover": {
+              backgroundColor: "#363636",
+            },
+            backgroundColor: "rgba(54, 54, 54, 0.4)",
+          }}
+        >
+          <img src={back} alt="" sx={{ pl: "2px" }}></img>
+        </Button>
 
-      <Typography variant="h5" gutterBottom>
-        게시글 작성
-      </Typography>
+        <Typography variant="h5" gutterBottom>
+          게시글 작성
+        </Typography>
+
+        {/*동식물 선택 토글 콤보박스*/}
+        {/* onSelectionChange prop을 통해 Combo에서 선택된 값을 받아 writingSortation 상태에 업데이트 */}
+        <ToggleCombo
+          onToggleChange={handleWritingSortationChange}
+          defaultValue={writingSortation}
+        />
+      </Box>
+      {/*form 박스*/}
       <Box
         component="form"
         onSubmit={handleSubmit}
         encType="multipart/form-data"
         noValidate
       >
-        <Box mb={3}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          {/*제목*/}
+          <Typography variant="h6" gutterBottom sx={{ mt: "15px" }}>
+            제목
+          </Typography>
+          {/*제목 입력란*/}
           <TextField
             fullWidth
             id="title"
             name="title"
-            label="제목"
-            variant="outlined"
             inputProps={{ maxLength: 100 }}
             inputRef={writingTitleRef}
             value={Title}
             onChange={(e) => setWritingTitle(e.target.value)}
+            variant="standard"
+            sx={{
+              mt: "15px",
+              width: "60%",
+              "& .MuiInput-root": {
+                backgroundColor: "#f0f0f0",
+                borderRadius: "20px",
+                height: "40px",
+                "&::before": {
+                  borderBottom: "none !important",
+                },
+                "&::after": {
+                  borderBottom: "none !important",
+                },
+                "&:hover:not(.Mui-disabled):before": {
+                  borderBottom: "none !important",
+                },
+                "& .MuiInputBase-input": {
+                  padding: "0px",
+                  flexGrow: 1,
+                },
+              },
+              "& .MuiInputBase-input::placeholder": {
+                color: "rgba(0, 0, 0, 0.5)",
+                opacity: 1,
+              },
+            }}
+          />
+          {/*카테고리 콤보박스*/}
+          <Combo
+            groupId="Community"
+            onSelectionChange={setWritingCategory}
+            defaultValue={writingCategory}
+            sx={{
+              // 이 Combo 인스턴스에만 적용될 스타일
+              borderRadius: "20px",
+              backgroundColor: "#f5f5f5",
+              "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+              "&:hover .MuiOutlinedInput-notchedOutline": { border: "none" },
+              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                border: "none",
+              },
+              "& .MuiSelect-select": { padding: "8px 14px" },
+              "& .MuiSelect-icon": { color: "#888" },
+              flex: 1,
+            }}
           />
         </Box>
-
+        <Divider sx={{ my: 2 }} />
         {/* 사진 리스트 */}
         <Box
-          m={2}
           sx={{
             display: "flex",
             flexDirection: "row",
-            overflowX: "auto", //가로 스크롤
+            overflowX: "auto", // 가로 스크롤
             gap: 2,
-            padding: 1,
+            whiteSpace: "nowrap", // 스크롤 허용
+            maxWidth: "100%", // 부모 너비 기준
+            pb: 1, // 아래 여백
             "&::-webkit-scrollbar": {
-              height: "1px",
+              height: "6px",
             },
             "&::-webkit-scrollbar-thumb": {
               backgroundColor: "#ccc",
@@ -286,7 +325,7 @@ const WriteCreate = () => {
             onChange={handleFileChange}
           />
         </Box>
-
+        {/* 게시물 입력(TinyMCEEditor)*/}
         <Box mb={3}>
           <Typography gutterBottom>내용</Typography>
           <CmTinyMCEEditor
@@ -296,57 +335,30 @@ const WriteCreate = () => {
             max={2000}
           />
         </Box>
-
-        <Box display="flex" gap={1} mt={2}>
+        {/* 저장 버튼 */}
+        <Box sx={{display: "flex", width:"100%", justifyContent:"center"}}>
           {user && (
-            <Button type="submit" variant="contained" color="primary">
-              등록
+            <Button
+              onClick={handleSubmit}
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                borderRadius: "20px",
+                height: "38px",
+                width: "170px",
+                textTransform: "none",
+                "&:hover": {
+                  backgroundColor: "#3B4C34",
+                },
+                backgroundColor: "#4B6044",
+              }}
+            >
+              <Typography sx={{ color: "white" }}>저장</Typography>
             </Button>
           )}
-          {/* <button
-            variant="contained"
-            color="primary"
-            onClick={() => navigate("/write/list/do")}
-          >
-            목록
-          </button> */}
         </Box>
       </Box>
     </Box>
   );
 };
 export default WriteCreate;
-
-{
-  /* <Box mb={3}>
-    <Typography gutterBottom>파일 업로드</Typography>
-
-    <Paper variant="outlined"
-        sx={{ p: 3, textAlign: "center", borderStyle: "dashed" }}
-        {...getRootProps()}
-        >
-        <input {...getInputProps()} />
-
-        <Typography variant="body2" color="textSecondary">
-        파일을 드래그하거나 클릭하여 업로드하세요.
-        </Typography>
-    </Paper>
-
-{uploadedFiles.length > 0 && (
-<List>
-    {uploadedFiles.map((file, index) => (
-    <ListItem
-    key={index}
-    secondaryAction={
-    <IconButton edge="end" onClick={() => handleRemoveFile(index)}>
-    <DeleteIcon color="error" />
-    </IconButton>
-    }
-    >
-    <ListItemText primary={file.name} />
-    </ListItem>
-    ))}
-</List>
-)}
-</Box> */
-}

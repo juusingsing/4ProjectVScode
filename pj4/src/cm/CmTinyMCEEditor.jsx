@@ -20,12 +20,12 @@ const CmTinyMCEEditor = forwardRef(({ value, setValue, editorStyle, max = 4000 }
 
   // 에디터 옵션 설정
   const editorOptions = useMemo(() => ({
-    height: 500,
+    height: 300,
     min_height: 200,
     max_height: 500,
     menubar: false,
     plugins: ['image', 'link', 'lists', 'code'],
-    toolbar: 'undo redo | styleselect | bold italic | link image | alignleft aligncenter alignright | code',
+    toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright | code',
     autosave_ask_before_unload: false,
     autosave: false,
     cache_suffix: Math.random().toString(),
@@ -84,12 +84,12 @@ const CmTinyMCEEditor = forwardRef(({ value, setValue, editorStyle, max = 4000 }
           editor.setContent(value); // 이게 필요
         }}
       />
-      <br />
-      <div style={{ textAlign: 'right', color: editorCnt > max ? 'red' : 'inherit' }}>
+      <div style={{ textAlign: 'right', color: editorCnt > max ? 'red' : 'inherit', fontSize:"12px" }}>
         ({editorCnt}/{max})
       </div>
     </>
   );
 });
+//  link image 
 
 export default CmTinyMCEEditor;
