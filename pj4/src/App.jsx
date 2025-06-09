@@ -40,6 +40,7 @@ import Pet_Form_Update from './page/pet/Pet_Form_Update';
 import Pet_Form_Hospital from './page/pet/Pet_Form_Hospital';
 import FindId from './page/find/FindId';
 import FindPw from './page/find/FindPw';
+import Walk from './page/walk/walk';
 import ResetPassword from './page/find/ResetPassword';
 const App = () => {
   const navigate = useNavigate();
@@ -98,6 +99,9 @@ const App = () => {
         <Route path="/find/findId.do" element={<FindId/>} />
         <Route path="/find/findPw.do" element={<FindPw/>} />
         <Route path="/find/resetPassword.do" element={<ResetPassword/>} />
+
+        {/*산책*/}
+        <Route path="/pet/walk.do" element={<Walk/>} />
       </Routes>
       <CmRouteChangeNotifier />
       </>
