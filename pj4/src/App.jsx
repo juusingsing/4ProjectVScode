@@ -41,6 +41,7 @@ import Pet_Form_Hospital from './page/pet/Pet_Form_Hospital';
 import FindId from './page/find/FindId';
 import FindPw from './page/find/FindPw';
 import Walk from './page/walk/walk';
+import WalkRecord from './page/walk/walkRecord';
 import ResetPassword from './page/find/ResetPassword';
 const App = () => {
   const navigate = useNavigate();
@@ -102,6 +103,7 @@ const App = () => {
 
         {/*산책*/}
         <Route path="/pet/walk.do" element={<Walk/>} />
+        <Route path="/pet/walkRecord.do" element={<WalkRecord/>} />
       </Routes>
       <CmRouteChangeNotifier />
       </>

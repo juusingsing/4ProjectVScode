@@ -25,13 +25,13 @@ export default function RunTracker() {
         boxSizing: "border-box",
       }}
     >
-      {/* Top image with RUN START button */}
+
       <div
         style={{
           position: "relative",
           width: "100%",
-          maxWidth: "448px", // max-w-md
-          height: "240px", // h-60
+          maxWidth: "448px",
+          height: "240px",
           borderRadius: "12px",
           overflow: "hidden",
           marginBottom: "1.5rem",
@@ -51,7 +51,7 @@ export default function RunTracker() {
             position: "absolute",
             right: "1rem",
             bottom: "1rem",
-            backgroundColor: "#ca8a04", // yellow-600
+            backgroundColor: "#ca8a04", // yellow
             color: "white",
             fontSize: "1.25rem",
             fontWeight: "bold",
@@ -69,7 +69,7 @@ export default function RunTracker() {
         </button>
       </div>
 
-      {/* Last record */}
+
       <div
         style={{
           width: "100%",
@@ -98,6 +98,7 @@ export default function RunTracker() {
               PM 6:22
             </div>
           </div>
+
           <div>
             <p style={{ color: "#9ca3af", fontSize: "0.875rem" }}>소요 시간</p>
             <div
@@ -111,6 +112,7 @@ export default function RunTracker() {
               02:10:03
             </div>
           </div>
+
         </div>
       </div>
 
@@ -139,6 +141,7 @@ export default function RunTracker() {
           ))}
         </div>
       </div>
+      
     </div>
   );
 }
