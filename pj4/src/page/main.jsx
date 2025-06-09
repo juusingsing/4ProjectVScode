@@ -28,10 +28,22 @@ const Main = () => {
         일기 등록 페이지 이동
       </button>
       <button onClick={() => navigate('/user/join.do')} style={{ padding: '12px 24px' }}>
+        회원가입 페이지 이동
+      </button>
+      <button onClick={() => navigate('/user/login.do')} style={{ padding: '12px 24px' }}>
         로그인 페이지 이동
       </button>
       <button onClick={() => navigate('/plantwatering.do')} style={{ padding: '12px 24px' }}>
         식물 물주기 페이지 이동
+      </button>
+      <button onClick={() => navigate('/pet/petForm.do')} style={{ padding: '12px 24px' }}>
+        동물 등록 페이지 이동
+      </button>
+      <button onClick={() => navigate('/pet/petFormUpdate.do')} style={{ padding: '12px 24px' }}>
+        동물 등록 수정 페이지 이동
+      </button>
+      <button onClick={() => navigate('/pet/petFormHospital.do')} style={{ padding: '12px 24px' }}>
+        동물 등록 병원진료 페이지 이동
       </button>
     </div>
   );

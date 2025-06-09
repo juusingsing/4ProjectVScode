@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Box, Typography, InputBase, Button,
   Radio, RadioGroup, FormControlLabel,
@@ -8,30 +8,52 @@ import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { usePet_Form_UpdateMutation } from '../../features/pet/petApi';  // RTK Query 훅 임포트
 import { useDeletePetMutation } from '../../features/pet/petApi';
+import { useGetPetByIdQuery } from '../../features/pet/petApi';
+import { useNavigate, useSearchParams } from "react-router-dom";
 import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
 import { CmUtil } from '../../cm/CmUtil';
 import { useCmDialog } from '../../cm/CmDialogUtil';  
-const Pet_Form_Update = ({ pet }) => {
-  const [animalName, setAnimalName] = useState(pet?.animalName || '');
+
+
+const Pet_Form_Update = () => {
+  const [searchParams] = useSearchParams();
+  const animalIdStr = searchParams.get('animalId');
+  const animalId = (!animalIdStr || animalIdStr === 'null' || isNaN(Number(animalIdStr))) ? null : Number(animalIdStr);
+  const [animalName, setAnimalName] = useState('');
   const animalNameRef = useRef();
-  const [animalSpecies, setAnimalSpecies] = useState(pet?.animalSpecies || '');
+  const [animalSpecies, setAnimalSpecies] = useState('');
   const animalSpeciesRef = useRef();
-  const [animalMemo, setAnimalMemo] = useState(pet?.animalMemo || '');
+  const [animalMemo, setAnimalMemo] = useState('');
   const animalMemoRef = useRef();
-  const [animalAdoptionDate, setAnimalAdoptionDate] = useState(pet?.animalAdoptionDate ? dayjs(pet.adoptionDate) : null);
-  const [birthDate, setBirthDate] = useState(pet?.birthDate ? dayjs(pet.birthDate) : null);
-  const [gender, setGender] = useState(pet?.gender || '');
+  const [animalAdoptionDate, setAnimalAdoptionDate] = useState(null);
+  const [birthDate, setBirthDate] = useState(null);
+  const [gender, setGender] = useState('');
   const [imageFile, setImageFile] = useState(null);
   const { showAlert } = useCmDialog();
   // RTK Query mutation 훅
   const [petFormUpdate, { isLoading }] = usePet_Form_UpdateMutation();
   const [deletePet, { isLoading: isDeleting }] = useDeletePetMutation(); 
+  // animalId가 null이면 쿼리 실행하지 않음
+  const { data, isLoading: isPetLoading } = useGetPetByIdQuery(animalId, {
+    skip: animalId === null,
+  });
+
   const handleImageChange = (e) => {
     const file = e.target.files?.[0];
     if (file) setImageFile(file);
   };
-
+  useEffect(() => {
+    if (data?.result) {
+      const fetchedPet = data.result;
+      setAnimalName(fetchedPet.animalName || '');
+      setAnimalSpecies(fetchedPet.animalSpecies || '');
+      setAnimalMemo(fetchedPet.animalMemo || '');
+      setAnimalAdoptionDate(fetchedPet.animalAdoptionDate ? dayjs(fetchedPet.animalAdoptionDate) : null);
+      setBirthDate(fetchedPet.birthDate ? dayjs(fetchedPet.birthDate) : null);
+      setGender(fetchedPet.gender || '');
+    }
+  }, [data]);
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -48,15 +70,16 @@ const Pet_Form_Update = ({ pet }) => {
 
     try {
       const formData = new FormData();
-
+      console.log("animalId", animalId);
       // Pet 객체를 JSON 문자열로 직렬화해서 data라는 key에 넣기
       const petData = {
+        animalId, // 0이하(0, null, undefined)는 제외
         animalName: animalName,
         animalSpecies: animalSpecies,
         animalMemo: animalMemo,
         gender,
-        animalAdoptionDate: animalAdoptionDate ? animalAdoptionDate.format('YYYY-MM-DD') : null,
-        birthDate: birthDate ? birthDate.format('YYYY-MM-DD') : null,
+        animalAdoptionDate: animalAdoptionDate?.format('YYYY-MM-DD'),
+        birthDate: birthDate?.format('YYYY-MM-DD'),
       };
       formData.append('data', new Blob([JSON.stringify(petData)], { type: 'application/json' }));
 
@@ -80,24 +103,24 @@ const Pet_Form_Update = ({ pet }) => {
 
   // 삭제 함수
   const handleDelete = async () => {
-  if (!pet?.animalName) {
-    showAlert('삭제할 동물 이름이 없습니다.');
-    return;
-  }
-  console.log(pet.animalName);
-  try {
-    const result = await deletePet(pet.animalName).unwrap();
-    if (result.success) {
-      showAlert('삭제 성공!');
-      // 리디렉션 또는 상태 초기화
-    } else {
-      showAlert(result.message || '삭제 실패');
+    if (!animalId) {
+      showAlert('삭제할 동물 ID가 없습니다.');
+      return;
     }
-  } catch (err) {
-    console.error(err);
-    showAlert('삭제 중 오류가 발생했습니다.');
-  }
-};
+
+    try {
+      const result = await deletePet({ animalId }).unwrap();
+      if (result.success) {
+        showAlert('삭제 성공!');
+        // 삭제 후 화면 이동이나 상태 초기화 처리
+      } else {
+        showAlert(result.message || '삭제 실패');
+      }
+    } catch (err) {
+      console.error(err);
+      showAlert('삭제 중 오류가 발생했습니다.');
+    }
+  };
   return (
     <Box
       component="form"
@@ -118,6 +141,7 @@ const Pet_Form_Update = ({ pet }) => {
           src={imageFile ? URL.createObjectURL(imageFile) : ''}
           sx={{ width: 100, height: 100 }}
         />
+       
         <IconButton
           component="label"
           sx={{
@@ -180,7 +204,7 @@ const Pet_Form_Update = ({ pet }) => {
       </Box>
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3, gap: 5 }}>
         <Button
-          type="submit"
+          onClick={handleSubmit} // ✅ 직접 이벤트 연결
           variant="contained"
           sx={{
             backgroundColor: '#88AE97',
@@ -188,7 +212,6 @@ const Pet_Form_Update = ({ pet }) => {
             px: 6,
             py: 1,
             fontSize: 14
-            
           }}
         >
           수정

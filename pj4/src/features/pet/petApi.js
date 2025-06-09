@@ -17,7 +17,7 @@ export const petApi = createApi({
       query: (formData) => ({
         url: '/pet/petUpdate.do',
         method: 'POST',
-        body: formData, 
+        body: formData,
       }),
     }),
     Pet_Form_Hospital: builder.mutation({
@@ -28,9 +28,20 @@ export const petApi = createApi({
       }),
     }),
     deletePet: builder.mutation({
-      query: (petId) => ({
-        url: `/petDelete.do?petId=${petId}`,
-        method: 'DELETE',
+      query: (payload) => ({
+        url: '/pet/petDelete.do',
+        method: 'POST',
+        body: new URLSearchParams(payload),  // { animalId: 123 } 형태의 객체 받음
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      }),
+    }),
+    getPetById: builder.query({
+      query: (animalId) => ({
+        url: `/pet/getPetById.do`,
+        method: 'GET',
+        params: { animalId },
       }),
     }),
   }),
@@ -40,5 +51,6 @@ export const {
   usePet_FormMutation,
   usePet_Form_UpdateMutation,
   usePet_Form_HospitalMutation,
-  useDeletePetMutation
+  useDeletePetMutation,
+  useGetPetByIdQuery,
 } = petApi;
