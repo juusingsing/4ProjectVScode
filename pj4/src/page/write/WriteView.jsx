@@ -12,8 +12,10 @@ import {
   Button,
   Divider
 } from '@mui/material';
-import { useWriteViewQuery } from '../../features/write/writeApi'; 
+import { useWriteViewQuery, writeApi } from '../../features/write/writeApi'; 
 import CmComment from '../../cm/CmComment';
+import back from '../../image/back.png';
+import edit from '../../image/editBlack.png';
 
 const WriteView = () =>{
      const [searchParams] = useSearchParams();
@@ -22,96 +24,142 @@ const WriteView = () =>{
       const user = useSelector((state) => state.user.user); // 로그인된 사용자 정보
       const { data, isLoading, error, isSuccess, refetch } = useWriteViewQuery({ writingId: writingId });
     
-      const [write, setBoard] = useState(null);
+      const [writing, setWriting] = useState(null);
       const navigate = useNavigate();
     
       useEffect(() => {
         if (isSuccess) {
-          setBoard(data?.data);
+          setWriting(data?.data);
         }
       }, [isSuccess, data]);
+
+
+
     return (
-        <Box
-          sx={{
-            maxWidth: '800px',
-            mx: 'auto',
-            my: 4,
-            p: 2,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 2,
-          }}
-        >
+        <Box sx={{ maxWidth: 360, width: '100%', mx: 'auto', p: 3 }}>
           {isLoading ? (
             <CircularProgress />
           ) : error ? (
             <Alert severity="error">게시글을 불러오는 데 실패했습니다.</Alert>
-          ) : write ? (
-            <>
-              <Typography variant="h4" gutterBottom>
-                {write.title}
-              </Typography>
-    
-              <Box display="flex" justifyContent="space-between" color="text.secondary" fontSize={14}>
-                <span>작성자: {write.createId}</span>
-                <span>{write.createDt}</span>
-              </Box>
-    
-              <Divider sx={{ my: 2 }} />
-    
-              <Paper elevation={2} sx={{ p: 2, minHeight: '200px', maxHeight: '500px', overflow: 'auto' }}>
-                <div dangerouslySetInnerHTML={{ __html: write.content }} />
-              </Paper>
-    
-              {write.postFiles && write.postFiles.length > 0 && (
-                <Box>
-                  <Typography variant="subtitle1" sx={{ mt: 2 }}>
-                    첨부파일
+          ) : writing ? (
+                <>
+                  <Button
+                    onClick={() => window.history.back()}
+                    sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    borderRadius: '10px',
+                    height: '35px',
+                    minWidth: '0',
+                    width: '35px',
+                    '&:hover': {
+                    backgroundColor: '#363636'
+                    },
+                    backgroundColor: 'rgba(54, 54, 54, 0.4)'
+
+                    }}>
+                    <img src={back} alt="" sx={{ pl: '2px' }}></img>
+                  </Button>
+                  <Typography variant="h4" gutterBottom>
+                    {writing.writingTitle}
                   </Typography>
-                  {write.postFiles.map((file) => (
-                    <Typography key={file.fileId}>
-                      <a
-                        href={`${process.env.REACT_APP_API_BASE_URL}/file/down.do?fileId=${file.fileId}`}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        {file.fileName}
-                      </a>
-                    </Typography>
-                  ))}
-                </Box>
-              )}
-              <Box display="flex" gap={1} mt={2}>
-                {user?.usersId === write?.createId && (
-                  
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => navigate(`/write/update.do?id=${write.writingId}`, { state: { reset: true } })}
-                    >
-                      수정
-                    </Button>
-                  
-                )}
-    
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => navigate('/write/list.do')}
-                >
-                  목록으로
-                </Button>
-              </Box>
-              <CmComment
-                comments={data?.data?.comments || []}
-                user={user}
-                writingId={write.writingId}
-                refetchComments={refetch}  
-              />
-            </>
+                  <Box display="flex" gap={1} mt={2}>
+                    {user?.usersId === writing?.createId && (
+                      <Button
+                        onClick={() => navigate(`/write/update.do?id=${writing.writingId}`, { state: { reset: true } })}
+                        sx={{
+                              padding: '0',
+                              display: 'flex',
+                              borderRadius: '10px',
+                              height: '30px',
+                              minWidth: '0',
+                              width: '30px',
+                              marginLeft: '43px',
+                              '&:hover': {
+                                  backgroundColor: 'rgba(194, 194, 194, 0.4)'
+                              }
+
+                        }}>
+                        <img src={edit} alt="" sx={{ pl: '2px' }}></img>
+                      </Button>
+                    )}
+                  </Box>
+                  <Box display="flex" justifyContent="space-between" color="text.secondary" fontSize={14}>
+                    <span>{writing.createId}</span>
+                    <span>{writing.createDt?.substring(0, 10)}</span>
+                  </Box>
+                  <Divider sx={{ my: 2 }} />
+                  <Box>
+                    {writing.postFiles && writing.postFiles.length > 0 && (
+                      <>
+                        <Box
+                          m={2}
+                          sx={{
+                              display: 'flex',
+                              flexDirection: 'row',
+                              overflowX: 'auto',
+                              gap: 2,
+                              padding: 1,
+                              '&::-webkit-scrollbar': {
+                                  height: '1px',
+                              },
+                              '&::-webkit-scrollbar-thumb': {
+                                  backgroundColor: '#ccc',
+                                  borderRadius: '4px',
+                              }
+                          }}
+                          >
+                          {writing.postFiles.map((file, index) => (
+                              <Box
+                                key={file.postFileId ?? index}
+                                sx={{
+                                    position: 'relative',
+                                    minWidth: 140,
+                                    height: 140,
+                                    borderRadius: '5px',
+                                    overflow: 'hidden',
+                                    backgroundColor: '#ccc',
+                                    scrollSnapAlign: 'start',
+                                    flexShrink: 0,
+                                }}
+                              > 
+                            <img
+                                src={`${process.env.REACT_APP_API_BASE_URL}/file/imgDown.do?fileId=${file.postFileId}`}
+                                alt={`preview-${index}`}
+                                style={{
+                                    width: '100%',
+                                    height: '100%',
+                                    objectFit: 'cover',
+                                    display: 'block',
+                                }}
+                            />
+
+                              </Box>
+                          ))}
+                        
+                      </Box>
+                      </>
+                      )}
+                      </Box>   
+
+                          <Box>
+                             <Divider sx={{ my: 2 }} />
+                            <Paper elevation={2} sx={{ p: 2, minHeight: '200px', maxHeight: '500px', overflow: 'auto' }}>
+                              <div dangerouslySetInnerHTML={{ __html: writing.writingContent }} />
+                            </Paper>
+                            <CmComment
+                              comment={data?.data?.comments || []}
+                              user={user}
+                              writingId={writing.writingId}
+                              refetchComments={refetch}  
+                            />
+                          </Box>
+
+                </>    
           ) : null}
-        </Box>
-      );
-}
+       </Box>
+   )
+};
 
 export default WriteView;
+

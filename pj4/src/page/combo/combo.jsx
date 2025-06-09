@@ -13,14 +13,13 @@ import {
     useComboListByGroupQuery,
  } from '../../features/combo/combo';
 
-const Combo = ({ groupId, onSelectionChange }) => {
-  const { data, isLoading, error } = useComboListByGroupQuery(groupId);
+const Combo = ({ groupId, onSelectionChange, defaultValue='' }) => {
+  const { data, isLoading} = useComboListByGroupQuery(groupId);
   const [items, setItems] = useState([]);
   const [selected, setSelected] = useState('');
  
   // ✅ 불러온 데이터로 items 설정
    useEffect(() => {
-    console.log(`groupId(${groupId}) 응답:`, data);
     if (Array.isArray(data?.data)) {
       const formattedItems = data.data.map(item => ({
         value: item.codeId,
@@ -28,16 +27,20 @@ const Combo = ({ groupId, onSelectionChange }) => {
       }));
       setItems(formattedItems);
     }
-  }, [data, groupId]); // ✅ groupId 변경에도 반응
+  }, [data]); // ✅ groupId 변경에도 반응
 
-
+  //defaultValue가 바뀌면 selected 값도 업데이트
+  useEffect(()=>{
+    if(defaultValue && items.length > 0){
+     setSelected(defaultValue); 
+    }
+   },[defaultValue, items]);
+  
+  
   // ✅ CommonComboBox에서 값이 변경될 때 호출될 함수
   const handleComboBoxChange = (newValue) => {
     setSelected(newValue); // 자신의 상태 업데이트
-    // 선택된 값을 부모 컴포넌트 (WriteCreate)로 전달
-    if (onSelectionChange) {
-      onSelectionChange(newValue);
-    }
+    onSelectionChange?.(newValue);
   };
 
   return (

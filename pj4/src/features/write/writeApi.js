@@ -41,10 +41,10 @@ export const writeApi = createApi({
       }),
     }),
     writeDelete: builder.mutation({
-      query: (params) => ({
+      query: (formData) => ({
         url: '/write/delete.do',
         method: 'POST',
-        body: params,
+        body: formData,
       }),
     }),
     commentCreate: builder.mutation({
