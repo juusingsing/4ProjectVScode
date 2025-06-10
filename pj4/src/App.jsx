@@ -43,11 +43,13 @@ import FindPw from './page/find/FindPw';
 import Walk from './page/walk/walk';
 import WalkRecord from './page/walk/walkRecord';
 import ResetPassword from './page/find/ResetPassword';
-import MedicalRecordList from './page/pet/MedicalRecordList';
+
 
 import TestMain from './page/test/TestMain';
 import TestPage from './page/test/TestPage';
 import TestResult from './page/test/TestResult';
+
+
 const App = () => {
   const navigate = useNavigate();
 
@@ -75,8 +77,8 @@ const App = () => {
         <Route path="/user/update.do" element={<LayoutLogin><UserUpdate /></LayoutLogin>} />
         <Route path="/user/view.do" element={<LayoutLogin><UserView /></LayoutLogin>} />
         {/* 홈화면 */}
-        <Route path="/Home_Pet.do" element={<Home_Pet />} />
-        <Route path="/Home_Plant.do" element={<Home_Plant />} />
+        {/* <Route path="/Home_Pet.do" element={<Home_Pet />} />
+        <Route path="/Home_Plant.do" element={<Home_Plant />} /> */}
         <Route path="/diaryCreate.do" element={<DiaryCreate />} />
 
 
@@ -114,7 +116,6 @@ const App = () => {
         <Route path="/pet/petForm.do" element={<Pet_Form/>}/>
         <Route path="/pet/petFormUpdate.do" element={<Pet_Form_Update/>}/>
         <Route path="/pet/petFormHospital.do" element={<Pet_Form_Hospital/>}/>
-        <Route path="/pet/MedicalRecordList.do" element={<MedicalRecordList/>}/>
 
         {/*아이디, 비번 찾기*/}
         <Route path="/find/findId.do" element={<FindId />} />
