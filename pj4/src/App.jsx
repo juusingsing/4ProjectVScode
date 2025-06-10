@@ -5,8 +5,7 @@ import React, { useEffect } from 'react';
 import {  Routes, Route, useNavigate } from 'react-router-dom';
 import { setNavigate } from './cm/CmNavigateUtil';
 import CmRouteChangeNotifier from './cm/CmRouteChangeNotifier';
-import Home_Pet from './page/home/Home_Pet';
-import Home_Plant from './page/home/Home_Plant';
+import Home from './page/home/Home';
 import WriteCreate from './page/write/WriteCreate';
 import WriteList from './page/write/WriteList';
 import WriteUpdate from './page/write/WriteUpdate';
@@ -70,8 +69,7 @@ const App = () => {
         <Route path="/user/update.do" element={<LayoutLogin><UserUpdate /></LayoutLogin>} />
         <Route path="/user/view.do" element={<LayoutLogin><UserView /></LayoutLogin>} />
         {/* 홈화면 */}
-        <Route path="/Home_Pet.do" element={<Home_Pet />} />
-        <Route path="/Home_Plant.do" element={<Home_Plant />} />
+        <Route path="/Home.do" element={<Home />} />
         <Route path="/diaryCreate.do" element={<DiaryCreate/>}/>
         <Route path="/PlantCreate.do" element={<PlantCreate/>}/>
         <Route path="/PlantWatering.do" element={<LayoutLogin><PlantWatering/></LayoutLogin>} />

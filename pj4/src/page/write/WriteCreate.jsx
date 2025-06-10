@@ -116,7 +116,7 @@ const WriteCreate = () => {
   };
 
   return (
-    <Box sx={{ maxWidth: 360, width: "100%", mx: "auto"}}>
+    <Box sx={{ maxWidth: 360, width: "100%", mx: "auto" }}>
       <Box
         sx={{
           display: "flex",
@@ -175,42 +175,44 @@ const WriteCreate = () => {
             제목
           </Typography>
           {/*제목 입력란*/}
-          <TextField
-            fullWidth
-            id="title"
-            name="title"
-            inputProps={{ maxLength: 100 }}
-            inputRef={writingTitleRef}
-            value={Title}
-            onChange={(e) => setWritingTitle(e.target.value)}
-            variant="standard"
-            sx={{
-              mt: "15px",
-              width: "60%",
-              "& .MuiInput-root": {
-                backgroundColor: "#f0f0f0",
-                borderRadius: "20px",
-                height: "40px",
-                "&::before": {
-                  borderBottom: "none !important",
+          <Box mb={1}>
+            <TextField
+              fullWidth
+              id="title"
+              name="title"
+              inputProps={{ maxLength: 100 }}
+              inputRef={writingTitleRef}
+              value={Title}
+              onChange={(e) => setWritingTitle(e.target.value)}
+              variant="standard"
+              sx={{
+                mt: "15px",
+                width: "100%",
+                "& .MuiInput-root": {
+                  backgroundColor: "#f0f0f0",
+                  borderRadius: "20px",
+                  height: "40px",
+                  "&::before": {
+                    borderBottom: "none !important",
+                  },
+                  "&::after": {
+                    borderBottom: "none !important",
+                  },
+                  "&:hover:not(.Mui-disabled):before": {
+                    borderBottom: "none !important",
+                  },
+                  "& .MuiInputBase-input": {
+                    padding: "0 10px",
+                    flexGrow: 1,
+                  },
                 },
-                "&::after": {
-                  borderBottom: "none !important",
+                "& .MuiInputBase-input::placeholder": {
+                  color: "rgba(0, 0, 0, 0.5)",
+                  opacity: 1,
                 },
-                "&:hover:not(.Mui-disabled):before": {
-                  borderBottom: "none !important",
-                },
-                "& .MuiInputBase-input": {
-                  padding: "0 10px",
-                  flexGrow: 1,
-                },
-              },
-              "& .MuiInputBase-input::placeholder": {
-                color: "rgba(0, 0, 0, 0.5)",
-                opacity: 1,
-              },
-            }}
-          />
+              }}
+            />
+          </Box>
           {/*카테고리 콤보박스*/}
           <Combo
             groupId="Community"
@@ -336,7 +338,7 @@ const WriteCreate = () => {
           />
         </Box>
         {/* 저장 버튼 */}
-        <Box sx={{display: "flex", width:"100%", justifyContent:"center"}}>
+        <Box sx={{ display: "flex", width: "100%", justifyContent: "center" }}>
           {user && (
             <Button
               onClick={handleSubmit}
