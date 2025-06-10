@@ -46,7 +46,7 @@ const WriteView = () => {
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
-              mb: "5px",
+              mb: "10px",
             }}
           >
             {/*뒤로가기 버튼*/}
@@ -67,7 +67,8 @@ const WriteView = () => {
             >
               <img src={back} alt="" ></img>
             </Button>
-            <Typography variant="h5" gutterBottom>
+            <Typography variant="h5"
+            sx={{mt:"3px", ml:"2px"}}>
               {writing.writingTitle}
             </Typography>
             {/*게시글 수정 버튼*/}
@@ -92,7 +93,8 @@ const WriteView = () => {
           </Box>
           <Box
             display="flex"
-            justifyContent="space-between"
+            justifyContent="center"
+            gap="10px"
             color="text.secondary"
             fontSize={14}
           >
@@ -100,7 +102,7 @@ const WriteView = () => {
             <span>{writing.createDt?.substring(0, 10)}</span>
           </Box>
           <Divider sx={{ my: 2 }} />
-          <Box>
+          <Paper>
             {writing.postFiles && writing.postFiles.length > 0 && (
               <>
                 <Box
@@ -112,7 +114,7 @@ const WriteView = () => {
                     gap: 2,
                     padding: 1,
                     "&::-webkit-scrollbar": {
-                      height: "1px",
+                      height: "5px",
                     },
                     "&::-webkit-scrollbar-thumb": {
                       backgroundColor: "#ccc",
@@ -149,12 +151,11 @@ const WriteView = () => {
                 </Box>
               </>
             )}
-          </Box>
+          </Paper>
 
           <Box>
-            <Divider sx={{ my: 2 }} />
+
             <Paper
-              elevation={2}
               sx={{
                 p: 2,
                 minHeight: "200px",

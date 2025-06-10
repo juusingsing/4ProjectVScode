@@ -5,8 +5,7 @@ import React, { useEffect } from 'react';
 import {  Routes, Route, useNavigate } from 'react-router-dom';
 import { setNavigate } from './cm/CmNavigateUtil';
 import CmRouteChangeNotifier from './cm/CmRouteChangeNotifier';
-import Home_Pet from './page/home/Home_Pet';
-import Home_Plant from './page/home/Home_Plant';
+import Home from './page/home/Home';
 import WriteCreate from './page/write/WriteCreate';
 import WriteList from './page/write/WriteList';
 import WriteUpdate from './page/write/WriteUpdate';
@@ -43,6 +42,10 @@ import FindPw from './page/find/FindPw';
 import Walk from './page/walk/walk';
 import WalkRecord from './page/walk/walkRecord';
 import ResetPassword from './page/find/ResetPassword';
+
+import TestMain from './page/test/TestMain';
+import TestPage from './page/test/TestPage';
+import TestResult from './page/test/TestResult';
 const App = () => {
   const navigate = useNavigate();
 
@@ -70,15 +73,13 @@ const App = () => {
         <Route path="/user/update.do" element={<LayoutLogin><UserUpdate /></LayoutLogin>} />
         <Route path="/user/view.do" element={<LayoutLogin><UserView /></LayoutLogin>} />
         {/* 홈화면 */}
-        <Route path="/Home_Pet.do" element={<Home_Pet />} />
-        <Route path="/Home_Plant.do" element={<Home_Plant />} />
+        <Route path="/Home.do" element={<Home />} />
         <Route path="/diaryCreate.do" element={<DiaryCreate/>}/>
         <Route path="/PlantCreate.do" element={<PlantCreate/>}/>
         <Route path="/PlantWatering.do" element={<LayoutLogin><PlantWatering/></LayoutLogin>} />
         <Route path="/PlantSunlighting.do" element={<PlantSunlighting/>} />
         <Route path="/PlantRepotting.do" element={<PlantRepotting/>}/>
 
-        
       
         {/* 게시판 */}
         <Route path="/write/create.do" element={<WriteCreate />} />
@@ -104,6 +105,12 @@ const App = () => {
         {/*산책*/}
         <Route path="/pet/walk.do" element={<Walk/>} />
         <Route path="/pet/walkRecord.do" element={<LayoutLogin><WalkRecord/></LayoutLogin>} />
+        <Route path="/pet/walkRecord.do" element={<WalkRecord/>} />
+
+        {/* 테스트 */}
+        <Route path="/test/main.do" element={<TestMain/>}/>
+        <Route path="/test/page.do" element={<TestPage/>}/>
+        <Route path="/test/result.do" element={<TestResult/>}/>
       </Routes>
       <CmRouteChangeNotifier />
       </>

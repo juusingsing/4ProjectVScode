@@ -61,7 +61,7 @@ const DiaryCreate = () => {
       dateRef.current?.focus();
       return;
     }
-    if (CmUtil.isDateFuture(date)){
+    if (CmUtil.isDateFuture(date)) {
       showAlert("미래 날짜는 선택할 수 없습니다.")
       dateRef.current?.focus();
       return;
@@ -85,10 +85,10 @@ const DiaryCreate = () => {
     formData.append("postFileCategory", diaryType);
     files.forEach(file => formData.append("files", file));
 
-console.log("업로드할 파일들:");
-files.forEach((file, idx) => {
-  console.log(`[${idx}] name:`, file?.name);
-});
+    console.log("업로드할 파일들:");
+    files.forEach((file, idx) => {
+      console.log(`[${idx}] name:`, file?.name);
+    });
     try {
       const res = await diaryCreate(formData).unwrap();
       console.log("응답 내용 >>", res); // 여기에 찍히는 걸 확인해야 해!
@@ -133,7 +133,7 @@ files.forEach((file, idx) => {
           >
             <img src={back} alt="" sx={{ pl: '2px' }}></img>
           </Button>
-          <Typography variant="h5" gutterBottom  sx={{ml:'28px'}}>
+          <Typography variant="h5" gutterBottom sx={{ ml: '28px' }}>
             일기 작성
           </Typography>
           <div className={`toggle-container ${isOn ? 'on' : ''}`} onClick={handleToggle}>
@@ -207,7 +207,7 @@ files.forEach((file, idx) => {
             {/* 이미지 미리보기 리스트 */}
             {files.map((file, index) => (
               <Box
-               key={index}
+                key={index}
                 sx={{
                   position: 'relative',
                   minWidth: 140,
@@ -235,7 +235,7 @@ files.forEach((file, idx) => {
                     position: 'absolute',
                     top: 0,
                     right: 0,
-                    padding:0,
+                    padding: 0,
                     '&:hover': {
                       backgroundColor: 'rgba(255, 100, 100, 0.8)',
                     }

@@ -18,6 +18,7 @@
 //   const [currentTab, setCurrentTab] = useState(1);
 //   const [sunlightStatusText, setSunlightStatusText] = useState('');
 
+
 //   useEffect(() => {
 //     getSimpleList();
 //   }, []);
