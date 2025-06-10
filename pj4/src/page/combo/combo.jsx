@@ -1,26 +1,16 @@
+// Combo.js
 import React, { useState, useEffect } from "react";
-import {
-  Box
-  // Button,
-  // TextField,
-  // Typography,
-} from '@mui/material';
+import { Box } from '@mui/material'; // Box는 Material-UI 컴포넌트이므로 유지
 import CommonComboBox from './CommonComboBox';
-import {
-    // useComboCreateMutation,
-    // useComboDeleteMutation,
-    // useComboListQuery,
-    useComboListByGroupQuery,
- } from '../../features/combo/combo';
+import { useComboListByGroupQuery } from '../../features/combo/combo';
 
-const Combo = ({ groupId, onSelectionChange }) => {
-  const { data, isLoading, error } = useComboListByGroupQuery(groupId);
+// Combo 컴포넌트가 sx prop을 받도록 정의
+const Combo = ({ groupId, onSelectionChange, defaultValue='', sx }) => { // sx prop 추가
+  const { data, isLoading} = useComboListByGroupQuery(groupId);
   const [items, setItems] = useState([]);
   const [selected, setSelected] = useState('');
- 
-  // ✅ 불러온 데이터로 items 설정
-   useEffect(() => {
-    console.log(`groupId(${groupId}) 응답:`, data);
+  
+  useEffect(() => {
     if (Array.isArray(data?.data)) {
       const formattedItems = data.data.map(item => ({
         value: item.codeId,
@@ -28,27 +18,35 @@ const Combo = ({ groupId, onSelectionChange }) => {
       }));
       setItems(formattedItems);
     }
-  }, [data, groupId]); // ✅ groupId 변경에도 반응
+  }, [data]);
 
-
-  // ✅ CommonComboBox에서 값이 변경될 때 호출될 함수
-  const handleComboBoxChange = (newValue) => {
-    setSelected(newValue); // 자신의 상태 업데이트
-    // 선택된 값을 부모 컴포넌트 (WriteCreate)로 전달
-    if (onSelectionChange) {
-      onSelectionChange(newValue);
+  useEffect(()=>{
+    if(defaultValue && items.length > 0){
+      setSelected(defaultValue); 
     }
+   },[defaultValue, items]);
+  
+  const handleComboBoxChange = (newValue) => {
+    setSelected(newValue);
+    onSelectionChange?.(newValue);
   };
+
+  // groupId에 따라 플레이스홀더 텍스트 변경 (선택 사항)
+  const getPlaceholder = () => {
+    if (groupId === "Community") return "카테고리 선택";
+    if (groupId === "WritingSortation") return "종류 선택";
+    return "선택하세요";
+  }
 
   return (
     <Box sx={{ mt: 2 }}>
-      {/* CommonComboBox에 options, value, onChange prop을 전달 */}
       <CommonComboBox
         options={items}
-        value={selected} // 현재 선택된 값
-        onChange={handleComboBoxChange} // 값이 변경될 때 호출될 함수
-        placeholder="선택하세요" // 기본 플레이스홀더
-        disabled={isLoading} // 데이터 로딩 중에는 비활성화
+        value={selected}
+        onChange={handleComboBoxChange}
+        placeholder={getPlaceholder()} // groupId에 따라 플레이스홀더 변경
+        disabled={isLoading}
+        sx={sx} // 여기에서 Combo로 전달받은 sx prop을 CommonComboBox로 전달
       />
     </Box>
   );
