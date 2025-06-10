@@ -8,7 +8,14 @@ import {
 import { CmUtil } from "../../cm/CmUtil";
 import { useCmDialog } from "../../cm/CmDialogUtil";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Box, TextField, Typography, IconButton, Button } from "@mui/material";
+import {
+  Box,
+  TextField,
+  Typography,
+  IconButton,
+  Button,
+  Divider,
+} from "@mui/material";
 import { useSelector } from "react-redux";
 import Combo from "../combo/combo";
 import ToggleCombo from "../../page/combo/ToggleCombo";
@@ -169,182 +176,267 @@ const WriteUpdate = () => {
   };
 
   return (
-    <Box sx={{ maxWidth: 360, width: "100%", mx: "auto", p: 3 }}>
-      <Button
-        onClick={() => window.history.back()}
-        // variant="contained"
+    <Box sx={{ maxWidth: 360, width: "100%", mx: "auto" }}>
+      <Box
         sx={{
           display: "flex",
-          justifyContent: "center",
-          borderRadius: "10px",
-          height: "35px",
-          minWidth: "0",
-          width: "35px",
-          "&:hover": {
-            backgroundColor: "#363636",
-          },
-          backgroundColor: "rgba(54, 54, 54, 0.4)",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          mb: "5px",
         }}
       >
-        <img src={back} alt="" sx={{ pl: "2px" }}></img>
-      </Button>
-      <ToggleCombo
-        onToggleChange={handleWritingSortationChange}
-        defaultValue={writingSortation}
-      />
-      <Combo
-        groupId="Community"
-        defaultValue={writingCategory}
-        onSelectionChange={setWritingCategory}
-      />
+        <Button
+          onClick={() => window.history.back()}
+          // variant="contained"
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            borderRadius: "10px",
+            height: "35px",
+            minWidth: "0",
+            width: "35px",
+            "&:hover": {
+              backgroundColor: "#363636",
+            },
+            backgroundColor: "rgba(54, 54, 54, 0.4)",
+          }}
+        >
+          <img src={back} alt="" sx={{ pl: "2px" }}></img>
+        </Button>
+        <Typography variant="h5" gutterBottom>
+          게시글 수정
+        </Typography>
+        <ToggleCombo
+          onToggleChange={handleWritingSortationChange}
+          defaultValue={writingSortation}
+        />
+      </Box>
 
-      <Typography variant="h5" gutterBottom>
-        게시글 수정
-      </Typography>
       <Box
         component="form"
         onSubmit={handleSubmit}
         encType="multipart/form-data"
         noValidate
       >
-        {/* 제목 입력 필드 */}
-        <Box mb={3}>
-          <TextField
-            fullWidth
-            id="title"
-            name="title"
-            label="제목"
-            variant="outlined"
-            inputProps={{ maxLength: 100 }}
-            inputRef={titleRef}
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          {/*제목*/}
+          <Typography variant="h6" gutterBottom sx={{ mt: "15px" }}>
+            제목
+          </Typography>
+          {/* 제목 입력 필드 */}
+          <Box mb={1}>
+            <TextField
+              fullWidth
+              id="title"
+              name="title"
+              inputProps={{ maxLength: 100 }}
+              inputRef={titleRef}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              variant="standard"
+              sx={{
+                mt: "15px",
+                width: "100%",
+                "& .MuiInput-root": {
+                  backgroundColor: "#f0f0f0",
+                  borderRadius: "20px",
+                  height: "40px",
+                  "&::before": {
+                    borderBottom: "none !important",
+                  },
+                  "&::after": {
+                    borderBottom: "none !important",
+                  },
+                  "&:hover:not(.Mui-disabled):before": {
+                    borderBottom: "none !important",
+                  },
+                  "& .MuiInputBase-input": {
+                    padding: "0 10px",
+                    flexGrow: 1,
+                  },
+                },
+                "& .MuiInputBase-input::placeholder": {
+                  color: "rgba(0, 0, 0, 0.5)",
+                  opacity: 1,
+                },
+              }}
+            />
+          </Box>
+          <Combo
+            groupId="Community"
+            defaultValue={writingCategory}
+            onSelectionChange={setWritingCategory}
+            sx={{
+              borderRadius: "20px",
+              backgroundColor: "#f5f5f5",
+              "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+              "&:hover .MuiOutlinedInput-notchedOutline": { border: "none" },
+              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                border: "none",
+              },
+              "& .MuiSelect-select": { padding: "8px 14px" },
+              "& .MuiSelect-icon": { color: "#888" },
+              flex: 1,
+            }}
           />
         </Box>
-
+        <Divider sx={{ my: 2 }} />
         {/* 사진 리스트 */}
-        {existingFiles.map((file, index) => (
-          <Box
-            key={`existing-${index}`}
-            sx={{
-              position: "relative",
-              minWidth: 140,
-              height: 140,
-              borderRadius: "5px",
-              overflow: "hidden",
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            overflowX: "auto", // 가로 스크롤
+            gap: 2,
+            whiteSpace: "nowrap", // 스크롤 허용
+            maxWidth: "100%", // 부모 너비 기준
+            pb: 1, // 아래 여백
+            "&::-webkit-scrollbar": {
+              height: "6px",
+            },
+            "&::-webkit-scrollbar-thumb": {
               backgroundColor: "#ccc",
-              scrollSnapAlign: "start",
-              flexShrink: 0,
-            }}
-          >
-            <img
-              src={`${process.env.REACT_APP_API_BASE_URL}/file/imgDown.do?fileId=${file.postFileId}`}
-              alt={`file-${index}`}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                display: "block",
-              }}
-            />
-            <IconButton
-              onClick={() => {
-                setExistingFiles((prev) => prev.filter((_, i) => i !== index));
-                setRemainingFileIds((prev) =>
-                  prev.filter((id) => id !== file.postFileId)
-                );
-              }}
+              borderRadius: "4px",
+            },
+          }}
+        >
+          {existingFiles.map((file, index) => (
+            <Box
+              key={`existing-${index}`}
               sx={{
-                position: "absolute",
-                top: 0,
-                right: 0,
-                padding: 0,
-                "&:hover": {
-                  backgroundColor: "rgba(255, 100, 100, 0.8)",
+                display: "flex",
+                flexDirection: "row",
+                overflowX: "auto", // 가로 스크롤
+                gap: 2,
+                whiteSpace: "nowrap", // 스크롤 허용
+                maxWidth: "100%", // 부모 너비 기준
+                pb: 1, // 아래 여백
+                "&::-webkit-scrollbar": {
+                  height: "6px",
+                },
+                "&::-webkit-scrollbar-thumb": {
+                  backgroundColor: "#ccc",
+                  borderRadius: "4px",
                 },
               }}
             >
               <img
-                src={imgDelete}
-                alt="삭제"
-                style={{ width: 20, height: 20 }}
+                src={`${process.env.REACT_APP_API_BASE_URL}/file/imgDown.do?fileId=${file.postFileId}`}
+                alt={`file-${index}`}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  display: "flex",
+                }}
               />
-            </IconButton>
-          </Box>
-        ))}
-        {/* 이미지 미리보기 리스트 */}
-        {files.map((file, index) => (
-          <Box
-            key={index}
-            sx={{
-              position: "relative",
-              minWidth: 140,
-              height: 140,
-              borderRadius: "5px",
-              overflow: "hidden",
-              backgroundColor: "#ccc",
-              scrollSnapAlign: "start",
-              flexShrink: 0,
-            }}
-          >
-            <img
-              src={URL.createObjectURL(file)}
-              alt={`preview-${index}`}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                display: "block",
-              }}
-            />
-            <IconButton
-              onClick={() => handleFileDelete(index)}
+              <IconButton
+                onClick={() => {
+                  setExistingFiles((prev) =>
+                    prev.filter((_, i) => i !== index)
+                  );
+                  setRemainingFileIds((prev) =>
+                    prev.filter((id) => id !== file.postFileId)
+                  );
+                }}
+                sx={{
+                  position: "absolute",
+                  top: 0,
+                  right: 0,
+                  padding: 0,
+                  "&:hover": {
+                    backgroundColor: "rgba(255, 100, 100, 0.8)",
+                  },
+                }}
+              >
+                <img
+                  src={imgDelete}
+                  alt="삭제"
+                  style={{ width: 20, height: 20 }}
+                />
+              </IconButton>
+            </Box>
+          ))}
+          {/* 이미지 미리보기 리스트 */}
+          {files.map((file, index) => (
+            <Box
+              key={index}
               sx={{
-                position: "absolute",
-                top: 0,
-                right: 0,
-                padding: 0,
-                "&:hover": {
-                  backgroundColor: "rgba(255, 100, 100, 0.8)",
-                },
+                position: "relative",
+                minWidth: 140,
+                height: 140,
+                borderRadius: "5px",
+                overflow: "hidden",
+                backgroundColor: "#ccc",
+                scrollSnapAlign: "start",
+                flexShrink: 0,
               }}
             >
               <img
-                src={imgDelete}
-                alt="삭제"
-                style={{ width: 20, height: 20 }}
+                src={URL.createObjectURL(file)}
+                alt={`preview-${index}`}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  display: "block",
+                }}
               />
-            </IconButton>
-          </Box>
-        ))}
+              <IconButton
+                onClick={() => handleFileDelete(index)}
+                sx={{
+                  position: "absolute",
+                  top: 0,
+                  right: 0,
+                  padding: 0,
+                  "&:hover": {
+                    backgroundColor: "rgba(255, 100, 100, 0.8)",
+                  },
+                }}
+              >
+                <img
+                  src={imgDelete}
+                  alt="삭제"
+                  style={{ width: 20, height: 20 }}
+                />
+              </IconButton>
+            </Box>
+          ))}
 
-        {/* 사진 추가 버튼 */}
-        <label htmlFor="fileInput">
-          <Button
-            component="span"
-            sx={{
-              minWidth: 0,
-              width: 140,
-              height: 140,
-              borderRadius: "5px",
-              backgroundColor: "rgba(54, 54, 54, 0.2)",
-              "&:hover": { backgroundColor: "#363636" },
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <img src={image} alt="add" />
-          </Button>
-        </label>
+          {/* 사진 추가 버튼 */}
+          <label htmlFor="fileInput">
+            <Button
+              component="span"
+              sx={{
+                minWidth: 0,
+                width: 140,
+                height: 140,
+                borderRadius: "5px",
+                backgroundColor: "rgba(54, 54, 54, 0.2)",
+                "&:hover": { backgroundColor: "#363636" },
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <img src={image} alt="add" />
+            </Button>
+          </label>
 
-        <input
-          id="fileInput"
-          type="file"
-          multiple
-          style={{ display: "none" }}
-          onChange={handleFileChange}
-        />
+          <input
+            id="fileInput"
+            type="file"
+            multiple
+            style={{ display: "none" }}
+            onChange={handleFileChange}
+          />
+        </Box>
       </Box>
       {/* 내용(TinyMCE 에디터) 영역 */}
       <Box mb={3}>
@@ -367,114 +459,44 @@ const WriteUpdate = () => {
               color="primary"
               type="button"
               onClick={handleSubmit}
+               sx={{
+                display: "flex",
+                justifyContent: "center",
+                borderRadius: "20px",
+                height: "38px",
+                width: "170px",
+                textTransform: "none",
+                "&:hover": {
+                  backgroundColor: "#3B4C34",
+                },
+                backgroundColor: "#4B6044",
+              }}
             >
               수정
             </Button>
 
             <Button
-              variant="outlined"
-              color="error"
-              onClick={handleDelete} // 삭제 핸들러 호출
+              variant="contained"
+              onClick={handleDelete}
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                borderRadius: "20px",
+                height: "38px",
+                width: "170px",
+                textTransform: "none",
+                "&:hover": {
+                  backgroundColor: "#A44D4F",
+                },
+                backgroundColor: "#A44D4D",
+              }}
             >
               삭제
             </Button>
           </>
         )}
-        {/* 목록으로 이동 버튼 */}
-        <Button
-          variant="contained" // Material-UI Button 컴포넌트의 variant prop 사용
-          color="primary"
-          onClick={() => navigate("/write/list.do")} // 목록 페이지로 이동
-        >
-          목록
-        </Button>
       </Box>
     </Box>
   );
 };
 export default WriteUpdate;
-
-// <Box mb={3}>
-//   <Typography gutterBottom>파일 업로드</Typography>
-//   <Paper variant="outlined"
-//     sx={{ p: 3, textAlign: "center", borderStyle: "dashed" }}
-//     {...getRootProps()}
-//   >
-//     <input {...getInputProps()} />
-//     <Typography variant="body2" color="textSecondary">
-//       파일을 드래그하거나 클릭하여 업로드하세요.
-//     </Typography>
-//   </Paper>
-
-//   {uploadedFiles.length > 0 && (
-//     <List>
-//       {uploadedFiles.map((file, index) => (
-//         <ListItem
-//           key={index} // 고유 key (파일 이름과 인덱스 조합 가능)
-//           secondaryAction={
-//             <IconButton edge="end" onClick={() => handleRemoveFile(index)}>
-//               <DeleteIcon color="error" />
-//             </IconButton>
-//           }
-//         >
-//           {/* `file.name`으로 변경하여 실제 파일 이름이 보이도록 수정 */}
-//           <ListItemText primary={file.name} />
-//         </ListItem>
-//       ))}
-//     </List>
-//   )}
-// </Box>
-
-// {/* 기존 파일 목록 표시 (existingFiles가 있고, remainingFileIds에 해당 파일 ID가 포함된 경우만 표시) */}
-// {existingFiles.length > 0 && ( // existingFiles가 있을 때만 표시
-//   <Box mb={3}>
-//     <Typography gutterBottom>기존 파일</Typography>
-//     <List>
-//       {existingFiles.map((file) => (
-//         // `remainingFileIds` 배열에 해당 파일의 ID가 포함되어 있을 때만 렌더링 (삭제되지 않은 파일)
-//         remainingFileIds.includes(file.postFileId) && (
-//           <ListItem
-//             key={file.postFileId}
-//             secondaryAction={ // 리스트 아이템의 오른쪽 액션 버튼
-//               <IconButton edge="end" onClick={() => handleRemoveExistingFile(file.postFileId)}>
-//                 <DeleteIcon color="error" />
-//               </IconButton>
-//             }
-//           >
-//             <ListItemText
-//               primary={
-//                 // 파일 다운로드 링크
-//                 <a href={`${process.env.REACT_APP_API_BASE_URL}/api/file/imgDown.do?fileId=${file.postFileId}`}
-//                   target="_blank"
-//                   rel="noopener noreferrer">
-//                   {file.postFileName} {/* 파일 이름 표시 */}
-//                 </a>
-//               }
-//             />
-//           </ListItem>
-//         )
-//       ))}
-//     </List>
-//   </Box>
-// )}
-
-// // Dropzone 훅 초기화 (파일 드래그 앤 드롭 영역 설정)
-// const { getRootProps, getInputProps } = useDropzone({
-//   onDrop: (acceptedFiles) => { // 파일이 드롭되거나 선택되었을 때 실행될 콜백
-//     setUploadedFiles((prevFiles) => [...prevFiles, ...acceptedFiles]); // 기존 파일과 새 파일 병합
-//   },
-//   multiple: true,
-//   maxSize: 10 * 1024 * 1024, // 최대 파일 크기 (10MB)
-// });
-
-// // 새로 업로드된 파일 삭제 핸들러
-// const handleRemoveFile = (indexToRemove)=>{
-//   setUploadedFiles((prevFiles) =>
-//     prevFiles.filter((_, index)=>index!==indexToRemove) // 해당 인덱스의 파일 제거
-//   );
-// };
-
-// // 기존 파일 삭제 핸들러 (existingFiles 목록에서 제거하고 remainingFileIds 업데이트)
-// const handleRemoveExistingFile = (postFileId) => {
-//   setRemainingFileIds((prevIds) => prevIds.filter((id) => id !== postFileId)); // 해당 ID를 remainingFileIds에서 제거
-// };

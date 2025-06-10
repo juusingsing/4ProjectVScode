@@ -1,6 +1,9 @@
 import React from "react";
+import { useNavigate } from 'react-router-dom';
 
 export default function RunTracker() {
+  const navigate = useNavigate();
+  
   const images = [
     "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0",
     "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0",
@@ -47,6 +50,7 @@ export default function RunTracker() {
           }}
         />
         <button
+          onClick={() => navigate('/pet/walkRecord.do')}
           style={{
             position: "absolute",
             right: "1rem",
@@ -141,7 +145,7 @@ export default function RunTracker() {
           ))}
         </div>
       </div>
-      
+
     </div>
   );
 }

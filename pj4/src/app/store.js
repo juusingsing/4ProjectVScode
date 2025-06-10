@@ -14,6 +14,8 @@ import storageSession from 'redux-persist/lib/storage/session'; // sessionStorag
 import { persistReducer, persistStore } from 'redux-persist';
 import { combineReducers } from 'redux';
 import { petApi } from '../features/pet/petApi';
+import { petWalkApi } from '../features/pet/petWalkApi';
+import { testApi } from '../features/test/testApi';
 
 const persistConfig = {
   key: 'root',
@@ -32,7 +34,9 @@ const rootReducer = combineReducers({
   [alarmApi.reducerPath]: alarmApi.reducer,
   [plantApi.reducerPath]: plantApi.reducer,
   [findApi.reducerPath]: findApi.reducer,
-  [petApi.reducerPath]: petApi.reducer
+  [petApi.reducerPath]: petApi.reducer,
+  [petWalkApi.reducerPath]: petApi.reducer,
+  [testApi.reducerPath]:testApi.reducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -52,7 +56,9 @@ export const store = configureStore({
       alarmApi.middleware,
       plantApi.middleware,
       findApi.middleware,
-      petApi.middleware
+      petApi.middleware,
+      petWalkApi.middleware,
+      testApi.middleware
     )
 });
 

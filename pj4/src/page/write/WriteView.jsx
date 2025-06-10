@@ -46,7 +46,7 @@ const WriteView = () => {
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
-              mb: "5px",
+              mb: "10px",
             }}
           >
             {/*뒤로가기 버튼*/}
@@ -93,7 +93,8 @@ const WriteView = () => {
           </Box>
           <Box
             display="flex"
-            justifyContent="space-between"
+            justifyContent="center"
+            gap="10px"
             color="text.secondary"
             fontSize={14}
           >
