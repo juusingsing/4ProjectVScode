@@ -30,7 +30,7 @@ const Home = () => {
 
   // TODO: 동물/식물 심리테스트 링크 설정
   // 이 부분은 실제 라우팅 경로에 맞게 변경해주세요.
-const currentTestLink = `/test/TestMain.do?tab=${activeTab}`;
+const currentTestLink = `/test/main.do?tab=${activeTab}`;
 
   const handleTabChange = (selectedTabValue) => {
     setActiveTab(selectedTabValue);

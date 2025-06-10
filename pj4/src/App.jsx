@@ -6,7 +6,6 @@ import {  Routes, Route, useNavigate } from 'react-router-dom';
 import { setNavigate } from './cm/CmNavigateUtil';
 import CmRouteChangeNotifier from './cm/CmRouteChangeNotifier';
 import Home from './page/home/Home';
-import TestMain from './page/home/TestMain';
 import WriteCreate from './page/write/WriteCreate';
 import WriteList from './page/write/WriteList';
 import WriteUpdate from './page/write/WriteUpdate';
@@ -44,10 +43,9 @@ import Walk from './page/walk/walk';
 import WalkRecord from './page/walk/walkRecord';
 import ResetPassword from './page/find/ResetPassword';
 
-import TestPetMain from './page/test/TestPetMain';
-import TestPlantMain from './page/test/TestPlantMain';
-import TestPetPage from './page/test/TestPetPage';
-import TestPetResult from './page/test/TestPetResult';
+import TestMain from './page/test/TestMain';
+import TestPage from './page/test/TestPage';
+import TestResult from './page/test/TestResult';
 const App = () => {
   const navigate = useNavigate();
 
@@ -82,7 +80,6 @@ const App = () => {
         <Route path="/PlantSunlighting.do" element={<PlantSunlighting/>} />
         <Route path="/PlantRepotting.do" element={<PlantRepotting/>}/>
 
-        <Route path="/test/TestMain.do" element={<TestMain/>}/>
       
         {/* 게시판 */}
         <Route path="/write/create.do" element={<WriteCreate />} />
@@ -110,10 +107,9 @@ const App = () => {
         <Route path="/pet/walkRecord.do" element={<WalkRecord/>} />
 
         {/* 테스트 */}
-        <Route path="/test/petMain.do" element={<TestPetMain/>}/>
-        <Route path="/test/plantMain.do" element={<TestPlantMain/>}/>
-        <Route path="/test/petPage.do" element={<TestPetPage/>}/>
-        <Route path="/test/petResult.do" element={<TestPetResult/>}/>
+        <Route path="/test/main.do" element={<TestMain/>}/>
+        <Route path="/test/page.do" element={<TestPage/>}/>
+        <Route path="/test/result.do" element={<TestResult/>}/>
       </Routes>
       <CmRouteChangeNotifier />
       </>

@@ -1,21 +1,29 @@
-import pet from '../../image/testPetMain.png'
+import petImage from "../../image/testPetMain.png";
+import plantImage from "../../image/testPlantMain.png";
 import back from '../../image/back.png';
 import {
     Box,
   Typography,
   Button
 } from "@mui/material";
-import { useNavigate} from "react-router-dom";
+import { useNavigate, useLocation} from "react-router-dom";
 import '../../css/testMain.css';
 import { useTestQuestionOptionMutation } from '../../features/test/testApi';
 
-const TestPetMain=()=>{
+const TestMain=()=>{
  const navigate = useNavigate();
+  const location = useLocation();
  const [fetchQuestoinOption] = useTestQuestionOptionMutation();
+ const params = new URLSearchParams(location.search);
+   const tab = params.get("tab") || "N01"; // 기본값 N01
+ 
+   const isAnimal = tab === "N01";
+   const backgroundImage = isAnimal ? petImage : plantImage;
+ 
 const handleStart = async () => {
   try {
-        const res = await fetchQuestoinOption({ testQuestionType: 'N01' }).unwrap();
-        navigate('/test/petPage.do', { state: { questionData: res.data} });
+        const res = await fetchQuestoinOption({ testQuestionType: tab }).unwrap();
+        navigate(`/test/page.do?tab=${tab}`, { state: { questionData: res.data} });
          } catch (err) {
       console.error('질문+보기 불러오기 실패', err);
     }
@@ -23,7 +31,7 @@ const handleStart = async () => {
     return(
         <>
         <div className='background-img'
-          style={{backgroundImage:`url(${pet})`,
+          style={{backgroundImage:`url(${backgroundImage})`,
           }}> 
         
         <button
@@ -32,9 +40,12 @@ const handleStart = async () => {
           >
             <img src={back} alt="" sx={{ pl: '2px' }}></img>
           </button>
+
+          
         <button 
         className="test-button"
         onClick={handleStart}
+
                 >
                 <Typography sx={{fontWeight:'900', fontSize:'26px', color:'#583403' }}>
                     테스트 시작하기
@@ -44,4 +55,4 @@ const handleStart = async () => {
         </>
     )
 }
-export default TestPetMain;
+export default TestMain;
