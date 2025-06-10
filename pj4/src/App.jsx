@@ -42,6 +42,11 @@ import FindPw from './page/find/FindPw';
 import Walk from './page/walk/walk';
 import WalkRecord from './page/walk/walkRecord';
 import ResetPassword from './page/find/ResetPassword';
+
+import TestPetMain from './page/test/TestPetMain';
+import TestPlantMain from './page/test/TestPlantMain';
+import TestPetPage from './page/test/TestPetPage';
+import TestPetResult from './page/test/TestPetResult';
 const App = () => {
   const navigate = useNavigate();
 
@@ -102,6 +107,12 @@ const App = () => {
         {/*산책*/}
         <Route path="/pet/walk.do" element={<Walk/>} />
         <Route path="/pet/walkRecord.do" element={<WalkRecord/>} />
+
+        {/* 테스트 */}
+        <Route path="/test/petMain.do" element={<TestPetMain/>}/>
+        <Route path="/test/plantMain.do" element={<TestPlantMain/>}/>
+        <Route path="/test/petPage.do" element={<TestPetPage/>}/>
+        <Route path="/test/petResult.do" element={<TestPetResult/>}/>
       </Routes>
       <CmRouteChangeNotifier />
       </>
