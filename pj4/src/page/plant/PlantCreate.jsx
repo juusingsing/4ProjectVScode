@@ -54,7 +54,7 @@ const PlantCreate = () => {
     try {
       await createPlant(formData).unwrap();
       alert('등록 성공');
-      navigate('/PlantSunlighting')
+      navigate('/PlantSunlighting.do')
       setPlantName('');
       setPlantType('');
       setPlantPurchaseDate(null);
@@ -142,6 +142,7 @@ const PlantCreate = () => {
             <Typography className="label-text">식물 종류</Typography>
             <Combo groupId="PlantType"
               onSelectionChange={setPlantType}
+              sx={{ width: '200px' }}
             />
           </Box>
 
@@ -184,6 +185,7 @@ const PlantCreate = () => {
             <Combo
               groupId="SunType"
               onSelectionChange={setSunlightPreference}
+              sx={{ width: '200px' }}
             />
           </Box>
 

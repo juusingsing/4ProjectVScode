@@ -5,14 +5,14 @@ export const plantApi = createApi({
   reducerPath: 'plantApi',
   baseQuery: baseQueryWithAuthHandler,
   endpoints: (builder) => ({
-    
+
     // 식물 등록
     createPlant: builder.mutation({
       query: (formData) => {
         return {
-          url: '/plant/create.do', 
-          method: 'POST',         
-          body: formData,         
+          url: '/plant/create.do',
+          method: 'POST',
+          body: formData,
         };
       },
     }),
@@ -21,9 +21,9 @@ export const plantApi = createApi({
     updatePlant: builder.mutation({
       query: (formData) => {
         return {
-          url: '/plant/update.do', 
-          method: 'PUT',          
-          body: formData,      
+          url: '/plant/update.do',
+          method: 'PUT',
+          body: formData,
         };
       },
     }),
@@ -32,8 +32,8 @@ export const plantApi = createApi({
     getPlant: builder.query({
       query: (plantId) => {
         return {
-          url: `/plant/${plantId}`,  
-          method: 'GET',           
+          url: `/plant/${plantId}`,
+          method: 'GET',
         };
       },
     }),
@@ -42,8 +42,8 @@ export const plantApi = createApi({
     getPlantList: builder.query({
       query: () => {
         return {
-          url: '/plant/list',  
-          method: 'GET',       
+          url: '/plant/list',
+          method: 'GET',
         };
       },
     }),
@@ -52,26 +52,41 @@ export const plantApi = createApi({
     deletePlant: builder.mutation({
       query: (plantId) => {
         return {
-          url: `/plant/${plantId}`,  
-          method: 'DELETE',        
+          url: `/plant/${plantId}`,
+          method: 'DELETE',
         };
       },
     }),
 
     // 식물 조회
     getSimplePlantList: builder.mutation({
-      query: (plantId) => {
+      query: () => {
         return {
-          url: '/simple-list.do',  
-          method: 'POST',        
+          url: '/plant/simple-list.do',
+          method: 'POST',
         };
       },
     }),
+
+    // 식물 저장
+    saveSunlightInfo: builder.mutation({
+      query: (formData) => ({
+        url: '/plant/save.do',
+        method: 'POST',
+        body: formData,
+      }),
+      // responseHandler: 'text',
+      // transformResponse: (response) => {
+      //   return { message: response };
+      // },
+    }),
+
 
   }),
 });
 
 export const {
+  useSaveSunlightInfoMutation,
   useGetSimplePlantListMutation,
   useCreatePlantMutation,    // 식물 등록
   useUpdatePlantMutation,    // 식물 수정
