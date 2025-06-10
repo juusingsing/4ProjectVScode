@@ -43,6 +43,7 @@ import FindPw from './page/find/FindPw';
 import Walk from './page/walk/walk';
 import WalkRecord from './page/walk/walkRecord';
 import ResetPassword from './page/find/ResetPassword';
+import MedicalRecordList from './page/pet/MedicalRecordList';
 const App = () => {
   const navigate = useNavigate();
 
@@ -94,7 +95,7 @@ const App = () => {
         <Route path="/pet/petForm.do" element={<Pet_Form/>}/>
         <Route path="/pet/petFormUpdate.do" element={<Pet_Form_Update/>}/>
         <Route path="/pet/petFormHospital.do" element={<Pet_Form_Hospital/>}/>
-
+        <Route path="/pet/MedicalRecordList.do" element={<MedicalRecordList/>}/>
 
         {/*아이디, 비번 찾기*/}
         <Route path="/find/findId.do" element={<FindId/>} />
