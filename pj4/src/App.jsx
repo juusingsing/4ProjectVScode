@@ -6,6 +6,7 @@ import {  Routes, Route, useNavigate } from 'react-router-dom';
 import { setNavigate } from './cm/CmNavigateUtil';
 import CmRouteChangeNotifier from './cm/CmRouteChangeNotifier';
 import Home from './page/home/Home';
+import TestMain from './page/home/TestMain';
 import WriteCreate from './page/write/WriteCreate';
 import WriteList from './page/write/WriteList';
 import WriteUpdate from './page/write/WriteUpdate';
@@ -81,7 +82,7 @@ const App = () => {
         <Route path="/PlantSunlighting.do" element={<PlantSunlighting/>} />
         <Route path="/PlantRepotting.do" element={<PlantRepotting/>}/>
 
-        
+        <Route path="/test/TestMain.do" element={<TestMain/>}/>
       
         {/* 게시판 */}
         <Route path="/write/create.do" element={<WriteCreate />} />
