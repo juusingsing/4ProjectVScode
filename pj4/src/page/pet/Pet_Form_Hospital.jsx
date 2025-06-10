@@ -1,6 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
-  Box, Typography, InputBase, Button, IconButton
+  Box,
+  Button,
+  Typography,
+  InputBase
 } from '@mui/material';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -11,6 +14,9 @@ import { useCmDialog } from '../../cm/CmDialogUtil';
 import { Tabs, Tab } from '@mui/material';
 import Combo from '../../page/combo/combo';
 import { useLocation } from 'react-router-dom';
+import Stack from '@mui/material/Stack';
+import { usePet_Form_HospitalMutation } from '../../features/pet/petApi'; // 경로는 실제 프로젝트에 맞게 조정
+
 
 const FormRow = ({ label, value = '', onChange, multiline = false, inputRef, fieldKey = '' }) => {
   let backgroundColor = '#E0E0E0';
@@ -178,8 +184,6 @@ const DateInputRow = ({ label, value, onChange }) => {
 };
 
 const Pet_Form_Hospital = () => {
-  const [animalName, setAnimalName] = useState('');
-  const animalNameRef = useRef();
   const location = useLocation();
   const [animalAdoptionDate, setAnimalAdoptionDate] = useState('');
   const [animalVisitDate, setAnimalVisitDate] = useState(dayjs());
@@ -189,18 +193,22 @@ const Pet_Form_Hospital = () => {
   const [animalHospitalName, setAnimalHospitalName] = useState('');
   const animalHospitalNameRef = useRef();
   const [animalTreatmentType, setAnimalTreatmentType] = useState('');
-  
+  const [petFormHospital] = usePet_Form_HospitalMutation();
   const [animalMedication, setAnimalMedication] = useState('');
   const animalMedicationRef = useRef();
   const { showAlert } = useCmDialog();
   const [selectedTab, setSelectedTab] = useState(0);
-  
+  const [animalName, setAnimalName] = useState('');
+  const [animalId, setAnimalId] = useState(null);
+
   useEffect(() => {
-    // 수정 페이지에서 전달된 날짜 적용
-    if (location.state?.updatedDate) {
-      setAnimalAdoptionDate(location.state.updatedDate);
+    // 쿼리스트링에서 animalId 가져오기
+    const searchParams = new URLSearchParams(location.search);
+    const idFromQuery = searchParams.get('animalId');
+    if (idFromQuery) {
+      setAnimalId(idFromQuery);
     }
-  }, [location.state]);
+  }, [location.search]);
 
   const handleTabChange = (event, newValue) => {
     setSelectedTab(newValue);
@@ -210,14 +218,13 @@ const Pet_Form_Hospital = () => {
     if (file) setImageFile(file);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (CmUtil.isEmpty(animalName)) {
-      showAlert('동물 이름을 입력해주세요.');
-      animalNameRef.current?.focus();
+
+    if (!animalId) {
+      showAlert('동물을 선택해주세요.');
       return;
     }
-
     if (CmUtil.isEmpty(animalHospitalName)) {
       showAlert('병원 이름을 입력해주세요.');
       animalHospitalNameRef.current?.focus();
@@ -230,9 +237,24 @@ const Pet_Form_Hospital = () => {
     }
 
     const formData = new FormData();
-    formData.append('animalTreatment/Type', animalTreatmentType);
-    // TODO: submit logic
-    
+    formData.append('animalId', animalId);
+    formData.append('animalAdoptionDate', animalAdoptionDate);
+    formData.append('animalVisitDate', animalVisitDate.format('YYYY-MM-DD'));
+    formData.append('animalHospitalName', animalHospitalName);
+    formData.append('animalMedication', animalMedication);
+    formData.append('animalTreatmentMemo', animalTreatmentMemo);
+    formData.append('animalTreatmentType', animalTreatmentType);
+    if (imageFile) {
+      formData.append('image', imageFile);
+    }
+
+    try {
+      const response = await petFormHospital(formData).unwrap();
+      showAlert('병원 진료 기록이 저장되었습니다.');
+    } catch (error) {
+      console.error('등록 실패:', error);
+      showAlert('등록 중 오류가 발생했습니다.');
+    }
   };
    
   
@@ -259,8 +281,15 @@ const Pet_Form_Hospital = () => {
     >
       {/* 왼쪽 입력 */}
       <Box>
-        <FormRow label="동물 이름" value={animalName} onChange={setAnimalName} inputRef={animalNameRef} />
-        <FormRow label="날짜" value={animalAdoptionDate} onChange={setAnimalAdoptionDate} />
+        <Stack direction="row" spacing={2} alignItems="center">
+          <Typography variant="subtitle1">동물 이름</Typography>
+          <Typography>{animalName}</Typography>
+        </Stack>
+
+        <Stack direction="row" spacing={2} alignItems="center">
+          <Typography variant="subtitle1">입양일</Typography>
+          <Typography>{animalAdoptionDate}</Typography>
+        </Stack>
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
           <Button
             variant="contained"
@@ -386,7 +415,7 @@ const Pet_Form_Hospital = () => {
         >
           진료 내용
         </Typography>
-        <Combo groupId="Medical"/>
+        <Combo groupId="Medical" value={animalTreatmentType} onChange={(val) => setAnimalTreatmentType(val)} />
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', mb: 2 }}>
           <InputBase
@@ -433,8 +462,7 @@ const Pet_Form_Hospital = () => {
             저장
           </Button>
         </Box>
-    </Box>
-    
+      </Box>
   </Box>
 );
 };

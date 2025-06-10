@@ -22,7 +22,7 @@ export const petApi = createApi({
     }),
     Pet_Form_Hospital: builder.mutation({
       query: (formData) => ({
-        url: '/pet/petHospital.do',
+        url: '/petHospital/petHospital.do',
         method: 'POST',
         body: formData,
       }),

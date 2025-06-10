@@ -51,7 +51,7 @@ const DiaryUpdate = () => {
       setDiaryType(data.data.diaryType);
       setIsOn(data.data.diaryType === "N01");
       setExistingFiles(data.data.postFiles || []);
-      setRemainingFileIds(data.data.postFiles?.map(file => file.fileId) || []);
+      setRemainingFileIds(data.data.postFiles?.map(file => file.postFileId) || []);
       console.log("📦 data from useDiaryViewQuery", data);
     }
   }, [data]);
@@ -99,7 +99,6 @@ const DiaryUpdate = () => {
       return;
     }
 
-    // const [uploadedFiles, setUploadedFiles]=useState([]);
     const formData = new FormData();
     formData.append("diaryId", id);
     formData.append("diaryTitle", title);
@@ -259,7 +258,7 @@ const DiaryUpdate = () => {
                   }} />
                 <IconButton onClick={() => {
                   setExistingFiles(prev => prev.filter((_, i) => i !== index));
-                  setRemainingFileIds(prev => prev.filter(id => id !== file.fileId));
+                  setRemainingFileIds(prev => prev.filter(id => id !== file.postFileId));
                 }}
                   sx={{
                     position: 'absolute',
