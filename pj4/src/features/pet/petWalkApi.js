@@ -1,20 +1,27 @@
-// src/features/file/fileApi.js
+
 import { createApi } from '@reduxjs/toolkit/query/react';
 import baseQueryWithAuthHandler from '../../cm/CmCustomBaseQuery'; 
-export const imgApi = createApi({
-  reducerPath: 'imgApi',
+export const petWalkApi = createApi({
+  reducerPath: 'petWalkApi',
   baseQuery: baseQueryWithAuthHandler,
   endpoints: (builder) => ({
-    imgSave: builder.mutation({
+    petWalkSave: builder.mutation({
       query: (formData) => ({
-        url: '/img/imgSave.do',
+        url: '/petWalk/petSave.do',
         method: 'POST',
         body: formData,
       }),
     }),
-    imgLoad: builder.query({
+    petImgSave: builder.mutation({
       query: (formData) => ({
-        url: '/img/imgLoad.do',
+        url: '/petWalk/imgSave.do',
+        method: 'POST',
+        body: formData,
+      }),
+    }),
+    petImgLoad: builder.query({
+      query: (formData) => ({
+        url: '/petWalk/imgLoad.do',
         method: 'POST',
         body: formData,
       }),
@@ -26,6 +33,7 @@ export const imgApi = createApi({
 });
 
 export const {
-  useImgSaveMutation,
-  useImgLoadQuery,
-} = imgApi;
+  usePetWalkSaveMutation,
+  usePetImgSaveMutation,
+  usePetImgLoadQuery,
+} = petWalkApi;

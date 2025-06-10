@@ -125,19 +125,6 @@ const Camera = () => {
             )}
         </div>
 
-        {/* <div style={styles.gridContainer}>
-          {images.map((image, index) => (
-            <div key={index} style={styles.imageBox}>
-              <img
-              // src={`http://192.168.0.32:8081${image.filePath.replace(/\\/g, '/')}`}
-                src={`http://192.168.0.32:8081${image.filePath}`}
-                alt={`img-${index}`}
-                style={styles.image}
-              />
-            </div>
-          ))}
-        </div> */}
-
         <div style={{ width: '300px', padding: '20px 0' }}>
           <Swiper
             modules={[Navigation, Pagination]}
@@ -150,6 +137,7 @@ const Camera = () => {
               <SwiperSlide key={index}> 
 
                 <img
+                // src={`http://192.168.0.32:8081${image.postFilePath.replace(/\\/g, '/')}`}
                   src={`http://192.168.0.32:8081${image.postFilePath}`}
                   alt={`img-${index}`}
                   style={{ width: '100%', height: 'auto', borderRadius: 8 }}

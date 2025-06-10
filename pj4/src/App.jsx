@@ -103,7 +103,7 @@ const App = () => {
 
         {/*산책*/}
         <Route path="/pet/walk.do" element={<Walk/>} />
-        <Route path="/pet/walkRecord.do" element={<WalkRecord/>} />
+        <Route path="/pet/walkRecord.do" element={<LayoutLogin><WalkRecord/></LayoutLogin>} />
       </Routes>
       <CmRouteChangeNotifier />
       </>
