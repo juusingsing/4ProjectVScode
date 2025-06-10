@@ -201,7 +201,7 @@ const WriteCreate = () => {
                   borderBottom: "none !important",
                 },
                 "& .MuiInputBase-input": {
-                  padding: "0px",
+                  padding: "0 10px",
                   flexGrow: 1,
                 },
               },
