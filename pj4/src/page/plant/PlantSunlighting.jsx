@@ -19,7 +19,7 @@ const PlantSunlighting = () => {
   const [sunlightStatusText, setSunlightStatusText] = useState('');
 
   useEffect(() => {
-    getSimpleList();
+    //getSimpleList();
   }, []);
   
   const handleTabChange = (event, newValue) => {
