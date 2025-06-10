@@ -75,8 +75,7 @@ const App = () => {
         <Route path="/user/update.do" element={<LayoutLogin><UserUpdate /></LayoutLogin>} />
         <Route path="/user/view.do" element={<LayoutLogin><UserView /></LayoutLogin>} />
         {/* 홈화면 */}
-        <Route path="/Home_Pet.do" element={<Home_Pet />} />
-        <Route path="/Home_Plant.do" element={<Home_Plant />} />
+        <Route path="/Home.do" element={<Home />} />
         <Route path="/diaryCreate.do" element={<DiaryCreate />} />
 
 

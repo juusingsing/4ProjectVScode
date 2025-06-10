@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Box, Button, Typography } from "@mui/material";
-import AnimalIcon from "../../icon/Footprint_Icon.png";
-import PlantIcon from "../../icon/Plant_Icon.png";
+import AnimalIcon from "../../image/Footprint_Icon.png";
+import PlantIcon from "../../image/Plant_Icon.png";
 
 const TabCombo = ({ onChange, defaultValue }) => {
   const [activeTab, setActiveTab] = useState("N01");
@@ -26,7 +26,7 @@ const TabCombo = ({ onChange, defaultValue }) => {
   ];
 
   return (
-    <Box sx={{display:"flex", width:"100%"}}>
+    <Box sx={{ display: "flex", width: "100%" }}>
       {tabs.map((tab) => (
         <Button
           key={tab.value}
@@ -35,15 +35,33 @@ const TabCombo = ({ onChange, defaultValue }) => {
           }`}
           onClick={() => handleTabClick(tab.value)}
           sx={{
-            bgcolor:"#526B5C",
-            color:"white",
+            position: "relative",
+            width: "120px",
+            bgcolor: "#526B5C",
+            color: "white",
             display: "flex",
+            cursor: "pointer",
             alignItems: "center",
             justifyContent: "center",
-            flex: 1,
-            width:"100%",
+            flexGrow: 1,
             height: "50px",
-            borderRadius:"0px"
+            borderRadius: 0,
+            transition: "background-color 0.3s ease",
+            "&::before": {
+              content: '""',
+              position: "absolute",
+              bottom: "10px", // 글자 바로 아래 위치
+              left: "50%",
+              width: "40%",
+              height: "1px", // 언더바 높이
+              backgroundColor: "white",
+              borderRadius: "1px",
+              transform: "translateX(-50%) scaleX(0)", // 처음엔 안 보이게
+              transition: "transform 0.3s ease",
+            },
+            "&.active::before": {
+              transform: "translateX(-50%) scaleX(1)", // 활성화될 때 언더바 나타나기
+            },
           }}
         >
           <Typography variant="button" sx={{ fontSize: "1rem" }}>
