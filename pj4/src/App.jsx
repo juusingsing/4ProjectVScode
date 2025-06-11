@@ -77,10 +77,7 @@ const App = () => {
         <Route path="/user/update.do" element={<LayoutLogin><UserUpdate /></LayoutLogin>} />
         <Route path="/user/view.do" element={<LayoutLogin><UserView /></LayoutLogin>} />
         {/* 홈화면 */}
-        <Route path="/Home_Pet.do" element={<Home_Pet />} />
-        <Route path="/Home_Plant.do" element={<Home_Plant />} />
-        <Route path="/diaryCreate.do" element={<DiaryCreate />} />
-
+        <Route path="/Home.do" element={<Home />} />
 
         {/* 식물탭 */}
         <Route path="/PlantCreate.do" element={<PlantCreate />} />
@@ -88,14 +85,6 @@ const App = () => {
         <Route path="/PlantWatering.do" element={<LayoutLogin><PlantWatering /></LayoutLogin>} />
         <Route path="/PlantSunlighting.do" element={<PlantSunlighting />} />
         <Route path="/PlantRepotting.do" element={<PlantRepotting />} />
-
-
-        <Route path="/Home.do" element={<Home />} />
-        <Route path="/diaryCreate.do" element={<DiaryCreate/>}/>
-        <Route path="/PlantCreate.do" element={<PlantCreate/>}/>
-        <Route path="/PlantWatering.do" element={<LayoutLogin><PlantWatering/></LayoutLogin>} />
-        <Route path="/PlantSunlighting.do" element={<PlantSunlighting/>} />
-        <Route path="/PlantRepotting.do" element={<PlantRepotting/>}/>
 
       
         {/* 게시판 */}
@@ -113,10 +102,6 @@ const App = () => {
         <Route path="/pet/petFormUpdate.do" element={<Pet_Form_Update />} />
         <Route path="/pet/petFormHospital.do" element={<Pet_Form_Hospital />} />
 
-        <Route path="/pet/petForm.do" element={<Pet_Form/>}/>
-        <Route path="/pet/petFormUpdate.do" element={<Pet_Form_Update/>}/>
-        <Route path="/pet/petFormHospital.do" element={<Pet_Form_Hospital/>}/>
-
         {/*아이디, 비번 찾기*/}
         <Route path="/find/findId.do" element={<FindId />} />
         <Route path="/find/findPw.do" element={<FindPw />} />
@@ -125,7 +110,6 @@ const App = () => {
         {/*산책*/}
         <Route path="/pet/walk.do" element={<Walk />} />
         <Route path="/pet/walkRecord.do" element={<WalkRecord />} />
-        <Route path="/pet/walk.do" element={<Walk/>} />
         <Route path="/pet/walkRecord.do" element={<LayoutLogin><WalkRecord/></LayoutLogin>} />
         <Route path="/pet/walkRecord.do" element={<WalkRecord/>} />
 
