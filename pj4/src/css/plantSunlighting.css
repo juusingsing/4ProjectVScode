@@ -106,6 +106,36 @@
   border-bottom: 1px solid #f0f0f0;
 }
 
+/* 일조상태 아이콘 */
+.status-icon {
+  font-size: 24px;
+  color: gray;
+  transition: color 0.3s ease;
+  cursor: pointer;
+}
+
+.status-icon.selected-sun {
+  color: #f39c12;
+  font-weight: bold;
+}
+
+.status-icon.selected-tint {
+  color: #3498db;
+  font-weight: bold;
+}
+
+.status-icon.selected-cloud {
+  color: #6b7374;
+  font-weight: bold;
+}
+
+.status-icon.selected-snow {
+  color: #add7f3;
+  font-weight: bold;
+}
+
+
+
 .status-label {
   font-weight: 600 !important;
   color: #333 !important;

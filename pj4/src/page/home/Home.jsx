@@ -12,7 +12,7 @@ import PlantTestMain from "../../image/plantTestMain.png";
 
 const Home = () => {
   const location = useLocation();
-  const [activeTab, setActiveTab] = useState("N01"); // 기본값 "N01" (동물)
+  const [activeTab, setActiveTab] = useState("N01");
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -27,18 +27,33 @@ const Home = () => {
 
   // 현재 활성화된 탭에 따라 테스트 이미지 결정
   const currentTestImage = activeTab === "N01" ? PetTestMain : PlantTestMain;
-
-  // TODO: 동물/식물 심리테스트 링크 설정
-  // 이 부분은 실제 라우팅 경로에 맞게 변경해주세요.
-const currentTestLink = `/test/main.do?tab=${activeTab}`;
+  // 현재 활성화된 탭에 따라 심리테스트 링크 연결
+  const currentTestLink = `/test/main.do?tab=${activeTab}`;
 
   const handleTabChange = (selectedTabValue) => {
     setActiveTab(selectedTabValue);
     // URL 쿼리 파라미터도 업데이트하여 새로고침 시에도 상태 유지
-    window.history.pushState(null, "", `/home?tab=${selectedTabValue}`);
+    window.history.pushState(null, "", `/home.do?tab=${selectedTabValue}`);
   };
 
-  // TODO: 실제로는 API 호출을 통해 동물/식물 목록 데이터를 가져와야 합니다.
+  const [sortBy, setSortBy] = useState(""); // 선택된 정렬 기준 상태
+
+  const handleChange = (event) => {
+    const selectedValue = event.target.value;
+    setSortBy(selectedValue);
+    // 여기에 선택된 정렬 기준(selectedValue)에 따라 데이터를 정렬하는 로직을 추가합니다.
+    console.log(`선택된 정렬 기준: ${selectedValue}`);
+
+    // 예시: 실제 데이터 정렬 로직 (이 부분은 사용자의 데이터 구조에 맞게 수정해야 합니다.)
+    // if (selectedValue === 'name') {
+    //   // 이름 순으로 데이터 정렬
+    //   console.log('이름 순으로 정렬합니다.');
+    // } else if (selectedValue === 'date') {
+    //   // 등록일 순으로 데이터 정렬
+    //   console.log('등록일 순으로 정렬합니다.');
+    // }
+  };
+
   const animalList = [
     {
       id: 1,
@@ -49,26 +64,6 @@ const currentTestLink = `/test/main.do?tab=${activeTab}`;
       id: 2,
       name: "강아지",
       imageUrl: "https://via.placeholder.com/100x90/87CEEB/FFFFFF?text=Dog",
-    },
-    {
-      id: 3,
-      name: "햄스터",
-      imageUrl: "https://via.placeholder.com/100x90/DA70D6/FFFFFF?text=Hamster",
-    },
-    {
-      id: 4,
-      name: "페럿",
-      imageUrl: "https://via.placeholder.com/100x90/3CB371/FFFFFF?text=Ferret",
-    },
-    {
-      id: 5,
-      name: "앵무새",
-      imageUrl: "https://via.placeholder.com/100x90/FFA500/FFFFFF?text=Parrot",
-    },
-    {
-      id: 6,
-      name: "토끼",
-      imageUrl: "https://via.placeholder.com/100x90/EE82EE/FFFFFF?text=Rabbit",
     },
   ];
 
@@ -83,27 +78,6 @@ const currentTestLink = `/test/main.do?tab=${activeTab}`;
       id: 102,
       name: "스투키",
       imageUrl: "https://via.placeholder.com/100x90/6B8E23/FFFFFF?text=Stucky",
-    },
-    {
-      id: 103,
-      name: "아레카야자",
-      imageUrl: "https://via.placeholder.com/100x90/7CFC00/FFFFFF?text=Areca",
-    },
-    {
-      id: 104,
-      name: "산세베리아",
-      imageUrl: "https://via.placeholder.com/100x90/32CD32/FFFFFF?text=Sanse",
-    },
-    {
-      id: 105,
-      name: "아이비",
-      imageUrl: "https://via.placeholder.com/100x90/ADFF2F/FFFFFF?text=Ivy",
-    },
-    {
-      id: 106,
-      name: "다육이",
-      imageUrl:
-        "https://via.placeholder.com/100x90/9ACD32/FFFFFF?text=Succulent",
     },
   ];
 
@@ -125,10 +99,10 @@ const currentTestLink = `/test/main.do?tab=${activeTab}`;
       <Box
         sx={{
           display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
+          gridTemplateColumns: "repeat(4, 1fr)",
           gap: "16px",
-          mt: 2,
-          px: 2,
+          mt: 1,
+          px: 1,
           pb: 8,
         }}
       >
@@ -140,14 +114,13 @@ const currentTestLink = `/test/main.do?tab=${activeTab}`;
               borderRadius: "8px",
               overflow: "hidden",
               textAlign: "center",
-              pb: 1,
               boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
             }}
           >
             <Box
               sx={{
                 width: "100%",
-                height: "90px",
+                height: "70px",
                 bgcolor: "#eee",
                 display: "flex",
                 alignItems: "center",
@@ -158,34 +131,41 @@ const currentTestLink = `/test/main.do?tab=${activeTab}`;
                 backgroundPosition: "center",
               }}
             ></Box>
-            <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-              {item.name}
-            </Typography>
+            <Typography sx={{ fontSize: "15px" }}>{item.name}</Typography>
           </Box>
         ))}
+
         {/* '+' 추가 버튼 */}
-        <Box
-          sx={{
-            border: "1px dashed #ccc",
-            borderRadius: "8px",
-            height: "110px",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            bgcolor: "#f9f9f9",
-            "&:hover": { bgcolor: "#f0f0f0" },
-            boxShadow: "0px 2px 4px rgba(0,0,0,0.05)",
-          }}
+        <Link
+          to={activeTab === "N01" ? "/pet/petForm.do" : "/PlantCreate.do"}
+          style={{ textDecoration: "none" }}
         >
-          <Typography variant="h4" sx={{ color: "#2ecc71", fontSize: "3rem" }}>
-            +
-          </Typography>
-          <Typography variant="caption" color="text.secondary">
-            {activeTab === "N01" ? "동물 추가" : "식물 추가"}
-          </Typography>
-        </Box>
+          <Box
+            sx={{
+              border: "1px dashed #ccc",
+              borderRadius: "8px",
+              height: "110px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              bgcolor: "#f9f9f9",
+              "&:hover": { bgcolor: "#f0f0f0" },
+              boxShadow: "0px 2px 4px rgba(0,0,0,0.05)",
+            }}
+          >
+            <Typography
+              variant="h4"
+              sx={{ color: "#2ecc71", fontSize: "3rem" }}
+            >
+              +
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              {activeTab === "N01" ? "동물 추가" : "식물 추가"}
+            </Typography>
+          </Box>
+        </Link>
       </Box>
     );
   };
@@ -226,10 +206,17 @@ const currentTestLink = `/test/main.do?tab=${activeTab}`;
       <Box>
         <TabCombo onChange={handleTabChange} defaultValue={activeTab} />
       </Box>
-      <Box sx={{width:"100%",display:"flex", justifyContent:"flex-end"}}>
+      <Box sx={{ width: "100%", display: "flex", justifyContent: "flex-end" }}>
         {/* 정렬 셀렉트 박스 */}
-        <div className="Home_Selectbox">
-          <select name="정렬">
+        <div style={{ marginTop: "10px" }}>
+          <select
+            name="정렬"
+            style={{ padding: "5px", borderRadius: "5px" }}
+            onChange={handleChange} // onChange 이벤트 핸들러 추가
+            value={sortBy} // 현재 선택된 값 표시
+          >
+            {/* 첫 번째 옵션은 선택되지 않은 상태로 두거나, "선택하세요"와 같은 문구로 시작할 수 있습니다. */}
+            {/* <option value="">정렬 기준 선택</option> */}
             <option value="name">이름 순</option>
             <option value="date">등록일 순</option>
           </select>
