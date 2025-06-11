@@ -1,17 +1,16 @@
-import { createApi } from '@reduxjs/toolkit/query/react';
-import baseQueryWithAuthHandler from '../../cm/CmCustomBaseQuery'; // 인증 및 에러 처리용 커스텀 baseQuery
+import { createApi } from "@reduxjs/toolkit/query/react";
+import baseQueryWithAuthHandler from "../../cm/CmCustomBaseQuery"; // 인증 및 에러 처리용 커스텀 baseQuery
 
 export const plantApi = createApi({
-  reducerPath: 'plantApi',
+  reducerPath: "plantApi",
   baseQuery: baseQueryWithAuthHandler,
   endpoints: (builder) => ({
-
     // 식물 등록
     createPlant: builder.mutation({
       query: (formData) => {
         return {
-          url: '/plant/create.do',
-          method: 'POST',
+          url: "/plant/create.do",
+          method: "POST",
           body: formData,
         };
       },
@@ -21,8 +20,8 @@ export const plantApi = createApi({
     updatePlant: builder.mutation({
       query: (formData) => {
         return {
-          url: '/plant/update.do',
-          method: 'PUT',
+          url: "/plant/update.do",
+          method: "PUT",
           body: formData,
         };
       },
@@ -33,7 +32,7 @@ export const plantApi = createApi({
       query: (plantId) => {
         return {
           url: `/plant/${plantId}`,
-          method: 'GET',
+          method: "GET",
         };
       },
     }),
@@ -42,8 +41,8 @@ export const plantApi = createApi({
     getPlantList: builder.query({
       query: () => {
         return {
-          url: '/plant/list',
-          method: 'GET',
+          url: "/plant/list",
+          method: "GET",
         };
       },
     }),
@@ -53,7 +52,7 @@ export const plantApi = createApi({
       query: (plantId) => {
         return {
           url: `/plant/${plantId}`,
-          method: 'DELETE',
+          method: "DELETE",
         };
       },
     }),
@@ -62,8 +61,8 @@ export const plantApi = createApi({
     getSimplePlantList: builder.mutation({
       query: () => {
         return {
-          url: '/plant/simple-list.do',
-          method: 'POST',
+          url: "/plant/simple-list.do",
+          method: "POST",
         };
       },
     }),
@@ -71,8 +70,8 @@ export const plantApi = createApi({
     // 식물 저장
     saveSunlightInfo: builder.mutation({
       query: (formData) => ({
-        url: '/plant/save.do',
-        method: 'POST',
+        url: "/plant/save.do",
+        method: "POST",
         body: formData,
       }),
       // responseHandler: 'text',
@@ -83,49 +82,63 @@ export const plantApi = createApi({
     // 식물 일조량 조회
     SunlightLogs: builder.query({
       query: (formData) => ({
-        url: '/plant/sunlight-logs.do',
-        method: 'POST',
+        url: "/plant/sunlight-logs.do",
+        method: "POST",
         body: formData,
       }),
-      keepUnusedDataFor: 0, 
+      keepUnusedDataFor: 0,
       refetchOnMountOrArgChange: true,
-      staleTime: 0, 
+      staleTime: 0,
     }),
 
     // 식물 일조량 개별 삭제
     deleteSunlightLog: builder.mutation({
-      query: (sunlightLogId) => { // Renamed 'params' to 'sunlightLogId' for clarity
+      query: (sunlightLogId) => {
+        // Renamed 'params' to 'sunlightLogId' for clarity
         return {
-          url: '/plant/sunlight-delete.do',
-          method: 'POST', // Backend expects POST
-          body: { plantSunlightingId: sunlightLogId }, 
-          };
-        },
-      }),
+          url: "/plant/sunlight-delete.do",
+          method: "POST", // Backend expects POST
+          body: { plantSunlightingId: sunlightLogId },
+        };
+      },
+    }),
 
-      //식물 일조량 개별 수정
-      updateSunlightLog: builder.mutation({
-        query: (sunlightLogId) => { // Renamed 'params' to 'sunlightLogId' for clarity
-          return {
-            url: '/plant/sunlight-update.do',
-            method: 'POST', // Backend expects POST
-            body: { plantSunlightingId: sunlightLogId }, 
-            };
-          },
-        }),
+    //식물 일조량 개별 수정
+    updateSunlightLog: builder.mutation({
+      query: (sunlightLogId) => {
+        // Renamed 'params' to 'sunlightLogId' for clarity
+        return {
+          url: "/plant/sunlight-update.do",
+          method: "POST", // Backend expects POST
+          body: { plantSunlightingId: sunlightLogId },
+        };
+      },
+    }),
+
+    //식물 일조량 단건 조회
+    sunlightAlist: builder.query({
+      query: (params) => ({
+        url: "/plant/sunlight-alist.do",
+        method: "POST",
+        body: params,
       }),
-    });
-  
-    
+      keepUnusedDataFor: 0, // = cacheTime: 0
+      refetchOnMountOrArgChange: true,
+      staleTime: 0, // 이건 RTK Query에서 직접 사용되진 않음. react-query에서 쓰는 용어
+    }),
+  }),
+});
+
 export const {
+  useSunlightAlistQuery,
   useUpdateSunlightLogMutation,
-  useDeleteSunlightLogMutation,   // 식물 일조량 개별 삭제
-  useSunlightLogsQuery,           // 식물 일조량 조회
+  useDeleteSunlightLogMutation, // 식물 일조량 개별 삭제
+  useSunlightLogsQuery, // 식물 일조량 조회
   useSaveSunlightInfoMutation,
   useGetSimplePlantListMutation,
-  useCreatePlantMutation,         // 식물 등록
-  useUpdatePlantMutation,         // 식물 수정
-  useGetPlantQuery,               // 식물 단건 조회
-  useGetPlantListQuery,           // 식물 목록 조회
-  useDeletePlantMutation,         // 식물 삭제
+  useCreatePlantMutation, // 식물 등록
+  useUpdatePlantMutation, // 식물 수정
+  useGetPlantQuery, // 식물 단건 조회
+  useGetPlantListQuery, // 식물 목록 조회
+  useDeletePlantMutation, // 식물 삭제
 } = plantApi;
