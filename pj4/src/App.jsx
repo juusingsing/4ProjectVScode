@@ -104,7 +104,6 @@ const App = () => {
 
         {/*산책*/}
         <Route path="/pet/walk.do" element={<Walk/>} />
-        <Route path="/pet/walkRecord.do" element={<LayoutLogin><WalkRecord/></LayoutLogin>} />
         <Route path="/pet/walkRecord.do" element={<WalkRecord/>} />
 
         {/* 테스트 */}
