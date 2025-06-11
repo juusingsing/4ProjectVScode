@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -20,7 +20,7 @@ import {
   useSaveSunlightInfoMutation,
   useSunlightLogsQuery,
   useDeleteSunlightLogMutation,
-  
+  useSunlightAlistQuery,
 } from "../../features/plant/plantApi";
 import "../../css/plantSunlighting.css";
 
@@ -129,12 +129,11 @@ const SunlightContent = ({
                 삭제
               </Button>
               <Button
-
                 variant="text"
                 className="log-action-button"
                 onClick={() => onEditLog(log.plantSunlightingId)}
               >
-               {/*이 수정버튼은 useSaveSunlightInfoMutationd을 이용해서 값을 화면에 다시 불러오는 역할을 해*/}
+                {/*이 수정버튼은 useSaveSunlightInfoMutationd을 이용해서 값을 화면에 다시 불러오는 역할을 해*/}
                 수정
               </Button>
             </Box>
@@ -155,7 +154,20 @@ const PlantSunlighting = () => {
   const [selectedSunlight, setSelectedSunlight] = useState(null);
   const [sunlightLogs, setSunlightLogs] = useState([]);
   const [deleteSunlightLog] = useDeleteSunlightLogMutation();
+  const [searchParams] = useSearchParams();
 
+  const [editingLog, setSelectedLog] = useState(null); // 현재 수정 중인 로그
+  const [editStatus, setStatus] = useState(""); // 수정할 상태
+  const [editMemo, setMemo] = useState(""); // 수정할 메모
+
+  const handleSelectLog = (log) => {
+    setSelectedLog(log);
+    setStatus(log.sunlightStatus); // ☀️ 상태 채우기
+    setMemo(log.sunlightMemo); // 메모 채우기
+  };
+
+  const id = searchParams.get("id");
+  // const { data, isLoading } = useSunlightAlistQuery({ plantSunlightingId: id });
   const {
     data: fetchedLogs,
     error,
@@ -187,6 +199,7 @@ const PlantSunlighting = () => {
         setSelectedSunlight(null);
         setSunlightStatusText("");
         // 저장 후 다시 로그 요청
+        
         console.log("triggering logs for:", plantId);
         const plantData = new FormData();
         plantData.append("plantId", 1);
@@ -200,21 +213,24 @@ const PlantSunlighting = () => {
 
   const handleDeleteLog = async (id) => {
     console.log("Deleting log with ID:", id); // 여기에 로그 추가
-  try {
-    await deleteSunlightLog(id).unwrap(); // 삭제 요청 
-    alert("일지가 성공적으로 삭제되었습니다."); // 사용자에게 알림
+    try {
+      await deleteSunlightLog(id).unwrap(); // 삭제 요청
+      alert("일지가 성공적으로 삭제되었습니다."); // 사용자에게 알림
 
-    // 삭제 성공 후, 서버에서 최신 일지 목록을 다시 가져와 UI 업데이트
-    refetch(); // <--- 이 부분이 중요합니다.
-
-  } catch (error) {
-    console.error("삭제실패:", error); 
-    alert("삭제 중 오류 발생");
-  }
-};
+      // 삭제 성공 후, 서버에서 최신 일지 목록을 다시 가져와 UI 업데이트
+      refetch(); // <--- 이 부분이 중요합니다.
+    } catch (error) {
+      console.error("삭제실패:", error);
+      alert("삭제 중 오류 발생");
+    }
+  };
 
   const handleEditLog = (id) => {
-    alert(`수정 기능은 아직 구현되지 않았습니다. (id: ${id})`);
+    const logToEdit = sunlightLogs.find((log) => log.plantSunlightingId === id);
+    if (logToEdit) {
+      setSelectedSunlight(logToEdit.sunlightStatus); // ☀️ 선택된 아이콘 세팅
+      setSunlightStatusText(logToEdit.sunlightMemo); // ✍️ 메모 세팅
+    }
   };
 
   return (
