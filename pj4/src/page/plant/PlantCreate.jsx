@@ -48,7 +48,7 @@ const PlantCreate = () => {
 
     const fileInput = document.getElementById('imageUpload');
     if (fileInput.files.length > 0) {
-      formData.append('file', fileInput.files[0]);
+      formData.append('files', fileInput.files[0]);
     }
 
     try {
