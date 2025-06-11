@@ -48,7 +48,7 @@ import ResetPassword from './page/find/ResetPassword';
 import TestMain from './page/test/TestMain';
 import TestPage from './page/test/TestPage';
 import TestResult from './page/test/TestResult';
-
+import Calendar from './page/calendar/Calendar';
 
 const App = () => {
   const navigate = useNavigate();
@@ -117,6 +117,9 @@ const App = () => {
         <Route path="/test/main.do" element={<TestMain/>}/>
         <Route path="/test/page.do" element={<TestPage/>}/>
         <Route path="/test/result.do" element={<TestResult/>}/>
+
+        {/*달력*/}
+        <Route path="/calendar.do" element={<Calendar/>}/>
       </Routes>
       <CmRouteChangeNotifier />
     </>
