@@ -8269,7 +8269,7 @@ react-app-polyfill@^3.0.0:
 
 react-calendar@^6.0.0:
   version "6.0.0"
-  resolved "https://registry.yarnpkg.com/react-calendar/-/react-calendar-6.0.0.tgz#3b13a9e80832fe51fdebc6afdcd2285ac851926f"
+  resolved "https://registry.npmjs.org/react-calendar/-/react-calendar-6.0.0.tgz#3b13a9e80832fe51fdebc6afdcd2285ac851926f"
   integrity sha512-6wqaki3Us0DNDjZDr0DYIzhSFprNoy4FdPT9Pjy5aD2hJJVjtJwmdMT9VmrTUo949nlk35BOxehThxX62RkuRQ==
   dependencies:
     "@wojtekmaj/date-utils" "^2.0.2"
