@@ -45,7 +45,7 @@ const Main = () => {
       <button onClick={() => navigate('/pet/petFormHospital.do')} style={{ padding: '12px 24px' }}>
         동물 등록 병원진료 페이지 이동
       </button>
-      <button onClick={() => navigate('/pet/walk.do')} style={{ padding: '12px 24px' }}>
+      <button onClick={() => navigate('/pet/walk.do?id=1')} style={{ padding: '12px 24px' }}>
         펫산책 페이지 이동
       </button>
     </div>

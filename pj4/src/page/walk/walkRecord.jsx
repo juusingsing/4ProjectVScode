@@ -1,15 +1,27 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { GoogleMap, Marker, LoadScript } from '@react-google-maps/api';
 import MapContainer from "./MapContainer";
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { 
     usePetWalkSaveMutation,
+    usePetWalkUpdateMutation,
     usePetImgSaveMutation,
+    usePetWalkLoadQuery
  } from '../../features/pet/petWalkApi';
 
 const WalkTracker = () => {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const animalId = searchParams.get('id');    // 동물아이디 animalId parm에 저장
+  const { data: IdResult, refetch : refetch2, isLoading: isLoading2 } = usePetWalkLoadQuery({
+    animalId: animalId,    // < 동물 아이디   로 산책아이디 조회해올거임
+  });
+  const [walkId, setWalkId] = useState();
+
   const [menuOpen, setMenuOpen] = useState(false); // 드롭다운 열림 여부
   const [isRunning, setIsRunning] = useState(false); // 타이머 실행 여부
+  const prevIsRunning = useRef(false);               // 타이머시작시에만 저장하기위함
   const [saveFirst, setSaveFirst] = useState(false); // 저장먼저하려고
   const [time, setTime] = useState(0); // 경과 시간 (초 단위)
   const [formattedTime, setFormattedTime] = useState('00:00:00');
@@ -38,8 +50,8 @@ const WalkTracker = () => {
   const [imgSave] = usePetImgSaveMutation();            // 산책ID별 이미지저장 
 
 
-  const [petWalkSave] = usePetWalkSaveMutation();       // 산책ID별 정보저장
-
+  const [petWalkSave] = usePetWalkSaveMutation();       // 산책ID별 정보임시저장 (walkId꼬임방지)
+  const [petWalkUpdate] = usePetWalkUpdateMutation();     // 산책ID별 정보최종저장 (update로)
 
   // 공통 버튼 스타일
   const buttonBaseStyle = {
@@ -86,17 +98,7 @@ const WalkTracker = () => {
     setFormattedTime(formatTime(time));
   }, [time]);
 
-  // 타이머 시작시 시작위치저장
-  useEffect(() => {
-    if (isRunning && markerPosition) {
-        setStartLocation(markerPosition);
-        setZoom(10); // 다른 값으로 임시 변경
-        setTimeout(() => setZoom(18), 100); // 다시 18로 설정
-        setCenter(markerPosition);
-        setEndLocation(null);
-        setNearbyMarkers([]);  // 주변건물마커 삭제
-    }
-  }, [isRunning, markerPosition]);
+ 
 
   // 타이머시작시 2초에한번 위치요청
   useEffect(() => {
@@ -138,7 +140,7 @@ const WalkTracker = () => {
       } else {
         const pos = { lat: json.lat, lng: json.lng };
         setMarkerPosition(pos);
-        alert(JSON.stringify(pos));
+        // alert(JSON.stringify(pos)); //위치띄우기
 
       }
     } catch (e) {
@@ -211,21 +213,20 @@ const WalkTracker = () => {
 
   const handleWalkAction = async (action) => {
     console.log(action);
-
     if(action === '종료'){
+      setIsRunning(!isRunning);
         alert("walksave실행완료");
-        console.log(formatTime(time));
 
+        //업데이트로 바꿔야함
         try{
             const formData = new FormData();
-            formData.append('animalId', 1);   // << 동물아이디 변수 넘기면됨
+            formData.append('walkId', walkId);   // 임시저장한 산책 walkId로 찾기
             formData.append('walkTime', formatTime(time));
 
             setSaveFirst(!saveFirst);
-            const result = await petWalkSave(formData).unwrap();
+            const result = await petWalkUpdate(formData).unwrap();
             console.log('산책정보 저장 성공', result);
             setTime(0);
-
         
         } catch (error) {
             console.error('산책정보 저장 실패:', error);
@@ -234,6 +235,34 @@ const WalkTracker = () => {
                 }
             alert('산책정보 저장 중 오류가 발생했습니다.');
         }
+    } else if (action === '시작') {
+      
+      if (markerPosition) {
+        setIsRunning(!isRunning);
+        setStartLocation(markerPosition);
+        setZoom(10); // 다른 값으로 임시 변경
+        setTimeout(() => setZoom(18), 100); // 다시 18로 설정
+        setCenter(markerPosition);
+        setEndLocation(null);
+        setNearbyMarkers([]);  // 주변건물마커 삭제
+
+        try{
+            const formData = new FormData();
+            formData.append('animalId', animalId);   // << 동물아이디 변수 넘기면됨
+            formData.append('walkTime', "NOT RECORD");
+
+            const result = await petWalkSave(formData).unwrap();
+            console.log('산책정보 저장 성공', result.data.walkId);
+            setWalkId(result.data.walkId);
+        
+        } catch (error) {
+            console.error('산책정보 저장 실패:', error);
+                if (error.data) {
+                console.error('서버 응답:', error.data);
+                }
+            alert('산책정보 저장 중 오류가 발생했습니다.');
+        }       
+      } else { alert("위치 없음")};
     }
 
   }
@@ -299,6 +328,7 @@ const WalkTracker = () => {
 
   // 처음 렌더링 시 실행
     useEffect(() => {
+
       setZoom(10); // 다른 값으로 임시 변경
       setTimeout(() => setZoom(18), 100); // 다시 18로 설정
         firstMapping();
@@ -368,8 +398,8 @@ const WalkTracker = () => {
     // 카메라기능
     useEffect(() => {
         // Android에서 사진을 받는 함수 등록
-        window.onCameraImageReceived = (base64Image) => {
-            uploadImageToServer(base64Image);  // 서버로 업로드
+        window.onCameraImageReceived = (base64Image, walkId) => {
+            uploadImageToServer(base64Image, walkId);  // 서버로 업로드
         };
 
             // 컴포넌트 언마운트 시 함수 해제 (메모리 누수 방지)
@@ -382,16 +412,20 @@ const WalkTracker = () => {
 
     // 카메라 열기 함수
     const openCamera = () => {
+      if(isRunning){
         // 안드로이드 WebView의 JavaScript 인터페이스가 있을 경우에만 호출
         if (window.Android && typeof window.Android.openCamera === 'function') {
-            window.Android.openCamera(); // 안드로이드 함수 호출
+            window.Android.openCamera(walkId+""); // 안드로이드 함수 호출
         } else {
             alert('Android 인터페이스를 사용할 수 없습니다.');
         }
+      } else {
+        alert("카메라는 산책전용기능입니다.\n 산책중에 이용해주세요.");
+      }
     };
 
     // 서버로 Base64 이미지 업로드
-    const uploadImageToServer = async (base64Image) => {
+    const uploadImageToServer = async (base64Image, walkId) => {
         if (isUploading) return; // ✅ 중복 방지
         setIsUploading(true);
 
@@ -404,7 +438,13 @@ const WalkTracker = () => {
 
             const formData = new FormData();
             formData.append('files', file); // 서버에서 "files"라는 key로 받을 것
-            formData.append('walkId', 999); //  << 고유  WALKID 변수 넘기면됨
+            formData.append('walkId', walkId); //  << 고유  WALKID 변수 넘기면됨
+
+            if (!walkId) {
+              console.error("walkId가 유효하지 않음:", walkId);
+              alert("walkId를 아직 불러오지 못했습니다. 잠시 후 다시 시도해주세요.");
+              return;
+            }
 
             const result = await imgSave(formData).unwrap();
             console.log('이미지 업로드 성공:', result);
@@ -443,7 +483,10 @@ const WalkTracker = () => {
     <div style={{ padding: '20px', backgroundColor: '#f5f5f5', fontFamily: 'sans-serif' }}>
       {/* 상단 헤더 */}
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-        <button style={{ background: 'none', border: 'none', fontSize: '20px' }}>{'←'}</button>
+        <button
+        onClick={() => navigate("/pet/walk.do?id="+animalId+"")}
+        style={{ background: 'none', border: 'none', fontSize: '20px' }}>{'←'}
+        </button>
         <h2 style={{ flex: 1, textAlign: 'center', margin: 0 }}>산책 기록</h2>
         <button onClick={openCamera} style={{ background: 'none', border: 'none', fontSize: '20px' }}>📷</button>
       </div>
@@ -542,7 +585,6 @@ const WalkTracker = () => {
             const action = isRunning ? '종료' : '시작';
             console.log(`${action} 버튼 클릭`);
             handleWalkAction(action); // 예: 백엔드 전송 등
-            setIsRunning(!isRunning);
         
         }}
           style={{
