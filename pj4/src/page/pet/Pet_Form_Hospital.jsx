@@ -21,12 +21,13 @@ import Combo from '../../page/combo/combo';
 import { useLocation } from 'react-router-dom';
 import Stack from '@mui/material/Stack';
 import { usePet_Form_HospitalMutation } from '../../features/pet/petApi'; // 경로는 실제 프로젝트에 맞게 조정
-import { usePet_Form_UpdateMutation } from '../../features/pet/petApi';
+import { usePet_Form_Hospital_UpdateMutation } from '../../features/pet/petApi';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-
+import CheckBoxIcon from '@mui/icons-material/CheckBox'; // 체크된 박스 아이콘
+import { useComboListByGroupQuery } from '../../features/combo/combo';
 const FormRow = ({ label, value = '', onChange, multiline = false, inputRef, fieldKey = '' }) => {
   let backgroundColor = '#E0E0E0';
   let border = '1px solid #ccc';
@@ -99,7 +100,7 @@ const FormRow1 = ({ label, value = '', onChange, multiline = false, inputRef, fi
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 2 }}>
-      <Typography sx={{ width: '90px', fontSize: 14, fontWeight: 500, mt: multiline ? '6px' : 0, position: 'relative', left:20, top: 5 }}>
+      <Typography sx={{ width: '90px', fontSize: 14, fontWeight: 'normal', mt: multiline ? '6px' : 0, position: 'relative', left:20, top: 5 }}>
         {label}
       </Typography>
       <InputBase
@@ -192,7 +193,7 @@ const DateInputRow = ({ label, value, onChange }) => {
   );
 };
 
-const Pet_Form_Hospital = () => {
+const Pet_Form_Hospital = () => { 
   const location = useLocation();
   const [animalAdoptionDate, setAnimalAdoptionDate] = useState('');
   const [animalVisitDate, setAnimalVisitDate] = useState(dayjs());
@@ -202,7 +203,7 @@ const Pet_Form_Hospital = () => {
   const animalHospitalNameRef = useRef();
   const [animalTreatmentType, setAnimalTreatmentType] = useState('');
   const [petFormHospital] = usePet_Form_HospitalMutation();
-  const [petFormHospitalUpdate] = usePet_Form_UpdateMutation();
+  const [petFormHospitalUpdate] = usePet_Form_Hospital_UpdateMutation();
   const [animalMedication, setAnimalMedication] = useState('');
   const animalMedicationRef = useRef();
   const { showAlert } = useCmDialog();
@@ -210,13 +211,25 @@ const Pet_Form_Hospital = () => {
   const [animalName, setAnimalName] = useState('');
   const [animalId, setAnimalId] = useState(null);
   const [records, setRecords] = useState([]);
-  const [expanded, setExpanded] = useState(true);
-  
+  const [expanded, setExpanded] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(5); // 현재 보여줄 데이터 개수
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
-
-  const toggleDropdown = () => setExpanded(!expanded);
-
+  const [animalHospitalTreatmentId, setAnimalHospitalTreatmentId] = useState(null);
+  const { data: comboData, isLoading: comboLoading } = useComboListByGroupQuery('Medical');
+  const [treatmentTypeMap, setTreatmentTypeMap] = useState({}); // codeId → codeName 매핑 객체
+  useEffect(() => {
+    if (!expanded) {
+      setVisibleCount(5);
+    }
+  }, [expanded]);
+  
+  const toggleDropdown = () => {
+    setExpanded(prev => !prev);
+  };
+  const handleLoadMore = () => {
+    setVisibleCount(prev => Math.min(prev + 5, records.length));
+  };
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -261,6 +274,7 @@ const Pet_Form_Hospital = () => {
     setAnimalVisitDate(dayjs(record.animalVisitDate));
     setAnimalHospitalName(record.animalHospitalName);
     setAnimalMedication(record.animalMedication);
+    console.log("수정할 진료 내용 값:", record.animalTreatmentType);
     setAnimalTreatmentType(record.animalTreatmentType);
     setAnimalTreatmentMemo(record.animalTreatmentMemo);
     setIsEditing(true);
@@ -268,8 +282,27 @@ const Pet_Form_Hospital = () => {
     setExpanded(true);
   };
 
-  const handleDelete = (id) => {
-    setRecords(prev => prev.filter(r => r.animalHospitalTreatmentId !== id));
+  const handleDelete = async (id) => {
+    try {
+      // API 호출해서 서버에 del_yn='Y'로 변경 요청
+      const response = await fetch(`http://localhost:8081/api/petHospital/delete.do`, {
+        method: 'POST', // 혹은 DELETE (백엔드에 맞게)
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ animalHospitalTreatmentId: id }),
+        credentials: 'include',
+      });
+
+      if (!response.ok) throw new Error('삭제 실패');
+
+      // 성공하면 화면에서 해당 항목 제거
+      setRecords(prev => prev.filter(r => r.animalHospitalTreatmentId !== id));
+      showAlert('삭제가 완료되었습니다.');
+    } catch (error) {
+      console.error('삭제 오류:', error);
+      showAlert('삭제 중 오류가 발생했습니다.');
+    }
   };
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -278,27 +311,35 @@ const Pet_Form_Hospital = () => {
       setAnimalId(idFromQuery);
     }
   }, [location.search]);
+  
+  useEffect(() => {
+    if (comboData?.data) {
+      const map = {};
+      comboData.data.forEach(item => {
+        map[item.codeId] = item.codeName;
+      });
+      setTreatmentTypeMap(map);
+    }
+  }, [comboData]); 
 
   useEffect(() => {
     if (!animalId) return;
 
     const fetchRecords = async () => {
       try {
-        const res = await fetch('/api/petHospital/list');
-        const contentType = res.headers.get('content-type');
-        if (!contentType || !contentType.includes('application/json')) {
-          const text = await res.text();
-          console.error('❌ JSON이 아닌 응답을 받음:', text);
-          throw new Error('서버로부터 JSON이 아닌 응답을 받았습니다.');
-        }
+        const res = await fetch('http://localhost:8081/api/petHospital/list.do', {
+          method: 'GET',
+          credentials: 'include', // 세션 쿠키 포함
+        });
+        if (!res.ok) throw new Error(res.statusText);
 
         const data = await res.json();
-        const sorted = data
-          .filter(item => item.animalId === animalId) // 필터 추가
-          .sort((a, b) => new Date(b.createDt) - new Date(a.createDt));
+        console.log('Fetched data:', data);
+        const filtered = data.filter(item => String(item.animalId) === String(animalId));
+        const sorted = [...filtered].sort((a, b) => new Date(b.createDt) - new Date(a.createDt));
         setRecords(sorted);
       } catch (err) {
-        console.error('리스트 불러오기 실패:', err);
+        console.error('Fetch 에러:', err);
       }
     };
 
@@ -318,44 +359,55 @@ const Pet_Form_Hospital = () => {
     if (CmUtil.isEmpty(animalMedication)) return showAlert('처방약을 입력해주세요.');
 
     const submitData = new FormData();
-    submitData.append('animalHospitalTreatmentId', editId);
+
+    if (isEditing && editId != null) {
+      submitData.append("animalHospitalTreatmentId", editId);
+    }
+
     submitData.append('animalId', animalId);
     submitData.append('animalVisitDate', dayjs(animalVisitDate).format('YYYY-MM-DD'));
     submitData.append('animalHospitalName', animalHospitalName);
     submitData.append('animalMedication', animalMedication);
     submitData.append('animalTreatmentType', animalTreatmentType);
     submitData.append('animalTreatmentMemo', animalTreatmentMemo);
-    
-      try {
-        if (isEditing) {
-          await petFormHospitalUpdate({ data: submitData }).unwrap();
-          setRecords(prev =>
-            prev.map(r =>
-              r.animalHospitalTreatmentId === editId
-                ? { ...r, ...submitData }
-                : r
-            )
-          );
-          showAlert('수정이 완료되었습니다.');
-        } else {
-          const result = await petFormHospital(submitData).unwrap();
-          setRecords(prev => [ { ...submitData, animalHospitalTreatmentId: result.animalHospitalTreatmentId }, ...prev ]);
-          showAlert('등록이 완료되었습니다.');
-        }
 
-        // 초기화
-        setAnimalVisitDate(dayjs());
-        setAnimalHospitalName('');
-        setAnimalMedication('');
-        setAnimalTreatmentType('');
-        setAnimalTreatmentMemo('');
-        setIsEditing(false);
-        setEditId(null);
-      } catch (error) {
-        console.error('저장 실패:', error);
-        showAlert('저장 중 오류가 발생했습니다.');
+    try {
+      if (isEditing) {
+        const updatedData = await petFormHospitalUpdate(submitData).unwrap();
+        setRecords(prev =>
+          prev.map(r =>
+            r.animalHospitalTreatmentId === editId ? updatedData : r
+          )
+        );
+        showAlert('수정이 완료되었습니다.');
+      } else {
+        const result = await petFormHospital(submitData).unwrap();
+        const newRecord = {
+          animalHospitalTreatmentId: result.animalHospitalTreatmentId,
+          animalId,
+          animalVisitDate: dayjs(animalVisitDate).format('YYYY-MM-DD'),
+          animalHospitalName,
+          animalMedication,
+          animalTreatmentType,
+          animalTreatmentMemo,
+        };
+        setRecords(prev => [newRecord, ...prev]);
+        showAlert('등록이 완료되었습니다.');
       }
-    };
+
+      // 초기화
+      setAnimalVisitDate(dayjs());
+      setAnimalHospitalName('');
+      setAnimalMedication('');
+      setAnimalTreatmentType('');
+      setAnimalTreatmentMemo('');
+      setIsEditing(false);
+      setEditId(null);
+    } catch (error) {
+      console.error('저장 실패:', error);
+      showAlert('저장 중 오류가 발생했습니다.');
+    }
+  };
 
    
   
@@ -516,7 +568,12 @@ const Pet_Form_Hospital = () => {
         >
           진료 내용
         </Typography>
-        <Combo groupId="Medical" value={animalTreatmentType} onChange={(val) => setAnimalTreatmentType(val)} />
+        <Combo
+          key={animalTreatmentType || 'default'} // ← 이 줄이 중요합니다!
+          groupId="Medical"
+          value={animalTreatmentType}
+          onSelectionChange={(val) => setAnimalTreatmentType(val)}
+        />
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', mb: 2 }}>
           <InputBase
@@ -574,17 +631,31 @@ const Pet_Form_Hospital = () => {
             </Typography>
           </Box>
 
-          
-
-          <Box mt={3} sx={{ maxHeight: 400, overflowY: 'auto' }}>
-            {records.slice(0, 5).map((record) => (
-              <Card key={record.animalHospitalTreatmentId} sx={{ mb: 2, position: 'relative' }}>
-                <CardContent>
-                  <Typography variant="subtitle2">
-                    {record.animalVisitDate} {record.animalHospitalName} | {record.animalMedication}
+          {expanded && (
+            <Box mt={3} sx={{ maxHeight: 400, overflowY: 'auto' }}>
+              {records.slice(0, visibleCount).map((record) => (
+                <Box
+                  component="fieldset"
+                  key={record.animalHospitalTreatmentId}
+                  sx={{
+                    mb: 2,
+                    border: '1px solid #ccc',
+                    p: 2,
+                    position: 'relative',
+                  }}
+                >
+                 <legend style={{ fontWeight: 'bold', padding: '0 8px', display: 'flex', alignItems: 'center' }}>
+                  <CheckBoxIcon sx={{ fontSize: 18, color: '#333', mr: 1 }} />
+                  병원 진료 확인
+                 </legend>
+                  <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
+                    {dayjs(record.animalVisitDate).format('YYYY.MM.DD')} {record.animalHospitalName} | {treatmentTypeMap[record.animalTreatmentType] || '없음'}
                   </Typography>
-                  <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', mt: 1 }}>
-                    {record.animalMemo}
+                  <Typography variant="body2" sx={{ fontWeight: 'normal', mb: 0.5 }}>
+                    처방약 : {record.animalMedication}
+                  </Typography>
+                  <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
+                    진료 내용 : {record.animalTreatmentMemo}
                   </Typography>
                   <Box position="absolute" top={8} right={8}>
                     <IconButton onClick={() => handleEdit(record)} color="primary">
@@ -594,14 +665,16 @@ const Pet_Form_Hospital = () => {
                       <DeleteIcon fontSize="small" />
                     </IconButton>
                   </Box>
-                </CardContent>
-              </Card>
-            ))}
-          </Box>
+                </Box>
+              ))}
+            </Box>
+          )}
 
-          {records.length > 5 && (
+          {expanded && visibleCount < records.length && (
             <Box textAlign="center" mt={1}>
-              <Button variant="outlined">+ 더보기</Button>
+              <Button variant="outlined" onClick={handleLoadMore}>
+                + 더보기
+              </Button>
             </Box>
           )}
         </Box>
