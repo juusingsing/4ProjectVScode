@@ -11,9 +11,12 @@ import 'dayjs/locale/ko';
 import { CmUtil } from '../../cm/CmUtil';
 import { useCmDialog } from '../../cm/CmDialogUtil';
 import { usePet_FormMutation } from '../../features/pet/petApi';
+
+import { useNavigate } from 'react-router-dom';
 dayjs.locale('ko');
 
 const Pet_Form = () => {
+  const navigate = useNavigate();
   const [animalName, setAnimalName] = useState('');
   const animalNameRef = useRef();
   const [animalSpecies, setAnimalSpecies] = useState('');
@@ -71,6 +74,7 @@ const Pet_Form = () => {
 
       const res = await registerPet(formData).unwrap();
       showAlert('등록 성공!');
+      navigate('/home.do');
     } catch (err) {
       showAlert('등록 실패: ' + (err?.data?.message || '알 수 없는 오류'));
     }
