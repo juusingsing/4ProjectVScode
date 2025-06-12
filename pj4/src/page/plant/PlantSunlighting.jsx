@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useCmDialog } from "../../cm/CmDialogUtil";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   Box,
@@ -19,29 +20,21 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import {
   useSaveSunlightInfoMutation,
   useSunlightLogsQuery,
-  useDeleteSunlightLogMutation,
+  useDeleteSunlightLogsMutation,
+  useUpdateSunlightLogsMutation,
   useSunlightAlistQuery,
 } from "../../features/plant/plantApi";
 import "../../css/plantSunlighting.css";
 
-import PlantWatering from "./PlantWatering";
-import PlantRepotting from "./PlantRepotting";
-import PlantPest from "./PlantPest";
+import PlantWatering from "./PlantWatering"; // 물주기 탭
+import PlantRepotting from "./PlantRepotting"; // 분갈이 탭
+import PlantPest from "./PlantPest"; // 병충해 탭
 
 const sunlightOptions = [
   { id: "W01", icon: <FaSun />, label: "맑음", className: "selected-sun" },
   { id: "W02", icon: <FaTint />, label: "흐림", className: "selected-tint" },
-  {
-    id: "W03",
-    icon: <FaCloud />,
-    label: "구름 많음",
-    className: "selected-cloud",
-  },
-  {
-    id: "W04",
-    icon: <FaSnowflake />,
-    label: "눈/비",
-    className: "selected-snow",
+  { id: "W03", icon: <FaCloud />, label: "구름 많음", className: "selected-cloud"},
+  { id: "W04",icon: <FaSnowflake />, label: "눈/비", className: "selected-snow",
   },
 ];
 
@@ -54,6 +47,7 @@ const SunlightContent = ({
   sunlightLogs,
   onDeleteLog,
   onEditLog,
+  editingLog,
 }) => (
   <Box className="sunlight-tab-content">
     <Box className="daily-status-section">
@@ -87,8 +81,22 @@ const SunlightContent = ({
       />
     </Box>
 
-    <Button variant="contained" className="save-button" onClick={handleSave}>
-      저장
+    <Button
+      variant="contained"
+      className="save-button"
+      onClick={handleSave}
+      sx={
+        editingLog !== null
+          ? {
+              backgroundColor: "#88AE97 !important",
+              "&:hover": {
+                backgroundColor: "#6e927e !important",
+              },
+            }
+          : undefined
+      }
+    >
+      {editingLog !== null ? "수정" : "저장"}
     </Button>
 
     <Box className="sunlight-log-section">
@@ -133,7 +141,6 @@ const SunlightContent = ({
                 className="log-action-button"
                 onClick={() => onEditLog(log.plantSunlightingId)}
               >
-                {/*이 수정버튼은 useSaveSunlightInfoMutationd을 이용해서 값을 화면에 다시 불러오는 역할을 해*/}
                 수정
               </Button>
             </Box>
@@ -144,16 +151,22 @@ const SunlightContent = ({
   </Box>
 );
 
+// 메인 컴포넌트
 const PlantSunlighting = () => {
-  const [saveSunlightInfo] = useSaveSunlightInfoMutation();
+  const { showAlert } = useCmDialog();
+  const [saveSunlightInfo] = useSaveSunlightInfoMutation(); // 등록용
+  const [updateSunlightLogs] = useUpdateSunlightLogsMutation(); // 수정용
+
   const [plantId] = useState("1"); // 실제 값은 API에서 받아야 함
   const [plantName] = useState("몬스테라");
   const [purchaseDate] = useState("2023-01-15");
-  const [currentTab, setCurrentTab] = useState(1);
-  const [sunlightStatusText, setSunlightStatusText] = useState("");
+  const [currentTab, setCurrentTab] = useState(1); // 분갈이 탭
+
   const [selectedSunlight, setSelectedSunlight] = useState(null);
+  const [sunlightStatusText, setSunlightStatusText] = useState("");
+
   const [sunlightLogs, setSunlightLogs] = useState([]);
-  const [deleteSunlightLog] = useDeleteSunlightLogMutation();
+  const [deleteSunlightLogs] = useDeleteSunlightLogsMutation();
   const [searchParams] = useSearchParams();
 
   const [editingLog, setSelectedLog] = useState(null); // 현재 수정 중인 로그
@@ -162,7 +175,7 @@ const PlantSunlighting = () => {
 
   const handleSelectLog = (log) => {
     setSelectedLog(log);
-    setStatus(log.sunlightStatus); // ☀️ 상태 채우기
+    setStatus(log.sunlightStatus); // 일조량 상태 채우기
     setMemo(log.sunlightMemo); // 메모 채우기
   };
 
@@ -192,36 +205,53 @@ const PlantSunlighting = () => {
       sunlightMemo: sunlightStatusText,
     };
 
-    saveSunlightInfo(formData)
-      .unwrap()
-      .then((res) => {
-        alert(res.message);
-        setSelectedSunlight(null);
-        setSunlightStatusText("");
-        // 저장 후 다시 로그 요청
-        
-        console.log("triggering logs for:", plantId);
-        const plantData = new FormData();
-        plantData.append("plantId", 1);
-        refetch();
-      })
-      .catch((err) => {
-        console.error("저장 실패:", err);
-        alert("저장 실패");
-      });
+    if (editingLog !== null) {
+      //수정
+      formData.plantSunlightingId = editingLog;
+      updateSunlightLogs(formData)
+        .unwrap()
+        .then((res) => {
+          showAlert(res.message);
+          setSelectedSunlight(null);
+          setSunlightStatusText("");
+          setSelectedLog(null);
+          refetch();
+        })
+        .catch((err) => {
+          console.error("수정 실패:", err);
+          showAlert("수정 실패");
+        });
+    } else {
+      //저장
+      saveSunlightInfo(formData)
+        .unwrap()
+        .then((res) => {
+          showAlert(res.message);
+          setSelectedSunlight(null);
+          setSunlightStatusText("");
+          setSelectedLog(null);
+
+          const plantData = new FormData();
+          plantData.append("plantId", 1);
+          refetch();
+        })
+        .catch((err) => {
+          console.error("저장 실패:", err);
+          showAlert("저장 실패");
+        });
+    }
   };
 
   const handleDeleteLog = async (id) => {
-    console.log("Deleting log with ID:", id); // 여기에 로그 추가
     try {
-      await deleteSunlightLog(id).unwrap(); // 삭제 요청
-      alert("일지가 성공적으로 삭제되었습니다."); // 사용자에게 알림
+      await deleteSunlightLogs(id).unwrap(); // 삭제 요청
+      showAlert("일지가 성공적으로 삭제되었습니다."); 
 
       // 삭제 성공 후, 서버에서 최신 일지 목록을 다시 가져와 UI 업데이트
-      refetch(); // <--- 이 부분이 중요합니다.
+      refetch(); 
     } catch (error) {
       console.error("삭제실패:", error);
-      alert("삭제 중 오류 발생");
+      showAlert("삭제 중 오류 발생");
     }
   };
 
@@ -230,6 +260,7 @@ const PlantSunlighting = () => {
     if (logToEdit) {
       setSelectedSunlight(logToEdit.sunlightStatus); // ☀️ 선택된 아이콘 세팅
       setSunlightStatusText(logToEdit.sunlightMemo); // ✍️ 메모 세팅
+      setSelectedLog(id);
     }
   };
 
