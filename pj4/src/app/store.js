@@ -35,7 +35,7 @@ const rootReducer = combineReducers({
   [plantApi.reducerPath]: plantApi.reducer,
   [findApi.reducerPath]: findApi.reducer,
   [petApi.reducerPath]: petApi.reducer,
-  [petWalkApi.reducerPath]: petApi.reducer,
+  [petWalkApi.reducerPath]: petWalkApi.reducer,
   [testApi.reducerPath]:testApi.reducer
 });
 

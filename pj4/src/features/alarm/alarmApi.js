@@ -15,6 +15,16 @@ export const alarmApi = createApi({
       refetchOnMountOrArgChange: true,
       staleTime: 0, // 이건 RTK Query에서 직접 사용되진 않음. react-query에서 쓰는 용어
     }),
+    alarmOneList: builder.query({
+      query: (params) => ({
+        url: '/alarm/oneList.do',
+        method: 'POST',
+        body: params,
+      }),
+      keepUnusedDataFor: 0, // = cacheTime: 0
+      refetchOnMountOrArgChange: true,
+      staleTime: 0, // 이건 RTK Query에서 직접 사용되진 않음. react-query에서 쓰는 용어
+    }),
     AlarmCreate: builder.mutation({
       query: (data) => ({
         url: '/alarm/create.do',
@@ -34,6 +44,7 @@ export const alarmApi = createApi({
 
 export const {
     useAlarmListQuery,
+    useAlarmOneListQuery,
     useAlarmCreateMutation,
     useAlarmUpdateMutation,
 } = alarmApi;

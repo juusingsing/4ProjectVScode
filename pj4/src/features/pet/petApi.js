@@ -44,6 +44,13 @@ export const petApi = createApi({
         params: { animalId },
       }),
     }),
+    Pet_Form_Hospital_Update: builder.mutation({
+      query: (formData) => ({
+        url: `/petHospital/update.do`, // 실제 URL에 맞게 수정
+        method: 'POST',
+        body: formData,
+      }),
+    }),
   }),
 });
 
@@ -51,6 +58,7 @@ export const {
   usePet_FormMutation,
   usePet_Form_UpdateMutation,
   usePet_Form_HospitalMutation,
+  usePet_Form_Hospital_UpdateMutation, // ✅ 추가
   useDeletePetMutation,
   useGetPetByIdQuery,
 } = petApi;

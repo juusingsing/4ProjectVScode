@@ -22,6 +22,7 @@ import PlantUpdate from './page/plant/PlantUpdate';
 import PlantWatering from './page/plant/PlantWatering';
 import PlantSunlighting from './page/plant/PlantSunlighting';
 import PlantRepotting from './page/plant/PlantRepotting.jsx';
+import PlantPest from './page/plant/PlantPest';
 
 import DiaryList from './page/diary/DiaryList';
 import DiaryView from './page/diary/DiaryView';
@@ -85,6 +86,7 @@ const App = () => {
         <Route path="/PlantWatering.do" element={<LayoutLogin><PlantWatering /></LayoutLogin>} />
         <Route path="/PlantSunlighting.do" element={<PlantSunlighting />} />
         <Route path="/PlantRepotting.do" element={<PlantRepotting />} />
+        <Route path="/PlantPest.do" element={<PlantPest />} />
 
       
         {/* 게시판 */}
@@ -109,8 +111,6 @@ const App = () => {
 
         {/*산책*/}
         <Route path="/pet/walk.do" element={<Walk />} />
-        <Route path="/pet/walkRecord.do" element={<WalkRecord />} />
-        <Route path="/pet/walkRecord.do" element={<LayoutLogin><WalkRecord/></LayoutLogin>} />
         <Route path="/pet/walkRecord.do" element={<WalkRecord/>} />
 
         {/* 테스트 */}

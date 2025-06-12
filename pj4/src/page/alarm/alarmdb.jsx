@@ -15,8 +15,8 @@ const Alarmdb = () => {
   const { data, error, isLoading, refetch } = useAlarmListQuery({});
   const [alarmUpdate] = useAlarmUpdateMutation();
   const [alarmList, setAlarmList] = useState([]);
-  const [formattedTimes, setFormattedTimes] = useState([]);
-  const [alarmData, setAlarmData] = useState([]);
+  // const [formattedTimes, setFormattedTimes] = useState([]);
+  // const [alarmData, setAlarmData] = useState([]);
   const newFormattedTimes = [];
 
   useEffect(() => {
