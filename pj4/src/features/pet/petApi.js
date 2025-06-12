@@ -45,13 +45,10 @@ export const petApi = createApi({
       }),
     }),
     Pet_Form_Hospital_Update: builder.mutation({
-      query: ({ data }) => ({
+      query: (formData) => ({
         url: `/petHospital/update.do`, // 실제 URL에 맞게 수정
         method: 'POST',
-        body: data,
-        headers: {
-          'Content-Type': undefined, // fetch가 자동으로 처리하도록 강제
-        },
+        body: formData,
       }),
     }),
   }),

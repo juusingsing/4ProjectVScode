@@ -67,16 +67,13 @@ export const plantApi = createApi({
       },
     }),
 
-    // 식물 저장
+    // 식물 일조량 저장
     saveSunlightInfo: builder.mutation({
       query: (formData) => ({
-        url: "/plant/save.do",
+        url: "/plant/sunlight-save.do",
         method: "POST",
         body: formData,
       }),
-      // responseHandler: 'text',
-      // transformResponse: (response) => response.data,
-      // },
     }),
 
     // 식물 일조량 조회
@@ -92,29 +89,25 @@ export const plantApi = createApi({
     }),
 
     // 식물 일조량 개별 삭제
-    deleteSunlightLog: builder.mutation({
+    deleteSunlightLogs: builder.mutation({
       query: (sunlightLogId) => {
-        // Renamed 'params' to 'sunlightLogId' for clarity
         return {
           url: "/plant/sunlight-delete.do",
-          method: "POST", // Backend expects POST
+          method: "POST",
           body: { plantSunlightingId: sunlightLogId },
         };
       },
     }),
-
     //식물 일조량 개별 수정
-    updateSunlightLog: builder.mutation({
-      query: (sunlightLogId) => {
-        // Renamed 'params' to 'sunlightLogId' for clarity
+    updateSunlightLogs: builder.mutation({
+      query: (formData) => {
         return {
           url: "/plant/sunlight-update.do",
-          method: "POST", // Backend expects POST
-          body: { plantSunlightingId: sunlightLogId },
+          method: "POST",
+          body: formData,
         };
       },
     }),
-
     //식물 일조량 단건 조회
     sunlightAlist: builder.query({
       query: (params) => ({
@@ -122,17 +115,92 @@ export const plantApi = createApi({
         method: "POST",
         body: params,
       }),
-      keepUnusedDataFor: 0, // = cacheTime: 0
+      keepUnusedDataFor: 0,
       refetchOnMountOrArgChange: true,
-      staleTime: 0, // 이건 RTK Query에서 직접 사용되진 않음. react-query에서 쓰는 용어
+      staleTime: 0,
+    }),
+    // 식물 분갈이 저장
+    saveRepottingInfo: builder.mutation({
+      query: (formData) => ({
+        url: "/plant/repotting-save.do",
+        method: "POST",
+        body: formData,
+      }),
+    }),
+    // 식물 분갈이 조회
+    repottingLogs: builder.query({
+      query: (formData) => ({
+        url: "/plant/repotting-logs.do",
+        method: "POST",
+        body: formData,
+      }),
+      keepUnusedDataFor: 0,
+      refetchOnMountOrArgChange: true,
+      staleTime: 0,
+    }),
+    // 식물 분갈이 개별 삭제
+    deleteRepottingLogs: builder.mutation({
+      query: (repottingLogId) => {
+        return {
+          url: "/plant/repotting-delete.do",
+          method: "POST",
+          body: { plantRepottingId: repottingLogId },
+        };
+      },
+      //식물 분갈이 단건 조회
+      repottingBlist: builder.query({
+        query: (params) => ({
+          url: "/plant/repotting-blist.do",
+          method: "POST",
+          body: params,
+        }),
+        keepUnusedDataFor: 0,
+        refetchOnMountOrArgChange: true,
+        staleTime: 0,
+      }),
+    }),
+    //식물 분갈이 개별 수정
+    repottingUpdateLogs: builder.mutation({
+      query: (formData) => {
+        return {
+          url: "/plant/repotting-update.do",
+          method: "POST",
+          body: formData,
+        };
+      },
+    }),
+    // 식물 병충해 저장
+    savePestInfo: builder.mutation({
+      query: (formData) => ({
+        url: "/plant/pest-save.do",
+        method: "POST",
+        body: formData,
+      }),
+    }),
+    // 식물 병충해 조회
+    pestLogs: builder.query({
+      query: (formData) => ({
+        url: "/plant/pest-logs.do",
+        method: "POST",
+        body: formData,
+      }),
+      keepUnusedDataFor: 0,
+      refetchOnMountOrArgChange: true,
+      staleTime: 0,
     }),
   }),
 });
 
 export const {
+  usePestLogsQuery,
+  useSavePestInfoMutation,
+  useRepottingUpdateLogsMutation, //식물 분갈이 개별 수정
+  useDeleteRepottingLogsMutation,
+  useRepottingLogsQuery,
+  useSaveRepottingInfoMutation,
   useSunlightAlistQuery,
-  useUpdateSunlightLogMutation,
-  useDeleteSunlightLogMutation, // 식물 일조량 개별 삭제
+  useUpdateSunlightLogsMutation,
+  useDeleteSunlightLogsMutation, // 식물 일조량 로그 개별 삭제
   useSunlightLogsQuery, // 식물 일조량 조회
   useSaveSunlightInfoMutation,
   useGetSimplePlantListMutation,
