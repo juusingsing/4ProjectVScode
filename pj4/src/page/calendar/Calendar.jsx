@@ -7,7 +7,7 @@ import 'react-calendar/dist/Calendar.css';
 import '../../css/calendar.css';
 import pet from '../../image/animalFootPrintBrown.png';
 import plant from '../../image/plantGreen.png'
-import { useCalendarDotQuery, useCalendarLogQuery } from '../../features/calendar/calendarApi';
+import { useCalendarAnimalsQuery, useCalendarDotQuery, useCalendarLogQuery, useCalendarPlantsQuery } from '../../features/calendar/calendarApi';
 
 const CalendarComponent = () => {
   const [value, setValue] = useState(new Date());
@@ -42,25 +42,18 @@ const CalendarComponent = () => {
     day: value.getDate(),
   });
 
+  const { data: animalList, error } = useCalendarAnimalsQuery();
+  const { data: plantList } = useCalendarPlantsQuery();
   //로그 동/식물 이름 리스트
   useEffect(() => {
-    if (filterType === "animal" || filterType === 'plant') {
-      fetch(`/api/calendar/${filterType}s`)
-        .then(res => {
-          if (!res.ok) {
-            throw new Error("API 오류 발생!");
-          }
-          return res.json();
-        })
-        .then(data => {
-          setNameList(data);
-        })
-        .catch(err => {
-          console.error("fetch 에러:", err);
-          setNameList([]); // 안전 처리
-        });
+    if (filterType === "animal") {
+      setNameList(animalList?.map(d => d.name) || []);
+    } else if (filterType === "plant") {
+      setNameList(plantList?.map(d => d.name) || []);
+    } else {
+      setNameList([]);
     }
-  }, [filterType]);
+  }, [filterType, animalList, plantList]);
 
   useEffect(() => {
     setFilterName("all");
@@ -77,25 +70,25 @@ const CalendarComponent = () => {
     if (filterName === 'all') return true;
     return log.name === filterName;
   });
-const categoryToUrl={
-  병원진료: (id)=>`/pet/petFormHospital.do?animalId=${id}`,
-  훈련: (id) => `/animaltraining.do?animalId=${id}`,
+  const categoryToUrl = {
+    병원진료: (id) => `/pet/petFormHospital.do?id=${id}`,
+    훈련: (id) => `/animaltraining.do?id=${id}`,
 
-  물주기: (id) => `/plantwatering.do?plantId=${id}`,
-  병충해: (id) => `/plantpest.do?plantId=${id}`,
-  분갈이: (id) => `/plantrepotting.do?plantId=${id}`,
-  일조량: (id) => `/plantsunlight.do?plantId=${id}`
-}
-const navigate = useNavigate();
-const handleLogClick = (log)=>{
-  const urlBuilder = categoryToUrl[log.category];
-  if(!urlBuilder) return;
+    물주기: (id) => `/plantwatering.do?id=${id}`,
+    병충해: (id) => `/plantpest.do?id=${id}`,
+    분갈이: (id) => `/plantrepotting.do?id=${id}`,
+    일조량: (id) => `/plantsunlight.do?id=${id}`
+  }
+  const navigate = useNavigate();
+  const handleLogClick = (log) => {
+    const urlBuilder = categoryToUrl[log.category];
+    if (!urlBuilder) return;
 
-  const url = urlBuilder(log.id);
-  navigate(url);
-  console.log('달력:',log) 
+    const url = urlBuilder(log.id);
+    navigate(url);
+    console.log('달력:', log)
 
-}
+  }
 
   return (
     <>
@@ -111,7 +104,7 @@ const handleLogClick = (log)=>{
         // 현재 보이는 달 외 날짜 비활성화
         tileDisabled={tileDisabled}
         // 일요일부터 시작하도록 설정
-        calendarType="US"
+        calendarType="gregory"
         // 날짜 숫자만 표시 (ex. '1', '2', '3'...)
         formatDay={(locale, date) => String(date.getDate())}
 
@@ -195,7 +188,7 @@ const handleLogClick = (log)=>{
               )}
             </div>
           </Box>
-          <Box sx={{ display: "flex", height: '20px' }}>
+          <Box sx={{ display: "flex", height: '20px', }}>
             <div>
               <select
                 name="정렬"
@@ -230,8 +223,8 @@ const handleLogClick = (log)=>{
                   className={`log-icon-wrap ${isSameAsPrev ? 'top-line' : ''} ${isSameAsNext ? 'bottom-line' : ''}`}
                 >
                 </div>
-                <div className='log-content' onClick={()=>handleLogClick(log)}>
-                  <span>{log.name} {log.category} {log.category === '산책' && log.time ? `시간: ${log.time}` : ''}</span>
+                <div className='log-content' onClick={() => handleLogClick(log)}>
+                  <span>{log.name} {log.category} {log.category === '산책' && log.time ? `- ${log.time}` : ''}</span>
                 </div>
               </div>
             );
