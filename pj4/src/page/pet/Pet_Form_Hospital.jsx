@@ -230,45 +230,7 @@ const Pet_Form_Hospital = () => {
   const handleLoadMore = () => {
     setVisibleCount(prev => Math.min(prev + 5, records.length));
   };
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    if (name === 'animalHospitalName') setAnimalHospitalName(value);
-    else if (name === 'animalMedication') setAnimalMedication(value);
-    else if (name === 'animalTreatmentType') setAnimalTreatmentType(value);
-    else if (name === 'animalTreatmentMemo') setAnimalTreatmentMemo(value);
-    else if (name === 'animalVisitDate') setAnimalVisitDate(dayjs(value));
-  };
-  const handleAddOrUpdate = () => {
-    const newRecord = {
-      animalHospitalTreatmentId: isEditing ? editId : Date.now(),
-      animalId,
-      animalVisitDate: dayjs(animalVisitDate).format('YYYY-MM-DD'),
-      animalHospitalName,
-      animalMedication,
-      animalTreatmentType,
-      animalTreatmentMemo,
-    };
-
-    if (isEditing) {
-      setRecords(prev =>
-        prev.map(r =>
-          r.animalHospitalTreatmentId === editId ? newRecord : r
-        )
-      );
-    } else {
-      setRecords([newRecord, ...records]);
-    }
-
-    // 초기화
-    setAnimalVisitDate(dayjs());
-    setAnimalHospitalName('');
-    setAnimalMedication('');
-    setAnimalTreatmentType('');
-    setAnimalTreatmentMemo('');
-    setIsEditing(false);
-    setEditId(null);
-  };
+  
 
   const handleEdit = (record) => {
     setAnimalVisitDate(dayjs(record.animalVisitDate));
@@ -358,22 +320,22 @@ const Pet_Form_Hospital = () => {
     if (CmUtil.isEmpty(animalHospitalName)) return showAlert('병원 이름을 입력해주세요.');
     if (CmUtil.isEmpty(animalMedication)) return showAlert('처방약을 입력해주세요.');
 
-    const submitData = new FormData();
+    const formData = new FormData();
 
     if (isEditing && editId != null) {
-      submitData.append("animalHospitalTreatmentId", editId);
+      formData.append("animalHospitalTreatmentId", editId);
     }
 
-    submitData.append('animalId', animalId);
-    submitData.append('animalVisitDate', dayjs(animalVisitDate).format('YYYY-MM-DD'));
-    submitData.append('animalHospitalName', animalHospitalName);
-    submitData.append('animalMedication', animalMedication);
-    submitData.append('animalTreatmentType', animalTreatmentType);
-    submitData.append('animalTreatmentMemo', animalTreatmentMemo);
+    formData.append('animalId', animalId);
+    formData.append('animalVisitDate', dayjs(animalVisitDate).format('YYYY-MM-DD'));
+    formData.append('animalHospitalName', animalHospitalName);
+    formData.append('animalMedication', animalMedication);
+    formData.append('animalTreatmentType', animalTreatmentType);
+    formData.append('animalTreatmentMemo', animalTreatmentMemo);
 
     try {
       if (isEditing) {
-        const updatedData = await petFormHospitalUpdate(submitData).unwrap();
+        const updatedData = await petFormHospitalUpdate(formData).unwrap();
         setRecords(prev =>
           prev.map(r =>
             r.animalHospitalTreatmentId === editId ? updatedData : r
@@ -381,7 +343,7 @@ const Pet_Form_Hospital = () => {
         );
         showAlert('수정이 완료되었습니다.');
       } else {
-        const result = await petFormHospital(submitData).unwrap();
+        const result = await petFormHospital(formData).unwrap();
         const newRecord = {
           animalHospitalTreatmentId: result.animalHospitalTreatmentId,
           animalId,
