@@ -422,6 +422,7 @@ const Pet_Form_Eat_Alarm = () => {
             <Tab label="훈련/행동" />
         </Tabs>
     </Box>
+   <Box sx={{ width: '100%', maxWidth: 400, mx: 'auto', mt: 2 }}>
     <Box sx={{ position: 'relative', left: '35px', top: 8 }}>
         <Typography>먹이알림 설정</Typography>
     </Box>
@@ -440,7 +441,7 @@ const Pet_Form_Eat_Alarm = () => {
     </Box>
     <DateInputRow label="알림 날짜" value={startDate} onChange={setStartDate} />
     </Box>
-  
+  </Box> 
 );
 };
 export default Pet_Form_Eat_Alarm; 

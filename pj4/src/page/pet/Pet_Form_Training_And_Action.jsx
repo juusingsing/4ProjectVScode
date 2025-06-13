@@ -1,0 +1,526 @@
+import React, { useState, useRef, useEffect } from 'react';
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Collapse,
+  IconButton,
+  TextField,
+  Typography,
+  InputBase
+} from '@mui/material';
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import 'dayjs/locale/ko';
+import { CmUtil } from '../../cm/CmUtil';
+import { useCmDialog } from '../../cm/CmDialogUtil';
+import { Tabs, Tab } from '@mui/material';
+import Combo from '../combo/combo';
+import { useLocation } from 'react-router-dom';
+import Stack from '@mui/material/Stack';
+import { usePet_Form_Training_And_ActionMutation } from '../../features/pet/petApi'; // 경로는 실제 프로젝트에 맞게 조정
+import { usePet_Form_Training_And_Action_UpdateMutation } from '../../features/pet/petApi';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import CheckBoxIcon from '@mui/icons-material/CheckBox'; // 체크된 박스 아이콘
+import { useComboListByGroupQuery } from '../../features/combo/combo';
+
+const DateInputRow = ({ label, value, onChange }) => {
+  return (
+    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+      <Typography
+        sx={{
+          width: 66, // 넉넉한 고정 너비
+          fontSize: 14,
+          fontWeight: 500,
+          textAlign: 'center',
+          mr: -1, // label과 DatePicker 사이 간격
+        }}
+      >
+        {label}
+      </Typography>
+
+      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ko">
+        <DatePicker
+          value={value}
+          onChange={onChange}
+          format="YYYY.MM.DD"
+          slotProps={{
+            textField: {
+              variant: 'outlined',
+              size: 'small',
+              fullWidth: false,
+              InputProps: {
+                readOnly: true,
+                sx: {
+                
+                  left: 133,
+                  width: 141,
+                  height: 30,
+                  backgroundColor: '#D9D9D9',
+                  borderRadius: '10px',
+                  fontSize: '12px',
+                  fontWeight: 'normal',
+                  pr: '12px',
+                  pl: '12px',
+                  '& input': {
+                    textAlign: 'center',
+                    padding: 0,
+                  },
+                },
+              },
+              inputProps: {
+                style: {
+                  textAlign: 'center',
+                },
+              },
+            },
+          }}
+        />
+      </LocalizationProvider>
+    </Box>
+  );
+};
+
+const Pet_Form_Training_And_Action = () => { 
+  const location = useLocation();
+  const [animalAdoptionDate, setAnimalAdoptionDate] = useState('');
+  const [animalTrainingAction, setAnimalTrainingAction] = useState('');
+  const [animalRecordDate, setAnimalRecordDate] = useState(dayjs());
+  const [animalTrainingType, setAnimalTrainingType] = useState('');
+  const [animalTrainingMemo, setAnimalTrainingMemo] = useState('');
+  const [animalName, setAnimalName] = useState('');
+  const animalTrainingMemoRef = useRef();
+  const { showAlert } = useCmDialog();
+  const [selectedTab, setSelectedTab] = useState(0);
+  const [petFormTrainingAndAction] = usePet_Form_Training_And_ActionMutation();
+  const [petFormTrainingAndActionUpdate] = usePet_Form_Training_And_Action_UpdateMutation();
+  const [animalId, setAnimalId] = useState(null);
+  const [records, setRecords] = useState([]);
+  const [expanded, setExpanded] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(5); // 현재 보여줄 데이터 개수
+  const [isEditing, setIsEditing] = useState(false);
+  const [editId, setEditId] = useState(null);
+  
+  const { data: comboData, isLoading: comboLoading } = useComboListByGroupQuery('Exercise');
+  const [trainingTypeMap, setTrainingTypeMap] = useState({}); // codeId → codeName 매핑 객체
+  useEffect(() => {
+    if (!expanded) {
+      setVisibleCount(5);
+    }
+  }, [expanded]);
+  
+  const toggleDropdown = () => {
+    setExpanded(prev => !prev);
+  };
+  const handleLoadMore = () => {
+    setVisibleCount(prev => Math.min(prev + 5, records.length));
+  };
+  
+
+  const handleEdit = (record) => {
+    
+    console.log("수정할 훈련/행동 일지 값:", record.animalTrainingType);
+    
+    setIsEditing(true);
+    setEditId(record.animalTrainingAction);
+    setAnimalRecordDate(dayjs(record.animalRecordDate)); // 날짜 상태 설정
+    setAnimalTrainingType(record.animalTrainingType);     // 콤보박스 값 설정
+    setAnimalTrainingMemo(record.animalTrainingMemo);     // 메모 입력 필드 설정
+    setExpanded(true);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      // API 호출해서 서버에 del_yn='Y'로 변경 요청
+      const response = await fetch(`http://localhost:8081/api/petTrainingAndAction/delete.do`, {
+        method: 'POST', // 혹은 DELETE (백엔드에 맞게)
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ animalTrainingAction: id }),
+        credentials: 'include',
+      });
+
+      if (!response.ok) throw new Error('삭제 실패');
+
+      // 성공하면 화면에서 해당 항목 제거
+      setRecords(prev => prev.filter(r => r.animalTrainingAction !== id));
+      showAlert('삭제가 완료되었습니다.');
+    } catch (error) {
+      console.error('삭제 오류:', error);
+      showAlert('삭제 중 오류가 발생했습니다.');
+    }
+  };
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const idFromQuery = searchParams.get('animalId');
+    if (idFromQuery) {
+      setAnimalId(idFromQuery);
+    }
+  }, [location.search]);
+  
+  useEffect(() => {
+    if (comboData?.data) {
+      const map = {};
+      comboData.data.forEach(item => {
+        map[item.codeId] = item.codeName;
+      });
+      setTrainingTypeMap(map);
+    }
+  }, [comboData]); 
+
+  useEffect(() => {
+    if (!animalId) return;
+
+    const fetchRecords = async () => {
+      try {
+        const res = await fetch('http://localhost:8081/api/petTrainingAndAction/list.do', {
+          method: 'GET',
+          credentials: 'include', // 세션 쿠키 포함
+        });
+        if (!res.ok) throw new Error(res.statusText);
+
+        const data = await res.json();
+        console.log('Fetched data:', data);
+        const filtered = data.filter(item => String(item.animalId) === String(animalId));
+        const sorted = [...filtered].sort((a, b) => new Date(b.createDt) - new Date(a.createDt));
+        setRecords(sorted);
+      } catch (err) {
+        console.error('Fetch 에러:', err);
+      }
+    };
+
+    fetchRecords();
+  }, [animalId]);
+  const handleTabChange = (event, newValue) => {
+    setSelectedTab(newValue);
+  };
+  
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!animalId) return showAlert('동물을 선택해주세요.');
+    if (!dayjs(animalRecordDate).isValid()) return showAlert('훈련행동 날짜를 선택해주세요.');
+
+    const formData = new FormData();
+
+    if (isEditing && editId != null) {
+      formData.append("animalTrainingAction", editId);
+    }
+
+    formData.append('animalId', animalId);
+    formData.append('animalRecordDate', dayjs(animalRecordDate).format('YYYY-MM-DD'));
+    formData.append('animalTrainingAction', animalTrainingAction);
+    formData.append('animalTrainingMemo', animalTrainingMemo);
+    formData.append('animalTrainingType', animalTrainingType); 
+    try {
+      if (isEditing) {
+        const updatedData = await petFormTrainingAndActionUpdate(formData).unwrap();
+        setRecords(prev =>
+          prev.map(r =>
+            r.animalTrainingAction === editId ? updatedData : r
+          )
+        );
+        showAlert('수정이 완료되었습니다.');
+      } else {
+        const result = await petFormTrainingAndAction(formData).unwrap();
+        const newRecord = {
+          animalTrainingAction: result.animalTrainingAction,
+          animalId,
+          animalRecordDate: dayjs(animalRecordDate).format('YYYY-MM-DD'),
+          animalTrainingType,
+          animalTrainingMemo,
+        };
+        setRecords(prev => [newRecord, ...prev]);
+        showAlert('등록이 완료되었습니다.');
+      }
+
+      // 초기화
+      setAnimalRecordDate(dayjs());
+      setAnimalTrainingType('');
+      setAnimalTrainingMemo('');
+      setIsEditing(false);
+      setEditId(null);
+    } catch (error) {
+      console.error('저장 실패:', error);
+      showAlert('저장 중 오류가 발생했습니다.');
+    }
+  };
+
+   
+  
+
+  return (
+  <Box>
+    {/* 전체 폼 박스 */}
+    <Box
+      component="form"
+      onSubmit={handleSubmit}
+      sx={{
+        width: '100%',
+        maxWidth: 360, // Android 화면 폭
+        height: 640,   // Android 화면 높이
+        margin: '0 auto',
+        overflowY: 'auto', // 스크롤 가능하게
+        borderRadius: '12px',
+        backgroundColor: '#fff',
+        display: 'flex',
+        gap: 2,
+        alignItems: 'flex-start',
+        padding: 2,
+      }}
+    >
+      {/* 왼쪽 입력 */}
+      <Box>
+        <Stack direction="row" spacing={2} alignItems="center">
+          <Typography variant="subtitle1">동물 이름</Typography>
+          <Typography>{animalName}</Typography>
+        </Stack>
+
+        <Stack direction="row" spacing={2} alignItems="center">
+          <Typography variant="subtitle1">입양일</Typography>
+          <Typography>{animalAdoptionDate}</Typography>
+        </Stack>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+          <Button
+            variant="contained"
+            type="submit"
+            sx={{
+              bottom: 3,
+              left: 25,
+              backgroundColor: '#88AE97',
+              borderRadius: '30px',
+              width: 150,
+              height: 20,
+              px: 6,
+              py: 1.5,
+              fontSize: 13,
+              fontWeight: 'bold',
+            }}
+          >
+            산책하기
+          </Button>
+        </Box>
+      </Box>
+             {/* 오른쪽 이미지 */}
+      <Box sx={{ position: 'relative', left: '35px', top: 8 }}>
+        <Box
+          sx={{
+            width: 100,
+            height: 76,
+            borderRadius: '50%',
+            overflow: 'hidden',
+            border: '3px solid white',
+            backgroundColor: '#A5B1AA',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <img
+            
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+            }}
+          />
+        </Box>
+      
+        <Button
+          variant="contained"
+          size="small"
+          sx={{
+            position: 'relative',
+            top: -101,
+            right: -80,
+            backgroundColor: '#889F7F',
+            color: '#fff',
+            fontSize: '12px',
+            fontWeight: 'normal',
+            borderRadius: '55%',
+            width: 40,
+            height: 26,
+            minWidth: 'unset',
+            padding: 0,
+            zIndex: 2,
+            textTransform: 'none',
+          }}
+          component="label"
+        >
+          수정
+          <input
+            type="file"
+            accept="image/*"
+            hidden
+           
+          />
+        </Button>
+      </Box>
+    </Box>
+   
+    {/* ✅ 탭은 폼 바깥에 위치 */}
+    {/* 폼 컴포넌트 아래 탭 - 간격 좁히기 */}
+    <Box sx={{ width: '100%', maxWidth: 400, mx: 'auto', mt: -70 }}>
+        <Tabs
+            value={selectedTab}
+            onChange={handleTabChange}
+            variant="fullWidth"
+            sx={{
+            width: 360,
+            minHeight: '36px',
+            '& .MuiTab-root': {
+                fontSize: '13px',
+                color: '#777',
+                fontWeight: 500,
+                minHeight: '36px',
+                borderBottom: '2px solid transparent',
+            },
+            '& .Mui-selected': {
+                color: '#000',
+                fontWeight: 600,
+            },
+            '& .MuiTabs-indicator': {
+                backgroundColor: '#000',
+            },
+            }}
+        >
+            <Tab label="병원진료" />
+            <Tab label="먹이알림" />
+            <Tab label="훈련/행동" />
+        </Tabs>
+    </Box>
+    <Box sx={{ width: '100%', maxWidth: 400, mx: 'auto', mt: 2 }}>
+      <DateInputRow label="날짜" value={animalRecordDate} onChange={setAnimalRecordDate} />
+      
+      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, gap: 13 }}>
+        <Typography
+          sx={{
+            width: 92,
+            fontSize: 14,
+            fontWeight: 500,
+            textAlign: 'center',
+            height: 30,
+          }}
+        >
+          훈련/행동 일지
+        </Typography>
+        <Combo
+          key={animalTrainingType || 'default'} // ← 이 줄이 중요합니다!
+          groupId="Exercise"
+          value={animalTrainingType}
+          onSelectionChange={(val) => setAnimalTrainingType(val)}
+        />
+      </Box>
+      <Box sx={{ display: 'flex', flexDirection: 'column', mb: 2 }}>
+          <InputBase
+            value={animalTrainingMemo}
+            onChange={(e) => setAnimalTrainingMemo(e.target.value)}
+            inputRef={animalTrainingMemoRef}
+            multiline
+            inputProps={{
+              style: {
+                padding: 0,
+                paddingTop: 4,
+                fontSize: 13,
+              }
+            }}
+            sx={{
+              backgroundColor: '#D9D9D9',
+              borderRadius: '12px',
+              px: 2,
+              py: 1,
+              left: 18,
+              width : 314,
+              minHeight: 70,
+              textDecoration: 'none',
+              fontWeight: 'normal',
+              color: '#000',
+              display: 'flex',
+              alignItems: 'flex-start',
+            }}
+          />
+        </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+          <Button
+            onClick={handleSubmit}
+            variant="contained"
+            sx={{
+              left: -3,
+              backgroundColor: '#556B2F',
+              borderRadius: '20px',
+              px: 4,
+              py: 1,
+              fontSize: 14,
+            }}
+          >
+            {isEditing ? '수정' : '저장'}
+          </Button>
+        </Box>
+        <Box sx={{ maxWidth: 600, mx: 'auto', p: 2 }}>
+          <Box display="flex" alignItems="center" justifyContent="space-between">
+            <Typography
+              variant="h6"
+              onClick={toggleDropdown}
+              sx={{ cursor: 'pointer', fontWeight: 'bold' }}
+            >
+              {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />} 기록 리스트
+            </Typography>
+          </Box>
+
+          {expanded && (
+            <Box mt={3} sx={{ maxHeight: 400, overflowY: 'auto' }}>
+              {records.slice(0, visibleCount).map((record) => (
+                <Box
+                  component="fieldset"
+                  key={record.animalTrainingAction}
+                  sx={{
+                    mb: 2,
+                    border: '1px solid #ccc',
+                    p: 2,
+                    position: 'relative',
+                  }}
+                >
+                 <legend style={{ fontWeight: 'bold', padding: '0 8px', display: 'flex', alignItems: 'center' }}>
+                  <CheckBoxIcon sx={{ fontSize: 18, color: '#333', mr: 1 }} />
+                  훈련/행동 확인
+                 </legend>
+                  <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
+                    {dayjs(record.animalRecordDate).format('YYYY.MM.DD')} | {trainingTypeMap[record.animalTrainingType] || '없음'}
+                  </Typography>
+                 
+                  <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
+                    {record.animalTrainingMemo}
+                  </Typography>
+                  <Box position="absolute" top={8} right={8}>
+                    <IconButton onClick={() => handleEdit(record)} color="primary">
+                      <EditIcon fontSize="small" />
+                    </IconButton>
+                    <IconButton onClick={() => handleDelete(record.animalTrainingAction)} color="error">
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  </Box>
+                </Box>
+              ))}
+            </Box>
+          )}
+
+          {expanded && visibleCount < records.length && (
+            <Box textAlign="center" mt={1}>
+              <Button variant="outlined" onClick={handleLoadMore}>
+                + 더보기
+              </Button>
+            </Box>
+          )}
+        </Box>
+      </Box>
+  </Box>
+);
+};
+export default Pet_Form_Training_And_Action; 

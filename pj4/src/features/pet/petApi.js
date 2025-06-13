@@ -51,6 +51,20 @@ export const petApi = createApi({
         body: formData,
       }),
     }),
+    Pet_Form_Training_And_Action: builder.mutation({
+      query: (formData) => ({
+        url: '/petTrainingAndAction/petTrainingAndAction.do',
+        method: 'POST',
+        body: formData,
+      }),
+    }),
+    Pet_Form_Training_And_Action_Update: builder.mutation({
+      query: (formData) => ({
+        url: `/petTrainingAndAction/update.do`, // 실제 URL에 맞게 수정
+        method: 'POST',
+        body: formData,
+      }),
+    }),
   }),
 });
 
@@ -61,4 +75,6 @@ export const {
   usePet_Form_Hospital_UpdateMutation, // ✅ 추가
   useDeletePetMutation,
   useGetPetByIdQuery,
+  usePet_Form_Training_And_ActionMutation,
+  usePet_Form_Training_And_Action_UpdateMutation
 } = petApi;
