@@ -39,6 +39,9 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import Pet_Form_Update from './page/pet/Pet_Form_Update';
 import Pet_Form_Hospital from './page/pet/Pet_Form_Hospital';
+import Pet_Form_Eat_Alarm from './page/pet/Pet_Form_Eat_Alarm';
+import Pet_Form_Training_And_Action from './page/pet/Pet_Form_Training_And_Action';
+
 import FindId from './page/find/FindId';
 import FindPw from './page/find/FindPw';
 import Walk from './page/walk/walk';
@@ -50,6 +53,7 @@ import TestMain from './page/test/TestMain';
 import TestPage from './page/test/TestPage';
 import TestResult from './page/test/TestResult';
 import Calendar from './page/calendar/Calendar';
+
 
 const App = () => {
   const navigate = useNavigate();
@@ -103,7 +107,9 @@ const App = () => {
         <Route path="/pet/petForm.do" element={<Pet_Form />} />
         <Route path="/pet/petFormUpdate.do" element={<Pet_Form_Update />} />
         <Route path="/pet/petFormHospital.do" element={<Pet_Form_Hospital />} />
-
+        <Route path="/pet/petFormEatAlarm.do" element={<Pet_Form_Eat_Alarm />} />
+        <Route path="/pet/petFormTrainingAndAction.do" element={<Pet_Form_Training_And_Action/>} />
+        
         {/*아이디, 비번 찾기*/}
         <Route path="/find/findId.do" element={<FindId />} />
         <Route path="/find/findPw.do" element={<FindPw />} />

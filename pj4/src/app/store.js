@@ -16,6 +16,8 @@ import { combineReducers } from 'redux';
 import { petApi } from '../features/pet/petApi';
 import { petWalkApi } from '../features/pet/petWalkApi';
 import { testApi } from '../features/test/testApi';
+import { calendarApi } from '../features/calendar/calendarApi';
+import { homeApi } from '../features/home/homeApi';
 
 const persistConfig = {
   key: 'root',
@@ -36,7 +38,9 @@ const rootReducer = combineReducers({
   [findApi.reducerPath]: findApi.reducer,
   [petApi.reducerPath]: petApi.reducer,
   [petWalkApi.reducerPath]: petWalkApi.reducer,
-  [testApi.reducerPath]:testApi.reducer
+  [testApi.reducerPath]:testApi.reducer,
+  [calendarApi.reducerPath]:calendarApi.reducer,
+  [homeApi.reducerPath]:homeApi.reducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -58,7 +62,9 @@ export const store = configureStore({
       findApi.middleware,
       petApi.middleware,
       petWalkApi.middleware,
-      testApi.middleware
+      testApi.middleware,
+      calendarApi.middleware,
+      homeApi.middleware
     )
 });
 

@@ -17,124 +17,17 @@ import 'dayjs/locale/ko';
 import { CmUtil } from '../../cm/CmUtil';
 import { useCmDialog } from '../../cm/CmDialogUtil';
 import { Tabs, Tab } from '@mui/material';
-import Combo from '../../page/combo/combo';
+import Combo from '../combo/combo';
 import { useLocation } from 'react-router-dom';
 import Stack from '@mui/material/Stack';
-import { usePet_Form_HospitalMutation } from '../../features/pet/petApi'; // 경로는 실제 프로젝트에 맞게 조정
-import { usePet_Form_Hospital_UpdateMutation } from '../../features/pet/petApi';
+import { usePet_Form_Training_And_ActionMutation } from '../../features/pet/petApi'; // 경로는 실제 프로젝트에 맞게 조정
+import { usePet_Form_Training_And_Action_UpdateMutation } from '../../features/pet/petApi';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CheckBoxIcon from '@mui/icons-material/CheckBox'; // 체크된 박스 아이콘
 import { useComboListByGroupQuery } from '../../features/combo/combo';
-const FormRow = ({ label, value = '', onChange, multiline = false, inputRef, fieldKey = '' }) => {
-  let backgroundColor = '#E0E0E0';
-  let border = '1px solid #ccc';
-  let borderRadius = '20px';
-  let textDecoration = 'none';
-  let fontWeight = 'normal';
-  let color = 'inherit';
-  let minHeight = undefined;
-
-  if (fieldKey === 'notes') {
-    backgroundColor = '#D9D9D9';
-    fontWeight = 'bold';
-    color = '#000';
-    minHeight = 80;
-  }
-
-  return (
-    <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 2 }}>
-      <Typography sx={{ width: '90px', fontSize: 14, fontWeight: 500, mt: multiline ? '6px' : 0, position: 'relative', left:30, top: 7 }}>
-        {label}
-      </Typography>
-      <InputBase
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={`${label} 입력`}
-        multiline={multiline}
-        inputRef={inputRef}
-        inputProps={{
-          style: {
-            padding: 0,
-            textAlign: 'center',
-            fontSize: '8px',
-            ...(multiline ? { paddingTop: 4 } : {}),
-          }
-        }}
-        sx={{
-          top: 7,
-          left: '20px',  
-          width: '70px',
-          height: '20px',
-          backgroundColor,
-          border,
-          borderRadius,
-          px: 1,
-          py: 1,
-          fontWeight,
-          textDecoration,
-          color,
-          ...(multiline && { minHeight }),
-        }}
-      />
-    </Box>
-  );
-};
-const FormRow1 = ({ label, value = '', onChange, multiline = false, inputRef, fieldKey = '' }) => {
-  let backgroundColor = '#E0E0E0';
-  let border = '1px solid #ccc';
-  let borderRadius = '20px';
-  let textDecoration = 'none';
-  let fontWeight = 'normal';
-  let color = 'inherit';
-  let minHeight = undefined;
-
-  if (fieldKey === 'notes') {
-    backgroundColor = '#D9D9D9';
-    fontWeight = 'bold';
-    color = '#000';
-    minHeight = 80;
-  }
-
-  return (
-    <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 2 }}>
-      <Typography sx={{ width: '90px', fontSize: 14, fontWeight: 'normal', mt: multiline ? '6px' : 0, position: 'relative', left:20, top: 5 }}>
-        {label}
-      </Typography>
-      <InputBase
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={`${label} 입력`}
-        multiline={multiline}
-        inputRef={inputRef}
-        inputProps={{
-          style: {
-            padding: 0,
-            textAlign: 'center',
-            fontSize: '14px',
-            ...(multiline ? { paddingTop: 4 } : {}),
-          }
-        }}
-        sx={{
-          left: '100px',  
-          width: '142px',
-          height: '30px',
-          backgroundColor,
-          border,
-          borderRadius: '11px',
-          px: 1,
-          py: 1,
-          fontWeight,
-          textDecoration,
-          color,
-          ...(multiline && { minHeight }),
-        }}
-      />
-    </Box>
-  );
-};
 
 const DateInputRow = ({ label, value, onChange }) => {
   return (
@@ -193,31 +86,28 @@ const DateInputRow = ({ label, value, onChange }) => {
   );
 };
 
-const Pet_Form_Hospital = () => { 
+const Pet_Form_Training_And_Action = () => { 
   const location = useLocation();
   const [animalAdoptionDate, setAnimalAdoptionDate] = useState('');
-  const [animalVisitDate, setAnimalVisitDate] = useState(dayjs());
-  const [animalTreatmentMemo, setAnimalTreatmentMemo] = useState('');
-  const animalTreatmentMemoRef = useRef();
-  const [animalHospitalName, setAnimalHospitalName] = useState('');
-  const animalHospitalNameRef = useRef();
-  const [animalTreatmentType, setAnimalTreatmentType] = useState('');
-  const [petFormHospital] = usePet_Form_HospitalMutation();
-  const [petFormHospitalUpdate] = usePet_Form_Hospital_UpdateMutation();
-  const [animalMedication, setAnimalMedication] = useState('');
-  const animalMedicationRef = useRef();
+  const [animalTrainingAction, setAnimalTrainingAction] = useState('');
+  const [animalRecordDate, setAnimalRecordDate] = useState(dayjs());
+  const [animalTrainingType, setAnimalTrainingType] = useState('');
+  const [animalTrainingMemo, setAnimalTrainingMemo] = useState('');
+  const [animalName, setAnimalName] = useState('');
+  const animalTrainingMemoRef = useRef();
   const { showAlert } = useCmDialog();
   const [selectedTab, setSelectedTab] = useState(0);
-  const [animalName, setAnimalName] = useState('');
+  const [petFormTrainingAndAction] = usePet_Form_Training_And_ActionMutation();
+  const [petFormTrainingAndActionUpdate] = usePet_Form_Training_And_Action_UpdateMutation();
   const [animalId, setAnimalId] = useState(null);
   const [records, setRecords] = useState([]);
   const [expanded, setExpanded] = useState(false);
   const [visibleCount, setVisibleCount] = useState(5); // 현재 보여줄 데이터 개수
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
-  const [animalHospitalTreatmentId, setAnimalHospitalTreatmentId] = useState(null);
-  const { data: comboData, isLoading: comboLoading } = useComboListByGroupQuery('Medical');
-  const [treatmentTypeMap, setTreatmentTypeMap] = useState({}); // codeId → codeName 매핑 객체
+  
+  const { data: comboData, isLoading: comboLoading } = useComboListByGroupQuery('Exercise');
+  const [trainingTypeMap, setTrainingTypeMap] = useState({}); // codeId → codeName 매핑 객체
   useEffect(() => {
     if (!expanded) {
       setVisibleCount(5);
@@ -233,33 +123,33 @@ const Pet_Form_Hospital = () => {
   
 
   const handleEdit = (record) => {
-    setAnimalVisitDate(dayjs(record.animalVisitDate));
-    setAnimalHospitalName(record.animalHospitalName);
-    setAnimalMedication(record.animalMedication);
-    console.log("수정할 진료 내용 값:", record.animalTreatmentType);
-    setAnimalTreatmentType(record.animalTreatmentType);
-    setAnimalTreatmentMemo(record.animalTreatmentMemo);
+    
+    console.log("수정할 훈련/행동 일지 값:", record.animalTrainingType);
+    
     setIsEditing(true);
-    setEditId(record.animalHospitalTreatmentId);
+    setEditId(record.animalTrainingAction);
+    setAnimalRecordDate(dayjs(record.animalRecordDate)); // 날짜 상태 설정
+    setAnimalTrainingType(record.animalTrainingType);     // 콤보박스 값 설정
+    setAnimalTrainingMemo(record.animalTrainingMemo);     // 메모 입력 필드 설정
     setExpanded(true);
   };
 
   const handleDelete = async (id) => {
     try {
       // API 호출해서 서버에 del_yn='Y'로 변경 요청
-      const response = await fetch(`http://localhost:8081/api/petHospital/delete.do`, {
+      const response = await fetch(`http://localhost:8081/api/petTrainingAndAction/delete.do`, {
         method: 'POST', // 혹은 DELETE (백엔드에 맞게)
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ animalHospitalTreatmentId: id }),
+        body: JSON.stringify({ animalTrainingAction: id }),
         credentials: 'include',
       });
 
       if (!response.ok) throw new Error('삭제 실패');
 
       // 성공하면 화면에서 해당 항목 제거
-      setRecords(prev => prev.filter(r => r.animalHospitalTreatmentId !== id));
+      setRecords(prev => prev.filter(r => r.animalTrainingAction !== id));
       showAlert('삭제가 완료되었습니다.');
     } catch (error) {
       console.error('삭제 오류:', error);
@@ -280,7 +170,7 @@ const Pet_Form_Hospital = () => {
       comboData.data.forEach(item => {
         map[item.codeId] = item.codeName;
       });
-      setTreatmentTypeMap(map);
+      setTrainingTypeMap(map);
     }
   }, [comboData]); 
 
@@ -289,7 +179,7 @@ const Pet_Form_Hospital = () => {
 
     const fetchRecords = async () => {
       try {
-        const res = await fetch('http://localhost:8081/api/petHospital/list.do', {
+        const res = await fetch('http://localhost:8081/api/petTrainingAndAction/list.do', {
           method: 'GET',
           credentials: 'include', // 세션 쿠키 포함
         });
@@ -316,53 +206,45 @@ const Pet_Form_Hospital = () => {
     e.preventDefault();
 
     if (!animalId) return showAlert('동물을 선택해주세요.');
-    if (!dayjs(animalVisitDate).isValid()) return showAlert('방문 날짜를 선택해주세요.');
-    if (CmUtil.isEmpty(animalHospitalName)) return showAlert('병원 이름을 입력해주세요.');
-    if (CmUtil.isEmpty(animalMedication)) return showAlert('처방약을 입력해주세요.');
+    if (!dayjs(animalRecordDate).isValid()) return showAlert('훈련행동 날짜를 선택해주세요.');
 
     const formData = new FormData();
 
     if (isEditing && editId != null) {
-      formData.append("animalHospitalTreatmentId", editId);
+      formData.append("animalTrainingAction", editId);
     }
 
     formData.append('animalId', animalId);
-    formData.append('animalVisitDate', dayjs(animalVisitDate).format('YYYY-MM-DD'));
-    formData.append('animalHospitalName', animalHospitalName);
-    formData.append('animalMedication', animalMedication);
-    formData.append('animalTreatmentType', animalTreatmentType);
-    formData.append('animalTreatmentMemo', animalTreatmentMemo);
-
+    formData.append('animalRecordDate', dayjs(animalRecordDate).format('YYYY-MM-DD'));
+    formData.append('animalTrainingAction', animalTrainingAction);
+    formData.append('animalTrainingMemo', animalTrainingMemo);
+    formData.append('animalTrainingType', animalTrainingType); 
     try {
       if (isEditing) {
-        const updatedData = await petFormHospitalUpdate(formData).unwrap();
+        const updatedData = await petFormTrainingAndActionUpdate(formData).unwrap();
         setRecords(prev =>
           prev.map(r =>
-            r.animalHospitalTreatmentId === editId ? updatedData : r
+            r.animalTrainingAction === editId ? updatedData : r
           )
         );
         showAlert('수정이 완료되었습니다.');
       } else {
-        const result = await petFormHospital(formData).unwrap();
+        const result = await petFormTrainingAndAction(formData).unwrap();
         const newRecord = {
-          animalHospitalTreatmentId: result.animalHospitalTreatmentId,
+          animalTrainingAction: result.animalTrainingAction,
           animalId,
-          animalVisitDate: dayjs(animalVisitDate).format('YYYY-MM-DD'),
-          animalHospitalName,
-          animalMedication,
-          animalTreatmentType,
-          animalTreatmentMemo,
+          animalRecordDate: dayjs(animalRecordDate).format('YYYY-MM-DD'),
+          animalTrainingType,
+          animalTrainingMemo,
         };
         setRecords(prev => [newRecord, ...prev]);
         showAlert('등록이 완료되었습니다.');
       }
 
       // 초기화
-      setAnimalVisitDate(dayjs());
-      setAnimalHospitalName('');
-      setAnimalMedication('');
-      setAnimalTreatmentType('');
-      setAnimalTreatmentMemo('');
+      setAnimalRecordDate(dayjs());
+      setAnimalTrainingType('');
+      setAnimalTrainingMemo('');
       setIsEditing(false);
       setEditId(null);
     } catch (error) {
@@ -515,9 +397,8 @@ const Pet_Form_Hospital = () => {
         </Tabs>
     </Box>
     <Box sx={{ width: '100%', maxWidth: 400, mx: 'auto', mt: 2 }}>
-      <DateInputRow label="병원진료 날짜" value={animalVisitDate} onChange={setAnimalVisitDate} />
-      <FormRow1 label="병원 이름" value={animalHospitalName} onChange={setAnimalHospitalName} inputRef={animalHospitalNameRef}/>
-      <FormRow1 label="처방약" value={animalMedication} onChange={setAnimalMedication} inputRef={animalMedicationRef} />
+      <DateInputRow label="날짜" value={animalRecordDate} onChange={setAnimalRecordDate} />
+      
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, gap: 13 }}>
         <Typography
           sx={{
@@ -528,20 +409,20 @@ const Pet_Form_Hospital = () => {
             height: 30,
           }}
         >
-          진료 내용
+          훈련/행동 일지
         </Typography>
         <Combo
-          key={animalTreatmentType || 'default'} // ← 이 줄이 중요합니다!
-          groupId="Medical"
-          value={animalTreatmentType}
-          onSelectionChange={(val) => setAnimalTreatmentType(val)}
+          key={animalTrainingType || 'default'} // ← 이 줄이 중요합니다!
+          groupId="Exercise"
+          value={animalTrainingType}
+          onSelectionChange={(val) => setAnimalTrainingType(val)}
         />
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', mb: 2 }}>
           <InputBase
-            value={animalTreatmentMemo}
-            onChange={(e) => setAnimalTreatmentMemo(e.target.value)}
-            inputRef={animalTreatmentMemoRef}
+            value={animalTrainingMemo}
+            onChange={(e) => setAnimalTrainingMemo(e.target.value)}
+            inputRef={animalTrainingMemoRef}
             multiline
             inputProps={{
               style: {
@@ -598,7 +479,7 @@ const Pet_Form_Hospital = () => {
               {records.slice(0, visibleCount).map((record) => (
                 <Box
                   component="fieldset"
-                  key={record.animalHospitalTreatmentId}
+                  key={record.animalTrainingAction}
                   sx={{
                     mb: 2,
                     border: '1px solid #ccc',
@@ -608,22 +489,20 @@ const Pet_Form_Hospital = () => {
                 >
                  <legend style={{ fontWeight: 'bold', padding: '0 8px', display: 'flex', alignItems: 'center' }}>
                   <CheckBoxIcon sx={{ fontSize: 18, color: '#333', mr: 1 }} />
-                  병원 진료 확인
+                  훈련/행동 확인
                  </legend>
                   <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-                    {dayjs(record.animalVisitDate).format('YYYY.MM.DD')} {record.animalHospitalName} | {treatmentTypeMap[record.animalTreatmentType] || '없음'}
+                    {dayjs(record.animalRecordDate).format('YYYY.MM.DD')} | {trainingTypeMap[record.animalTrainingType] || '없음'}
                   </Typography>
-                  <Typography variant="body2" sx={{ fontWeight: 'normal', mb: 0.5 }}>
-                    처방약 : {record.animalMedication}
-                  </Typography>
+                 
                   <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
-                    진료 내용 : {record.animalTreatmentMemo}
+                    {record.animalTrainingMemo}
                   </Typography>
                   <Box position="absolute" top={8} right={8}>
                     <IconButton onClick={() => handleEdit(record)} color="primary">
                       <EditIcon fontSize="small" />
                     </IconButton>
-                    <IconButton onClick={() => handleDelete(record.animalHospitalTreatmentId)} color="error">
+                    <IconButton onClick={() => handleDelete(record.animalTrainingAction)} color="error">
                       <DeleteIcon fontSize="small" />
                     </IconButton>
                   </Box>
@@ -644,4 +523,4 @@ const Pet_Form_Hospital = () => {
   </Box>
 );
 };
-export default Pet_Form_Hospital; 
+export default Pet_Form_Training_And_Action; 
