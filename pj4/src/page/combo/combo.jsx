@@ -23,6 +23,7 @@ const Combo = ({ groupId, onSelectionChange, defaultValue='', sx }) => { // sx p
   useEffect(()=>{
     if(defaultValue && items.length > 0){
       setSelected(defaultValue); 
+      onSelectionChange?.(defaultValue);
     }
    },[defaultValue, items]);
   
@@ -33,6 +34,7 @@ const Combo = ({ groupId, onSelectionChange, defaultValue='', sx }) => { // sx p
 
   // groupId에 따라 플레이스홀더 텍스트 변경 (선택 사항)
   const getPlaceholder = () => {
+    if (groupId === "AlarmCycle") return "주기 선택";
     if (groupId === "Community") return "카테고리 선택";
     if (groupId === "WritingSortation") return "종류 선택";
     return "선택하세요";

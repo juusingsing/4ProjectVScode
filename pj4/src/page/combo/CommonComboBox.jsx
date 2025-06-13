@@ -7,8 +7,10 @@ import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 const CommonComboBox = ({ options, value, onChange, placeholder = '선택하세요', disabled = false, sx, label }) => {
   // label prop을 추가하여 InputLabel에 사용
   const id = `common-select-${Math.random().toString(36).substr(2, 9)}`; // 고유 ID 생성 (필요에 따라)
+  console.log("콤보 선택된value : " + value);
 
   return (
+    
     <FormControl fullWidth disabled={disabled}>
       {/* placeholder가 있을 경우 InputLabel로 사용 */}
       {placeholder && <InputLabel id={id}>{placeholder}</InputLabel>}
@@ -21,7 +23,7 @@ const CommonComboBox = ({ options, value, onChange, placeholder = '선택하세�
       >
         {/* '전체' 또는 플레이스홀더를 위한 빈 옵션 */}
         <MenuItem value="">
-          <em>{placeholder}</em> {/* 폰트 스타일링을 위해 em 태그 사용 가능 */}
+         <em>{placeholder}</em> {/* 폰트 스타일링을 위해 em 태그 사용 가능 */}
         </MenuItem>
         {options.map((opt) => (
           <MenuItem key={opt.value} value={opt.value}>

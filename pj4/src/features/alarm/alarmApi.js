@@ -39,6 +39,13 @@ export const alarmApi = createApi({
         body: data,
       }),
     }),
+    AlarmAllUpdate: builder.mutation({
+      query: (data) => ({
+        url: '/alarm/AllUpdate.do',
+        method: 'POST',
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -47,4 +54,5 @@ export const {
     useAlarmOneListQuery,
     useAlarmCreateMutation,
     useAlarmUpdateMutation,
+    useAlarmAllUpdateMutation,
 } = alarmApi;
