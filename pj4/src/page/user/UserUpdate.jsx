@@ -8,6 +8,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useCmDialog } from '../../cm/CmDialogUtil';
 import { CmUtil } from '../../cm/CmUtil';
 import back from '../../image/backWhite.png';
+import Plus from '../../image/imagePlus.png';
+import Delete from '../../image/imageDelete.png'
 
 const UserUpdate = () => {
   const user = useSelector((state) => state.user.user);
@@ -142,79 +144,89 @@ const UserUpdate = () => {
       showAlert(error.data?.message || '회원정보 수정에 실패했습니다. 서버 오류 또는 네트워크 문제.');
     }
   };
+  const LabeledTextFieldRow = ({ label, value, onChange, inputRef, disabled = false, type = 'text' }) => {
+    const commonContentWrapperStyle = {
+      flexGrow: 1,
+      display: 'flex',
+      alignItems: 'center',
+      borderRadius: '20px',
+      minHeight: '30px',
+    };
 
- const LabeledTextFieldRow = ({ label, value, onChange, inputRef, disabled = false, type = 'text' }) => {
     return (
-        <Box
-            sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center", // 세로 중앙 정렬
-                backgroundColor: "rgba(217, 217, 217, 0.21)", // 전체 행의 배경색
-                paddingX: "5px",
-                paddingY: "5px",
-                borderRadius: '20px', // 전체 행의 둥근 모서리
-                width: '80%', // 부모 Box의 전체 너비 사용
-            }}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          backgroundColor: "rgba(217, 217, 217, 0.21)",
+          paddingX: "10px",
+          paddingY: "5px",
+          borderRadius: '20px',
+          width: '90%',
+        }}
+      >
+        <Typography
+          variant="subtitle1"
+          color="text.secondary"
+          sx={{
+            flexShrink: 0, // 라벨이 줄어들지 않도록
+            mr: 2, // 라벨과 입력/표시 필드 사이의 오른쪽 마진
+            minWidth: '90px', // 라벨의 최소 너비 설정 (모든 라벨 정렬을 위함)
+          }}
         >
-            <Typography variant="subtitle1" color="text.secondary" sx={{width:"100px"}}> {/* 라벨 */}
-                {label}
-            </Typography>
-            <TextField
-                value={value}
-                onChange={onChange}
-                inputRef={inputRef}
-                disabled={disabled}
-                type={type}
-                variant="outlined" // 'outlined' variant 사용
-                sx={{
-                  width:"50px",
-                  height:"20px",
-                    '& .MuiOutlinedInput-root': { // 실제 입력 영역과 테두리 부분 스타일링
-                        backgroundColor: "white", // 입력 필드 내부 기본 배경색 (활성화 시)
-                        borderRadius: '20px', // 입력 필드의 둥근 모서리
-                        '& fieldset': { // outlined variant의 기본 테두리 제거 (투명하게)
-                            borderColor: 'transparent',
-                            height:"20px"
-                        },
-                        '&:hover fieldset': {
-                            borderColor: 'transparent',
-                             height:"20px"
-                        },
-                        '&.Mui-focused fieldset': {
-                            borderColor: 'transparent',
-                             height:"20px"
-                        },
-                        '&.Mui-focused': { // 포커스 시 배경색 변경
-                            backgroundColor: "rgba(255, 255, 255, 0.8)", // 포커스 시 약간 투명한 흰색
-                             height:"20px"
-                        },
-                        // disabled 상태일 때의 배경색과 텍스트 색상
-                        '&.Mui-disabled': {
-                            backgroundColor: 'transparent', // 부모 Box의 배경색과 같도록 투명하게 설정
-                            WebkitTextFillColor: 'rgba(0, 0, 0, 0.87)', // 텍스트 색상 유지 (웹킷 브라우저)
-                            color: 'rgba(0, 0, 0, 0.87)', // 텍스트 색상 유지 (기타 브라우저)
-                             height:"20px"
-                        },
-                    },
-                    // TextField의 기본 라벨은 사용하지 않으므로 숨김
-                    '& .MuiInputLabel-root': {
-                        display: 'none',
-                         height:"20px"
-                    },
-                    // 원래 disabled 상태 텍스트 색상 조절 (위 Mui-disabled 규칙과 중복될 수 있으나, 안전을 위해 남김)
-                    '& .MuiInputBase-input.Mui-disabled': {
-                        WebkitTextFillColor: 'rgba(0, 0, 0, 0.87)',
-                        color: 'rgba(0, 0, 0, 0.87)',
-                         height:"20px"
-                    },
-                }}
+          {label}
+        </Typography>
+
+        {disabled ? (
+          <Typography
+            variant="body1"
+            sx={{
+              ...commonContentWrapperStyle, // 공통 구조 스타일 적용
+              color: 'black', // 텍스트 색상 검은색
+              opacity: 1, // 불투명도 1 (흐려지지 않도록)
+              boxShadow: 'none', // 그림자 제거
+              padding: '0 12px', // <--- Typography 자체에 내부 패딩 적용
+              justifyContent: 'flex-end'
+            }}
+          >
+            {value}
+          </Typography>
+        ) : (
+          <Box
+            sx={{
+              ...commonContentWrapperStyle,
+              backgroundColor: 'white',
+              '&:focus-within': {
+                backgroundColor: "rgba(255, 255, 255, 0.8)",
+              },
+              padding: '0 12px',
+            }}
+          >
+            <input
+              ref={inputRef}
+              value={value}
+              onChange={onChange}
+              type={type}
+              style={{
+                flexGrow: 1,
+                border: 'none',
+                outline: 'none',
+                backgroundColor: 'transparent',
+                padding: '0',
+                height: '100%',
+                fontSize: '1rem',
+                color: 'rgba(0, 0, 0, 0.87)',
+                cursor: 'text',
+                WebkitTextFillColor: 'rgba(0, 0, 0, 0.87)',
+                opacity: 1,
+              }}
             />
-        </Box>
+          </Box>
+        )}
+      </Box>
     );
-};
-
-
+  };
   return (
     <Box
       sx={{
@@ -237,19 +249,19 @@ const UserUpdate = () => {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          position: 'relative', // 자식 요소 absolute 위치 지정을 위해
+          position: 'relative',
         }}
       >
         {/* 헤더 섹션: 뒤로가기 버튼과 중앙 정렬된 마이페이지 제목 */}
         <Box
           sx={{
             display: 'flex',
-            alignItems: 'center', // 세로 중앙 정렬
+            alignItems: 'center',
             width: '100%',
-            mb: 3, // 헤더와 아래 콘텐츠 간의 간격 추가 (선택 사항)
-            position: 'absolute', // 상단 Box에 절대 위치
+            mb: 3,
+            position: 'absolute',
             top: 10,
-            justifyContent: 'space-between', // 요소를 양 끝으로 분산
+            justifyContent: 'space-between',
           }}
         >
           {/* 뒤로가기 버튼 - 왼쪽 끝 */}
@@ -295,33 +307,31 @@ const UserUpdate = () => {
           <IconButton
             sx={{
               position: 'absolute',
-              bottom: 0,
-              right: 0,
-              backgroundColor: 'primary.main',
+              bottom: -10,
+              right: -15,
               color: 'white',
               '&:hover': {
-                backgroundColor: 'primary.dark',
+                backgroundColor: 'transparent',
               },
             }}
             onClick={() => usersFileInputRef.current.click()}
           >
-            <PhotoCameraIcon />
+            <img alt="" src={Plus} style={{ width: '30px' }} />
           </IconButton>
           {imagePreviewUrl && (
             <IconButton
               sx={{
                 position: 'absolute',
-                top: 0,
-                right: 0,
-                backgroundColor: 'error.main',
+                bottom: 15,
+                right: -23,
                 color: 'white',
                 '&:hover': {
-                  backgroundColor: 'error.dark',
+                  backgroundColor: 'transparent',
                 },
               }}
               onClick={handleRemoveProfileImage}
             >
-              <DeleteIcon />
+              <img alt="" src={Delete} style={{ width: '20px' }} />
             </IconButton>
           )}
         </Box>
@@ -332,9 +342,9 @@ const UserUpdate = () => {
           width: '100%',
           display: 'flex',
           flexDirection: 'column',
-          alignItems:"center",
-          gap: '15px',
-          mt: 6
+          alignItems: "center",
+          gap: '30px',
+          mt: 9
         }}>
         <LabeledTextFieldRow
           label="닉네임"
@@ -344,16 +354,13 @@ const UserUpdate = () => {
         />
 
         <LabeledTextFieldRow
-          sx={{backgroundColor:"transparents"}}
           label="아이디"
-          value={usersId}
           disabled
-          inputRef={usersIdRef}
+          value={usersId}
         />
 
         <LabeledTextFieldRow
           label="이메일"
-          type="email"
           disabled
           value={usersEmail}
         />
@@ -377,21 +384,14 @@ const UserUpdate = () => {
       <Button
         onClick={handleUpdateClick}
         variant="contained"
-        color="primary"
-        fullWidth
-        sx={{ marginTop: 2 }}
+        sx={{ 
+          marginTop: 4, 
+          backgroundColor: '#385C4F', 
+          borderRadius: '15px',
+          width:"150px"
+        }}
       >
         저장
-      </Button>
-
-      <Button
-        onClick={() => navigate('/')}
-        variant="contained"
-        color="primary"
-        fullWidth
-        sx={{ marginTop: 2 }}
-      >
-        홈
       </Button>
     </Box>
   );

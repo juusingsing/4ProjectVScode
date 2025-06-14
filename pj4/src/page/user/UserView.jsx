@@ -73,7 +73,7 @@ const UserView = () => {
           paddingX:"10px",
           paddingY:"5px",
           borderRadius: '20px', // 약간의 둥근 모서리
-          width: '80%', // 부모 Box의 전체 너비 사용
+          width: '90%', // 부모 Box의 전체 너비 사용
         }}
       >
         <Typography variant="subtitle1" color="text.secondary">
@@ -183,7 +183,7 @@ const UserView = () => {
           <Button
             onClick={() => navigate('/user/update.do')}
             variant="contained"
-            sx={{ marginTop: 2, backgroundColor:'#385C4F', borderRadius:'15px'}}
+            sx={{ marginTop: 2, backgroundColor:'#385C4F', borderRadius:'15px', width:"150px"}}
           >
             회원정보 수정
           </Button>
