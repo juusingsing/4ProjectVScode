@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import pet from '../../image/animalFootprintWhite.png';
 import plant from '../../image/plantWhite.png';
-import add from '../../image/add.png'
+import add from '../../image/addPencil.png'
 import '../../css/toggleSwitch.css';
 import '../../css/diaryList.css';
 import petthumbnail from '../../image/animalDiary.png';

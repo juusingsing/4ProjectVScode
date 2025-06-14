@@ -52,6 +52,8 @@ import TestPage from './page/test/TestPage';
 import TestResult from './page/test/TestResult';
 import Calendar from './page/calendar/Calendar';
 
+
+
 const App = () => {
   const navigate = useNavigate();
 
@@ -76,8 +78,8 @@ const App = () => {
         {/* 회원가입, 로그인, 회원정보 */}
         <Route path="/user/join.do" element={<LayoutNoLogin><Register /></LayoutNoLogin>} />
         <Route path="/user/login.do" element={<LayoutNoLogin><Login /></LayoutNoLogin>} />
-        <Route path="/user/update.do" element={<LayoutLogin><UserUpdate /></LayoutLogin>} />
-        <Route path="/user/view.do" element={<LayoutLogin><UserView /></LayoutLogin>} />
+        <Route path="/user/update.do" element={<UserUpdate />} />
+        <Route path="/user/view.do" element={<UserView />} />
         {/* 홈화면 */}
         <Route path="/Home.do" element={<Home />} />
 
