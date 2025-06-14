@@ -84,6 +84,7 @@ const FindId = () => {
         body: JSON.stringify({ usersEmail })
       });
       const data = await res.json();
+      console.log(data);
 
       if (data.success) {
         // 기존 타이머 제거 및 초기화

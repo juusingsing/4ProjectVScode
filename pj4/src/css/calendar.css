@@ -116,6 +116,7 @@ width:360px;
   width: 7px;
   height: 7px;
   border-radius: 50%;
+  
 }
 
 /* 동물 점 색상 */
@@ -137,3 +138,70 @@ width:360px;
   color: #888;
   margin-top:2px;
 }
+/* .log-list{
+  margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: center;
+
+} */
+
+.log-list {
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.log-icon{
+  display: flex;
+  margin-left:20px;
+ z-index: 1;
+}
+.log-content{
+  margin-left: -30px;
+  background-color: #e7e4db5b;
+  width:260px;
+  height:30px;
+
+  border-radius: 10px;
+  align-items: center;
+  padding:5px 12px;
+}
+
+
+.log-icon-wrap {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+}
+/* 아래로 선 */
+.log-icon-wrap.bottom-line::before {
+  content: '';
+  position: absolute;
+  bottom: -37px;
+  left: -50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 39px;
+  background-color: #8b7513;
+  z-index: 0;
+}
+/* 위로 선 */
+.log-icon-wrap.top-line::before {
+  content: '';
+  position: absolute;
+  top: -27px;
+  left: -50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 40px;
+  background-color: #8b7513; /* 브라운 */
+  z-index: 0;
+}
+

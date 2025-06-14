@@ -25,8 +25,8 @@ const WriteCreate = () => {
   const writingTitleRef = useRef();
   const [editor, setEditor] = useState("");
   const [Title, setWritingTitle] = useState("");
-  const [writingSortation, setWritingSortation] = useState(""); // 선택된 게시판 종류
-  const [writingCategory, setWritingCategory] = useState(""); // 선택된 카테고리
+  const [writingSortation, setWritingSortation] = useState("N01"); // 선택된 게시판 종류
+  const [writingCategory, setWritingCategory] = useState("C02"); // 선택된 카테고리
   const [writeCreate] = useWriteCreateMutation();
   const { showAlert } = useCmDialog();
   const navigate = useNavigate();

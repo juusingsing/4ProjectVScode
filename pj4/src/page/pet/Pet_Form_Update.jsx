@@ -112,7 +112,7 @@ const Pet_Form_Update = () => {
       const result = await deletePet({ animalId }).unwrap();
       if (result.success) {
         showAlert('삭제 성공!');
-        // 삭제 후 화면 이동이나 상태 초기화 처리
+        // 필요시 redirect('/petList') 등 이동 처리
       } else {
         showAlert(result.message || '삭제 실패');
       }

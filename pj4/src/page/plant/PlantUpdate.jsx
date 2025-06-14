@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Box,
     Button,
@@ -12,27 +12,56 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { FaCamera } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import '../../css/plantCreate.css';
-import { useUpdatePlantMutation, useDeletePlantMutation, useCreatePlantMutation } from '../../features/plant/plantApi';
+import {
+    useUpdatePlantMutation,
+    useDeletePlantMutation,
+    useCreatePlantMutation,
+    usePlantInfoQuery
+} from '../../features/plant/plantApi';
 import Combo from '../combo/combo';
-const PlantUpdate = ({ mode = 'create', plantData }) => {
-    const isEdit = mode === 'edit';
+import DefaultImage from '../../image/default-plant.png';
+
+const PlantUpdate = ({ mode = 'create' }) => {
+    const { plantId } = useParams();
+    const isEdit = mode === 'edit' || !!plantId;
+
     const navigate = useNavigate();
 
-    const [plantName, setPlantName] = useState(plantData?.plantName || '');
-    const [plantType, setPlantType] = useState(plantData?.plantType || '');
-    const [plantPurchaseDate, setPlantPurchaseDate] = useState(
-        plantData?.plantPurchaseDate ? dayjs(plantData.plantPurchaseDate) : null
-    );
-    const [sunlightPreference, setSunlightPreference] = useState(plantData?.plantSunPreference || '');
-    const [plantGrowthStatus, setPlantGrowthStatus] = useState(plantData?.plantGrowStatus || '');
-    const [imagePreview, setImagePreview] = useState(plantData?.imageUrl || null);
+    const { data: fetchedPlantData, isLoading, isSuccess, isError, error } = usePlantInfoQuery(plantId, {
+        skip: !isEdit || !plantId,
+    });
+
+    const [plantName, setPlantName] = useState('');
+    const [plantType, setPlantType] = useState('');
+    const [plantPurchaseDate, setPlantPurchaseDate] = useState(null);
+    const [sunlightPreference, setSunlightPreference] = useState('');
+    const [plantGrowthStatus, setPlantGrowthStatus] = useState('');
+    const [imagePreview, setImagePreview] = useState(DefaultImage);
 
     const [updatePlant] = useUpdatePlantMutation();
     const [deletePlant] = useDeletePlantMutation();
-    const [createPlant] = useCreatePlantMutation(); // 'create' 모드용
+    const [createPlant] = useCreatePlantMutation();
 
+     useEffect(() => {
+        console.log('plantType:', plantType);
+  console.log('sunlightPreference:', sunlightPreference);
+  if (isEdit && isSuccess && fetchedPlantData?.data?.length > 0) {
+    const plant = fetchedPlantData.data[0];
+    console.log('🌱 받아온 식물 데이터:', plant);
+
+    setPlantName(plant.plantName || '');
+    setPlantType(plant.plantType || '');
+    setPlantPurchaseDate(plant.plantPurchaseDate ? dayjs(plant.plantPurchaseDate) : null);
+    setSunlightPreference(plant.plantSunPreference || '');
+    setPlantGrowthStatus(plant.plantGrowStatus || '');
+    setImagePreview(null); // 이미지 기본 처리
+  }
+}, [isEdit, isSuccess, fetchedPlantData]);
+
+
+  
     const handleImageChange = (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -57,11 +86,13 @@ const PlantUpdate = ({ mode = 'create', plantData }) => {
 
         try {
             if (isEdit) {
-                await updatePlant({ id: plantData.id, data: formData }).unwrap();
+                await updatePlant({ plantId, data: formData }).unwrap();
                 alert('수정 성공');
             } else {
-                await createPlant(formData).unwrap();
+                const result = await createPlant(formData).unwrap();
                 alert('등록 성공');
+                navigate(`/PlantUpdate/${result.plantId}`);
+                return;
             }
             navigate('/PlantSunlighting.do');
         } catch (err) {
@@ -72,19 +103,28 @@ const PlantUpdate = ({ mode = 'create', plantData }) => {
     const handleDelete = async () => {
         if (window.confirm('정말 삭제하시겠습니까?')) {
             try {
-                await deletePlant(plantData.id).unwrap();
+                await deletePlant(plantId).unwrap();
                 alert('삭제 성공');
                 navigate('/PlantSunlighting.do');
-            } catch (err) {
+            } catch {
                 alert('삭제 실패');
             }
         }
     };
 
+    if (isEdit && isLoading) {
+        return <Typography>식물 정보를 불러오는 중입니다...</Typography>;
+    }
+    if (isEdit && isError && !fetchedPlantData) {
+        return <Typography>식물 정보를 불러오는 데 실패했습니다.</Typography>;
+    }
+    if (isEdit && !plantId) {
+        return <Typography>수정할 식물의 ID가 필요합니다.</Typography>;
+    }
+
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Box className="plant-create-container">
-                {/* 뒤로가기 버튼 */}
                 <div className="header-icon-container">
                     <IconButton className="back-button" aria-label="back" onClick={() => navigate(-1)}>
                         &lt;
@@ -92,12 +132,8 @@ const PlantUpdate = ({ mode = 'create', plantData }) => {
                 </div>
 
                 <Stack spacing={2} className="plant-form-stack">
-                    {/* 이미지 업로드 섹션 */}
                     <Box sx={{ textAlign: 'center', position: 'relative', marginBottom: 3 }}>
-                        <Avatar
-                            src={imagePreview}
-                            sx={{ width: 100, height: 100, margin: 'auto' }}
-                        />
+                        <Avatar src={imagePreview} sx={{ width: 100, height: 100, margin: 'auto' }} />
                         <input
                             id="imageUpload"
                             type="file"
@@ -124,7 +160,6 @@ const PlantUpdate = ({ mode = 'create', plantData }) => {
                         </label>
                     </Box>
 
-                    {/* 식물 이름 */}
                     <Box className="form-row">
                         <Typography className="label-text">식물 이름</Typography>
                         <TextField
@@ -133,106 +168,66 @@ const PlantUpdate = ({ mode = 'create', plantData }) => {
                             variant="outlined"
                             size="small"
                             className="input-field-wrapper"
-                            InputProps={{
-                                sx: {
-                                    borderRadius: '8px',
-                                    backgroundColor: '#f0f0f0',
-                                    '& .MuiOutlinedInput-notchedOutline': { borderColor: 'transparent' },
-                                    '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'transparent' },
-                                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'transparent' },
-                                },
-                            }}
                         />
                     </Box>
 
-                    {/* 식물 종류 */}
                     <Box className="form-row">
                         <Typography className="label-text">식물 종류</Typography>
                         <Combo
                             groupId="PlantType"
+                            value="P01"
                             onSelectionChange={setPlantType}
                             sx={{ width: '200px' }}
                         />
                     </Box>
 
-
-                    {/* 식물 입수일 */}
                     <Box className="form-row">
                         <Typography className="label-text">식물 입수일</Typography>
                         <DatePicker
                             value={plantPurchaseDate}
                             onChange={(newValue) => setPlantPurchaseDate(newValue)}
-                            inputFormat="YYYY-MM-DD"
-                            renderInput={(params) => (
-                                <TextField
-                                    {...params}
-                                    variant="outlined"
-                                    size="small"
-                                    className="input-field-wrapper"
-                                    InputProps={{
-                                        sx: {
-                                            borderRadius: '8px',
-                                            backgroundColor: '#f0f0f0',
-                                            '& .MuiOutlinedInput-notchedOutline': { borderColor: 'transparent' },
-                                            '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'transparent' },
-                                            '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'transparent' },
-                                        },
-                                    }}
-                                />
-                            )}
-                        />
-                    </Box>
-
-                    {/* 햇빛/그늘 선호 */}
-                    <Box className="form-row">
-                        <Typography className="label-text">햇빛/그늘 선호</Typography>
-                        <Combo
-                            groupId="SunType"
-                            onSelectionChange={setSunlightPreference}
-                            sx={{ width: '200px' }}
-                        />
-                    </Box>
-
-                    {/* 생육 상태 */}
-                    <Box className="form-row status-field">
-                        <Typography className="label-text">생육 상태</Typography>
-                        <TextField
-                            value={plantGrowthStatus}
-                            onChange={(e) => setPlantGrowthStatus(e.target.value)}
-                            multiline
-                            rows={3}
-                            variant="outlined"
-                            size="small"
-                            className="input-field-wrapper"
-                            InputProps={{
-                                sx: {
-                                    borderRadius: '8px',
-                                    backgroundColor: '#f0f0f0',
-                                    '& .MuiOutlinedInput-notchedOutline': { borderColor: 'transparent' },
-                                    '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'transparent' },
-                                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'transparent' },
+                            format="YYYY-MM-DD"
+                            slotProps={{
+                                textField: {
+                                    variant: 'outlined',
+                                    size: 'small',
+                                    className: 'input-field-wrapper',
                                 },
                             }}
                         />
                     </Box>
 
-                    {/*수정 / 삭제 버튼 */}
-                    <Button variant="contained" onClick={handleSubmit}>수정</Button>
-                    <Button variant="outlined" onClick={handleDelete}>삭제</Button>
+                    <Box className="form-row">
+                        <Typography className="label-text">햇빛/그늘 선호</Typography>
+                        <Combo
+                            groupId="SunType"
+                            value={sunlightPreference}
+                            onSelectionChange={setSunlightPreference}
+                            sx={{ width: '200px' }}
+                        />
+                    </Box>
 
-                    <Button
-                        variant="contained"
-                        onClick={handleSubmit}
-                        className="register-button"
-                        sx={{
-                            backgroundColor: '#4B6044',
-                            borderRadius: 20,
-                            padding: '10px 24px',
-                            fontSize: '1rem',
-                            fontWeight: 'bold',
-                        }}
-                    >
-                    </Button>
+                    <Box className="form-row">
+                        <Typography className="label-text">성장 상태</Typography>
+                        <TextField
+                            value={plantGrowthStatus}
+                            onChange={(e) => setPlantGrowthStatus(e.target.value)}
+                            variant="outlined"
+                            size="small"
+                            className="input-field-wrapper"
+                        />
+                    </Box>
+
+                    <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 3 }}>
+                        {isEdit && (
+                            <Button variant="outlined" color="error" onClick={handleDelete}>
+                                삭제
+                            </Button>
+                        )}
+                        <Button variant="contained" color="primary" onClick={handleSubmit}>
+                            {isEdit ? '수정' : '등록'}
+                        </Button>
+                    </Stack>
                 </Stack>
             </Box>
         </LocalizationProvider>

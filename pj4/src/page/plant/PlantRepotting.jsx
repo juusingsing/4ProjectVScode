@@ -279,51 +279,6 @@ const PlantRepotting = () => {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Box className="plant-care-container">
-        {/*식물 정보 수정 버튼*/}
-        <Button variant="contained" className="edit-top-button">
-          수정
-        </Button>
-
-        <Box className="plant-info-header">
-          <Box className="plant-details">
-            <Box className="plant-detail-row">
-              <Typography className="plant-label">식물 이름</Typography>
-              <Box className="plant-value-box">
-                <Typography sx={{ fontSize: "0.8rem", textAlign: "center" }}>
-                  {plantName}
-                </Typography>
-              </Box>
-            </Box>
-            <Box className="plant-detail-row">
-              <Typography className="plant-label">입수일 날짜</Typography>
-              <Box className="plant-value-box">
-                <Typography sx={{ fontSize: "0.8rem", textAlign: "center" }}>
-                  {purchaseDate}
-                </Typography>
-              </Box>
-            </Box>
-          </Box>
-          <Avatar src="/plant.png" className="plant-avatar" />
-        </Box>
-
-        <Box className="tab-menu-container">
-          <Tabs
-            value={currentTab}
-            onChange={handleTabChange}
-            className="plant-care-tabs"
-            TabIndicatorProps={{ style: { backgroundColor: "black" } }}
-          >
-            <Tab label="물주기" />
-            <Tab label="일조량" />
-            <Tab label="분갈이" />
-            <Tab label="병충해" />
-          </Tabs>
-        </Box>
-        <Box className="tab-content-display">
-          {currentTab === 0 && <PlantWatering tabName="물주기" />}
-          {currentTab === 1 && <PlantSunlighting tabName="일조량" />}
-          {currentTab === 2 && (
             <RepottingContent
               repottingDate={repottingDate}
               setRepottingDate={setRepottingDate}
@@ -336,10 +291,6 @@ const PlantRepotting = () => {
               onDeleteLog={handleDeleteLog}
               onEditLog={handleEditLog}
             />
-          )}
-          {currentTab === 3 && <PlantPest tabName="병충해" />}
-        </Box>
-      </Box>
     </LocalizationProvider>
   );
 };
