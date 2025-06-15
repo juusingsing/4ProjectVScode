@@ -30,13 +30,16 @@ const Pet_Form_Update = () => {
   const [birthDate, setBirthDate] = useState(null);
   const [gender, setGender] = useState('');
   const [imageFile, setImageFile] = useState(null);
+  const [existingImageUrl, setExistingImageUrl] = useState('');
+  const safeUrl = existingImageUrl || '';
+  console.log("동물 ID 확인:", animalId); // → 8이어야 정상
   const { showAlert } = useCmDialog();
   // RTK Query mutation 훅
   const [petFormUpdate, { isLoading }] = usePet_Form_UpdateMutation();
   const [deletePet, { isLoading: isDeleting }] = useDeletePetMutation(); 
   // animalId가 null이면 쿼리 실행하지 않음
   const { data, isLoading: isPetLoading } = useGetPetByIdQuery(animalId, {
-    skip: animalId === null,
+     skip: !animalId,
   });
 
   const handleImageChange = (e) => {
@@ -44,16 +47,28 @@ const Pet_Form_Update = () => {
     if (file) setImageFile(file);
   };
   useEffect(() => {
-    if (data?.result) {
-      const fetchedPet = data.result;
+    if (data?.data) {
+      const fetchedPet = data.data;
       setAnimalName(fetchedPet.animalName || '');
       setAnimalSpecies(fetchedPet.animalSpecies || '');
       setAnimalMemo(fetchedPet.animalMemo || '');
       setAnimalAdoptionDate(fetchedPet.animalAdoptionDate ? dayjs(fetchedPet.animalAdoptionDate) : null);
       setBirthDate(fetchedPet.birthDate ? dayjs(fetchedPet.birthDate) : null);
-      setGender(fetchedPet.gender || '');
+      setGender(fetchedPet.gender?.trim() || ''); // 공백 제거
+      // 서버에서 받아온 이미지 URL 저장
+      
+    if (fetchedPet.fileUrl) {
+      setExistingImageUrl(fetchedPet.fileUrl);  // 이미 전체 URL임
     }
+    }
+    console.log("✅ RTK Query 응답 data:", data);
+    console.log("existingImageUrl:", existingImageUrl);
+    console.log("imageFile:", imageFile);
   }, [data]);
+
+  useEffect(() => {
+    console.log("existingImageUrl 상태 업데이트 됨:", existingImageUrl);
+  }, [existingImageUrl]);
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -138,7 +153,8 @@ const Pet_Form_Update = () => {
     >
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 2, position: 'relative' }}>
         <Avatar
-          src={imageFile ? URL.createObjectURL(imageFile) : ''}
+          src={imageFile ? URL.createObjectURL(imageFile) : existingImageUrl}
+          key={imageFile ? imageFile.name : existingImageUrl} // key로 강제 리렌더링 유도
           sx={{ width: 100, height: 100 }}
         />
        

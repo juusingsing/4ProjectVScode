@@ -13,9 +13,9 @@ import { CmUtil } from '../../cm/CmUtil';
 import { useCmDialog } from '../../cm/CmDialogUtil';
 import { Tabs, Tab } from '@mui/material';
 import Combo from '../../page/combo/combo';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Stack from '@mui/material/Stack';
-
+import { useGetPetByIdQuery } from '../../features/pet/petApi';
 import { useComboListByGroupQuery } from '../../features/combo/combo';
 const FormRow = ({ label, value = '', onChange, multiline = false, inputRef, fieldKey = '' }) => {
   let backgroundColor = '#E0E0E0';
@@ -238,7 +238,19 @@ const TimeInputRow = ({ label, value, onChange }) => {
   );
 };
 const Pet_Form_Eat_Alarm = () => { 
+  const navigate = useNavigate();
   const location = useLocation();
+   const pathToTabIndex = {
+    '/pet/petFormHospital.do': 0,
+    '/pet/petFormEatAlarm.do': 1,
+    '/pet/petFormTrainingAndAction.do': 2,
+  };
+
+  const tabIndexToPath = [
+    '/pet/petFormHospital.do',
+    '/pet/petFormEatAlarm.do',
+    '/pet/petFormTrainingAndAction.do',
+  ];
   const [selectedTab, setSelectedTab] = useState(0);
   const [animalId, setAnimalId] = useState(null);
   const [alarmId, setAlarmId] = useState('');
@@ -249,8 +261,33 @@ const Pet_Form_Eat_Alarm = () => {
   const [isActive, setIsActive] = useState('');
   const [category, setCategory] = useState('');
   const [animalName, setAnimalName] = useState('');
-  const [animalAdoptionDate, setAnimalAdoptionDate] = useState('');
+  const [animalAdoptionDate, setAnimalAdoptionDate] = useState(dayjs());
   const { data: comboData, isLoading: comboLoading } = useComboListByGroupQuery('AlarmCycle');
+  const { data, isLoading: isPetLoading } = useGetPetByIdQuery(animalId, {
+      skip: !animalId,
+  });
+  const [treatmentTypeMap, setTreatmentTypeMap] = useState({}); // codeId → codeName 매핑 객체
+  const [imageFile, setImageFile] = useState(null);
+  const [existingImageUrl, setExistingImageUrl] = useState('');
+  const safeUrl = existingImageUrl || '';
+  console.log("동물 ID 확인:", animalId); // → 8이어야 정상
+  useEffect(() => {
+  if (data?.data) {
+      const fetchedPet = data.data;
+      setAnimalName(fetchedPet.animalName || '');
+      
+      setAnimalAdoptionDate(fetchedPet.animalAdoptionDate ? dayjs(fetchedPet.animalAdoptionDate) : null);
+      
+      // 서버에서 받아온 이미지 URL 저장
+      
+    if (fetchedPet.fileUrl) {
+      setExistingImageUrl(fetchedPet.fileUrl);  // 이미 전체 URL임
+    }
+  }
+  console.log("✅ RTK Query 응답 data:", data);
+  console.log("existingImageUrl:", existingImageUrl);
+  console.log("imageFile:", imageFile);
+}, [data]);
   const alarmNameRef = useRef();
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -270,9 +307,18 @@ const Pet_Form_Eat_Alarm = () => {
   }, [comboData]); 
     const handleTabChange = (event, newValue) => {
         setSelectedTab(newValue);
+        navigate(tabIndexToPath[newValue]);
     };
   
-  
+  // 페이지가 바뀌면 selectedTab도 바뀌도록 설정
+  useEffect(() => {
+    const currentPath = location.pathname;
+    if (pathToTabIndex.hasOwnProperty(currentPath)) {
+      setSelectedTab(pathToTabIndex[currentPath]);
+    }
+  }, [location.pathname]);
+    // 각 경로에 대응하는 탭 인덱스 설정
+ 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -312,7 +358,7 @@ const Pet_Form_Eat_Alarm = () => {
 
         <Stack direction="row" spacing={2} alignItems="center">
           <Typography variant="subtitle1">입양일</Typography>
-          <Typography>{animalAdoptionDate}</Typography>
+          <Typography>{animalAdoptionDate?.format('YYYY-MM-DD')}</Typography>
         </Stack>
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
           <Button
@@ -338,6 +384,8 @@ const Pet_Form_Eat_Alarm = () => {
              {/* 오른쪽 이미지 */}
       <Box sx={{ position: 'relative', left: '35px', top: 8 }}>
         <Box
+          src={imageFile ? URL.createObjectURL(imageFile) : existingImageUrl}
+          key={imageFile ? imageFile.name : existingImageUrl} // key로 강제 리렌더링 유도
           sx={{
             width: 100,
             height: 76,
@@ -360,68 +408,64 @@ const Pet_Form_Eat_Alarm = () => {
           />
         </Box>
       <Button
-                variant="contained"
-                size="small"
-                sx={{
-                  position: 'relative',
-                  top: -101,
-                  right: -80,
-                  backgroundColor: '#889F7F',
-                  color: '#fff',
-                  fontSize: '12px',
-                  fontWeight: 'normal',
-                  borderRadius: '55%',
-                  width: 40,
-                  height: 26,
-                  minWidth: 'unset',
-                  padding: 0,
-                  zIndex: 2,
-                  textTransform: 'none',
-                }}
-                component="label"
-              >
-                수정
-                <input
-                  type="file"
-                  accept="image/*"
-                  hidden
-                 
-                />
-              </Button>
+        variant="contained"
+        size="small"
+        sx={{
+          position: 'relative',
+          top: -101,
+          right: -80,
+          backgroundColor: '#889F7F',
+          color: '#fff',
+          fontSize: '12px',
+          fontWeight: 'normal',
+          borderRadius: '55%',
+          width: 40,
+          height: 26,
+          minWidth: 'unset',
+          padding: 0,
+          zIndex: 2,
+          textTransform: 'none',
+        }}
+        onClick={() => {
+          window.location.href = '/pet/petFormUpdate.do';
+        }}
+      >
+        수정
+      </Button>
         </Box>
     </Box>
    
     {/* ✅ 탭은 폼 바깥에 위치 */}
     {/* 폼 컴포넌트 아래 탭 - 간격 좁히기 */}
     <Box sx={{ width: '100%', maxWidth: 400, mx: 'auto', mt: -70 }}>
-        <Tabs
+          <Tabs
             value={selectedTab}
             onChange={handleTabChange}
             variant="fullWidth"
             sx={{
-            width: 360,
-            minHeight: '36px',
-            '& .MuiTab-root': {
+              width: 360,
+              minHeight: '36px',
+              '& .MuiTab-root': {
                 fontSize: '13px',
                 color: '#777',
                 fontWeight: 500,
                 minHeight: '36px',
                 borderBottom: '2px solid transparent',
-            },
-            '& .Mui-selected': {
+              },
+              '& .Mui-selected': {
                 color: '#000',
                 fontWeight: 600,
-            },
-            '& .MuiTabs-indicator': {
+              },
+              '& .MuiTabs-indicator': {
                 backgroundColor: '#000',
-            },
+              },
             }}
-        >
+          >
             <Tab label="병원진료" />
             <Tab label="먹이알림" />
             <Tab label="훈련/행동" />
-        </Tabs>
-    </Box>
+          </Tabs>
+        </Box>
    <Box sx={{ width: '100%', maxWidth: 400, mx: 'auto', mt: 2 }}>
     <Box sx={{ position: 'relative', left: '35px', top: 8 }}>
         <Typography>먹이알림 설정</Typography>
