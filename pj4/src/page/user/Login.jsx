@@ -10,6 +10,7 @@ import { clearUser } from '../../features/user/userSlice';
 import { persistor } from '../../app/store';
 import Background from '../../image/background.png';
 import back from '../../image/back.png';
+import UserTextField from '../design/UserTextField';
 
 
 const Login = () => {
@@ -104,88 +105,22 @@ const Login = () => {
         {/* 아이디 입력 필드 (TextField로 복구 및 스타일 적용) */}
         <Box sx={{width:"90%"}}>
           <Typography sx={{ color: "white", marginBottom:"5px"}}>아이디</Typography>
-          <TextField
+          <UserTextField
             fullWidth
             value={usersId}
             inputRef={usersIdRef}
             onChange={(e) => setUsersId(e.target.value)}
-            variant="filled" // filled variant를 사용하여 배경색 제어 용이
-            InputProps={{
-              disableUnderline: true, // 기본 밑줄 제거
-              sx: {
-                height:"40px",
-                backgroundColor: 'rgba(34, 29, 29, 0.6)', // 입력 필드 배경색
-                borderBottom: "1px solid white", // 흰색 하단 테두리
-                borderRadius: '4px 4px 0 0', // 상단만 둥근 모서리 (filled variant 기본)
-                '&:hover': {
-                  backgroundColor: 'rgba(34, 29, 29, 0.7)', // 호버 시 배경색 변경
-                },
-                '&.Mui-focused': {
-                  backgroundColor: 'rgba(34, 29, 29, 0.75)', // 포커스 시 배경색 변경
-                  boxShadow: '0px 3px 6px rgba(0,0,0,0.15)', // 포커스 시 그림자 강화
-                },
-                // 자동 완성 배경색 오버라이드 (box-shadow 트릭)
-                '& input:-webkit-autofill': {
-                  boxShadow: 'inset 0 0 0 1000px rgba(34, 29, 29, 0.6) !important',
-                  WebkitBoxShadow: 'inset 0 0 0 1000px rgba(34, 29, 29, 0.6) !important',
-                  WebkitTextFillColor: 'white !important', // 자동 완성 시 텍스트 색상 흰색
-                },
-                '& input:-webkit-autofill:focus': {
-                  boxShadow: 'inset 0 0 0 1000px rgba(34, 29, 29, 0.75) !important', // 포커스 시 배경색 변경
-                  WebkitBoxShadow: 'inset 0 0 0 1000px rgba(34, 29, 29, 0.75) !important',
-                },
-              },
-              inputProps: {
-                style: {
-                  padding: '12px', // 입력 텍스트 내부 패딩 (상하좌우)
-                  color: 'white', // 텍스트 색상 흰색
-                },
-              },
-            }}
           />
         </Box>
         <Box sx={{width:"90%"}}>
           <Typography sx={{ color: "white", marginBottom:"5px"}}>비밀번호</Typography>
           {/* 비밀번호 입력 필드 (TextField로 복구 및 스타일 적용) */}
-          <TextField
+          <UserTextField
             fullWidth
             type="password"
             value={usersPassword}
             inputRef={usersPasswordRef}
             onChange={(e) => setUsersPassword(e.target.value)}
-            variant="filled" // filled variant를 사용하여 배경색 제어 용이
-            InputProps={{
-              disableUnderline: true, // 기본 밑줄 제거
-              sx: {
-                height:"40px",
-                backgroundColor: 'rgba(34, 29, 29, 0.6)', // 입력 필드 배경색
-                borderBottom: "1px solid white", // 흰색 하단 테두리
-                borderRadius: '4px 4px 0 0', // 상단만 둥근 모서리 (filled variant 기본)
-                '&:hover': {
-                  backgroundColor: 'rgba(34, 29, 29, 0.7)', // 호버 시 배경색 변경
-                },
-                '&.Mui-focused': {
-                  backgroundColor: 'rgba(34, 29, 29, 0.75)', // 포커스 시 배경색 변경
-                  boxShadow: '0px 3px 6px rgba(0,0,0,0.15)', // 포커스 시 그림자 강화
-                },
-                // 자동 완성 배경색 오버라이드 (box-shadow 트릭)
-                '& input:-webkit-autofill': {
-                  boxShadow: 'inset 0 0 0 1000px rgba(34, 29, 29, 0.6) !important',
-                  WebkitBoxShadow: 'inset 0 0 0 1000px rgba(34, 29, 29, 0.6) !important',
-                  WebkitTextFillColor: 'white !important', // 자동 완성 시 텍스트 색상 흰색
-                },
-                '& input:-webkit-autofill:focus': {
-                  boxShadow: 'inset 0 0 0 1000px rgba(34, 29, 29, 0.75) !important', // 포커스 시 배경색 변경
-                  WebkitBoxShadow: 'inset 0 0 0 1000px rgba(34, 29, 29, 0.75) !important',
-                },
-              },
-              inputProps: {
-                style: {
-                  padding: '12px', // 입력 텍스트 내부 패딩 (상하좌우)
-                  color: 'white', // 텍스트 색상 흰색
-                },
-              },
-            }}
           />
         </Box>
         <Button
