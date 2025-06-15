@@ -2,14 +2,96 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useUserUpdateMutation, useViewQuery } from '../../features/user/userApi';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { TextField, Button, Box, Typography, Avatar, IconButton } from '@mui/material';
-import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { Button, Box, Typography, Avatar, IconButton } from '@mui/material';
 import { useCmDialog } from '../../cm/CmDialogUtil';
 import { CmUtil } from '../../cm/CmUtil';
 import back from '../../image/backWhite.png';
 import Plus from '../../image/imagePlus.png';
 import Delete from '../../image/imageDelete.png'
+
+const LabeledTextFieldRow = ({ label, value, onChange, inputRef, disabled = false, type = 'text' }) => {
+    const commonContentWrapperStyle = {
+      flexGrow: 1,
+      display: 'flex',
+      alignItems: 'center',
+      borderRadius: '20px',
+      minHeight: '30px',
+    };
+
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          backgroundColor: "rgba(217, 217, 217, 0.21)",
+          paddingX: "10px",
+          paddingY: "5px",
+          borderRadius: '20px',
+          width: '90%',
+        }}
+      >
+        <Typography
+          variant="subtitle1"
+          color="text.secondary"
+          sx={{
+            flexShrink: 0,
+            mr: 2,
+            minWidth: '90px',
+          }}
+        >
+          {label}
+        </Typography>
+
+        {disabled ? (
+          <Typography
+            variant="body1"
+            sx={{
+              ...commonContentWrapperStyle,
+              color: 'black',
+              opacity: 1,
+              boxShadow: 'none',
+              padding: '0 12px',
+              justifyContent: 'flex-end'
+            }}
+          >
+            {value}
+          </Typography>
+        ) : (
+          <Box
+            sx={{
+              ...commonContentWrapperStyle,
+              backgroundColor: 'white',
+              '&:focus-within': {
+                backgroundColor: "rgba(255, 255, 255, 0.8)",
+              },
+              padding: '0 12px',
+            }}
+          >
+            <input
+              ref={inputRef}
+              value={value}
+              onChange={onChange}
+              type={type}
+              style={{
+                flexGrow: 1,
+                border: 'none',
+                outline: 'none',
+                backgroundColor: 'transparent',
+                padding: '0',
+                height: '100%',
+                fontSize: '1rem',
+                color: 'rgba(0, 0, 0, 0.87)',
+                cursor: 'text',
+                WebkitTextFillColor: 'rgba(0, 0, 0, 0.87)',
+                opacity: 1,
+              }}
+            />
+          </Box>
+        )}
+      </Box>
+    );
+  };
 
 const UserUpdate = () => {
   const user = useSelector((state) => state.user.user);
@@ -35,8 +117,8 @@ const UserUpdate = () => {
 
   const { showAlert } = useCmDialog();
 
-  const [userUpdate, { isLoading: isUpdating }] = useUserUpdateMutation();
-  const { data, isSuccess, isFetching } = useViewQuery({ usersId: user?.usersId });
+  const [userUpdate ] = useUserUpdateMutation();
+  const { data, isSuccess } = useViewQuery({ usersId: user?.usersId });
 
   useEffect(() => {
     if (isSuccess && data?.data) {
@@ -105,18 +187,17 @@ const UserUpdate = () => {
       usersEmailRef.current?.focus();
       return;
     }
-    // --- 비밀번호 유효성 검사 (필수 입력 및 확인 일치) ---
-    if (CmUtil.isEmpty(usersPassword)) { // 비밀번호 필수 입력 검사
+    if (CmUtil.isEmpty(usersPassword)) {
       showAlert('비밀번호를 입력해주세요.');
       usersPasswordRef.current?.focus();
       return;
     }
-    if (CmUtil.isEmpty(usersConfirmPassword)) { // 비밀번호 확인 필수 입력 검사
+    if (CmUtil.isEmpty(usersConfirmPassword)) {
       showAlert('비밀번호 확인을 입력해주세요.');
       usersConfirmPasswordRef.current?.focus();
       return;
     }
-    if (usersPassword !== usersConfirmPassword) { // 비밀번호와 확인 일치 검사
+    if (usersPassword !== usersConfirmPassword) {
       showAlert('비밀번호와 비밀번호 확인이 일치하지 않습니다.');
       usersPasswordRef.current?.focus();
       return;
@@ -124,8 +205,7 @@ const UserUpdate = () => {
 
     const formData = new FormData();
     formData.append('usersId', usersId);
-    // 비밀번호는 이제 항상 전송됩니다.
-    formData.append('usersPassword', usersPassword); // if 조건 제거
+    formData.append('usersPassword', usersPassword);
     formData.append('usersName', usersName);
     formData.append('usersEmail', usersEmail);
     if (selectedNewFile) {
@@ -144,89 +224,7 @@ const UserUpdate = () => {
       showAlert(error.data?.message || '회원정보 수정에 실패했습니다. 서버 오류 또는 네트워크 문제.');
     }
   };
-  const LabeledTextFieldRow = ({ label, value, onChange, inputRef, disabled = false, type = 'text' }) => {
-    const commonContentWrapperStyle = {
-      flexGrow: 1,
-      display: 'flex',
-      alignItems: 'center',
-      borderRadius: '20px',
-      minHeight: '30px',
-    };
-
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          backgroundColor: "rgba(217, 217, 217, 0.21)",
-          paddingX: "10px",
-          paddingY: "5px",
-          borderRadius: '20px',
-          width: '90%',
-        }}
-      >
-        <Typography
-          variant="subtitle1"
-          color="text.secondary"
-          sx={{
-            flexShrink: 0, // 라벨이 줄어들지 않도록
-            mr: 2, // 라벨과 입력/표시 필드 사이의 오른쪽 마진
-            minWidth: '90px', // 라벨의 최소 너비 설정 (모든 라벨 정렬을 위함)
-          }}
-        >
-          {label}
-        </Typography>
-
-        {disabled ? (
-          <Typography
-            variant="body1"
-            sx={{
-              ...commonContentWrapperStyle, // 공통 구조 스타일 적용
-              color: 'black', // 텍스트 색상 검은색
-              opacity: 1, // 불투명도 1 (흐려지지 않도록)
-              boxShadow: 'none', // 그림자 제거
-              padding: '0 12px', // <--- Typography 자체에 내부 패딩 적용
-              justifyContent: 'flex-end'
-            }}
-          >
-            {value}
-          </Typography>
-        ) : (
-          <Box
-            sx={{
-              ...commonContentWrapperStyle,
-              backgroundColor: 'white',
-              '&:focus-within': {
-                backgroundColor: "rgba(255, 255, 255, 0.8)",
-              },
-              padding: '0 12px',
-            }}
-          >
-            <input
-              ref={inputRef}
-              value={value}
-              onChange={onChange}
-              type={type}
-              style={{
-                flexGrow: 1,
-                border: 'none',
-                outline: 'none',
-                backgroundColor: 'transparent',
-                padding: '0',
-                height: '100%',
-                fontSize: '1rem',
-                color: 'rgba(0, 0, 0, 0.87)',
-                cursor: 'text',
-                WebkitTextFillColor: 'rgba(0, 0, 0, 0.87)',
-                opacity: 1,
-              }}
-            />
-          </Box>
-        )}
-      </Box>
-    );
-  };
+  
   return (
     <Box
       sx={{

@@ -1,12 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useSearchParams, useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useViewQuery, useLogoutMutation, useUserDeleteMutation } from '../../features/user/userApi';
-import { Paper, Typography, Box, Button, CircularProgress, Alert, Avatar } from '@mui/material';
+import { Typography, Box, Button, CircularProgress, Alert, Avatar } from '@mui/material';
 import { clearUser, setAlertCheck } from '../../features/user/userSlice';
 import { persistor } from '../../app/store';
 import { useCmDialog } from '../../cm/CmDialogUtil';
 import back from '../../image/backWhite.png';
+
+ const InfoDisplayRow = ({ label, value }) => {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          backgroundColor: "rgba(217, 217, 217, 0.21)",
+          paddingX:"10px",
+          paddingY:"5px",
+          borderRadius: '20px',
+          width: '90%',
+        }}
+      >
+        <Typography variant="subtitle1" color="text.secondary">
+          {label}
+        </Typography>
+        <Typography variant="body1" fontWeight="500"
+         sx={{paddingX:"10px", backgroundColor:"white", borderRadius:"20px"}}>
+          {value}
+        </Typography>
+      </Box>
+    );
+  };
 
 const UserView = () => {
   const user = useSelector((state) => state.user.user);
@@ -62,30 +87,7 @@ const UserView = () => {
     }
   };
 
-  const InfoDisplayRow = ({ label, value }) => {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center", // 세로 중앙 정렬
-          backgroundColor: "rgba(217, 217, 217, 0.21)",
-          paddingX:"10px",
-          paddingY:"5px",
-          borderRadius: '20px', // 약간의 둥근 모서리
-          width: '90%', // 부모 Box의 전체 너비 사용
-        }}
-      >
-        <Typography variant="subtitle1" color="text.secondary">
-          {label}
-        </Typography>
-        <Typography variant="body1" fontWeight="500"
-         sx={{paddingX:"10px", backgroundColor:"white", borderRadius:"20px"}}>
-          {value}
-        </Typography>
-      </Box>
-    );
-  };
+ 
 
   return (
     <Box
@@ -115,19 +117,19 @@ const UserView = () => {
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              position: 'relative', // 자식 요소 absolute 위치 지정을 위해
+              position: 'relative', 
             }}
           >
             {/* 헤더 섹션: 뒤로가기 버튼과 중앙 정렬된 마이페이지 제목 */}
             <Box
               sx={{
                 display: 'flex',
-                alignItems: 'center', // 세로 중앙 정렬
+                alignItems: 'center',
                 width: '100%',
-                mb: 3, // 헤더와 아래 콘텐츠 간의 간격 추가 (선택 사항)
-                position: 'absolute', // 상단 Box에 절대 위치
+                mb: 3, 
+                position: 'absolute', 
                 top: 10,
-                justifyContent: 'space-between', // 요소를 양 끝으로 분산
+                justifyContent: 'space-between',
               }}
             >
               {/* 뒤로가기 버튼 - 왼쪽 끝 */}
@@ -189,13 +191,17 @@ const UserView = () => {
           </Button>
 
           {/* 아래 추가: 링크 묶음 */}
-          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, marginTop: 2 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, marginTop: 3 }}>
             {userInfo && ( // userInfo가 있을 때만 로그아웃 링크를 표시
               <>
                 <Link
                   to="#" // 실제 페이지 이동은 없으므로 '#' 또는 '/' 등으로 설정 (onClick에서 처리)
                   onClick={handleDeleteClick}
-                  style={{ textDecoration: 'none', color: '#555' }}
+                  style={{ 
+                    textDecoration: 'underline',
+                    textDecorationColor: '#555',
+                    textUnderlineOffset: '3px',
+                    color: '#555'}}
                 >
                   회원 탈퇴
                 </Link>
@@ -203,7 +209,11 @@ const UserView = () => {
                 <Link
                   to="#" // 실제 페이지 이동은 없으므로 '#' 또는 '/' 등으로 설정 (onClick에서 처리)
                   onClick={handleLogout}
-                  style={{ textDecoration: 'none', color: '#555' }}
+                  style={{ 
+                    textDecoration: 'underline',
+                    textDecorationColor: '#555',
+                    textUnderlineOffset: '3px',
+                    color: '#555' }}
                 >
                   로그아웃
                 </Link>
