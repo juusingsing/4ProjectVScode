@@ -197,6 +197,10 @@ const DateInputRow = ({ label, value, onChange }) => {
 const Pet_Form_Hospital = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [animalId, setAnimalId] = useState(null);
+  const { data, isLoading: isPetLoading } = useGetPetByIdQuery(animalId, {
+    skip: !animalId,
+  });
   const pathToTabIndex = {
     '/pet/petFormHospital.do': 0,
     '/pet/petFormEatAlarm.do': 1,
@@ -218,7 +222,6 @@ const Pet_Form_Hospital = () => {
   const { showAlert } = useCmDialog();
   const [selectedTab, setSelectedTab] = useState(pathToTabIndex[location.pathname] || 0);
   const [animalName, setAnimalName] = useState('');
-
   const [records, setRecords] = useState([]);
   const [expanded, setExpanded] = useState(false);
   const [visibleCount, setVisibleCount] = useState(5); // 현재 보여줄 데이터 개수
@@ -315,6 +318,7 @@ const Pet_Form_Hospital = () => {
   }, [location.search]);
 
   useEffect(() => {
+    console.log("comboData : " + comboData);
     if (comboData?.data) {
       const map = {};
       comboData.data.forEach(item => {
@@ -523,7 +527,7 @@ const Pet_Form_Hospital = () => {
               textTransform: 'none',
             }}
             onClick={() => {
-              navigate(`/pet/petFormUpdate.do?animalId=${animalId}`);
+              window.location.href = '/pet/petFormUpdate.do';
             }}
           >
             수정
