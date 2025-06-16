@@ -49,7 +49,7 @@ const PlantWatering = () => {
   }, []);
 
   const alarmSet = async () => {
-     
+     // 알람아이디없으면 catch 로감
     try {
       const response = await refetch();
       console.log('aaaaaaa', response);
