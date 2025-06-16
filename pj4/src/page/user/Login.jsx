@@ -98,10 +98,11 @@ const Login = () => {
           justifyContent: "center",
           alignItems: "center",
           margin: '0 auto',
-          gap: 5
+          gap: 5,
+          paddingBottom:'30px'
         }}
       >
-        <Typography variant="h4" gutterBottom sx={{ color: "white" }}>로그인</Typography>
+        <Typography variant="h4" gutterBottom sx={{ color: "white" , marginTop:'20px'}}>로그인</Typography>
         {/* 아이디 입력 필드 (TextField로 복구 및 스타일 적용) */}
         <Box sx={{width:"90%"}}>
           <Typography sx={{ color: "white", marginBottom:"5px"}}>아이디</Typography>
