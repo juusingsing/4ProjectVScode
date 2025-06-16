@@ -58,6 +58,7 @@ const FindId = () => {
       });
 
       const data = await res.json();
+      console.log("아이디찾기버튼후 data : " + data);
 
       if (data.success && data.data?.list && data.data.list.length > 0) {
         setFoundId(data.data.list[0]);  // 첫째 배열 그대로 저장 (userId, createDt 포함)
@@ -78,13 +79,14 @@ const FindId = () => {
 
     try {
       const BACKEND_URL = 'http://localhost:8081';
-      const res = await fetch(`${BACKEND_URL}/api/email/send-code.do`, {
+      const res = await fetch(`${BACKEND_URL}/api/email/idfind-send-code.do`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ usersEmail })
       });
       const data = await res.json();
-      console.log(data);
+      console.log('data:', data);
+      console.log('data.message:', data.message);
 
       if (data.success) {
         // 기존 타이머 제거 및 초기화

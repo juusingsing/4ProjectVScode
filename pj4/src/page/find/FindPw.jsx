@@ -81,7 +81,7 @@ const FindPw = () => {
 
     try {
       const BACKEND_URL = 'http://localhost:8081';
-      const res = await fetch(`${BACKEND_URL}/api/email/send-code.do`, {
+      const res = await fetch(`${BACKEND_URL}/api/email/pwfind-send-code.do`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ usersEmail })
