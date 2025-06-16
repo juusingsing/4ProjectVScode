@@ -73,6 +73,7 @@ const CalendarComponent = () => {
   const categoryToUrl = {
     병원진료: (id) => `/pet/petFormHospital.do?animalId=${id}`,
     훈련: (id) => `/pet/petFormTrainingAndAction.do?animalId=${id}`,
+    산책: (id) => `/pet/walk.do?id=${id}`,
 
     물주기: (id) => `/plantwatering.do?plantId=${id}`,
     병충해: (id) => `/plantpest.do?plantId=${id}`,
