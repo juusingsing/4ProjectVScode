@@ -33,7 +33,7 @@ const CmComment = ({ comment, user, writingId, refetchComments }) => {
       const response = await createComment(commentData).unwrap();
       console.log("댓글 등록 성공 응답:", response);
       setCommentText(""); // 댓글 입력창 초기화
-      setParentCommentsId(null); // 댓글 등록 후 부모 댓글 ID 초기화
+      setParentCommentsId(0); // 댓글 등록 후 부모 댓글 ID 초기화
       if (refetchComments) refetchComments(); // 댓글 목록 새로 고침
     } catch (error) {
       console.error("댓글 등록 실패:", error);
