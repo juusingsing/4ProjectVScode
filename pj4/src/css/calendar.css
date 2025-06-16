@@ -187,7 +187,7 @@ width:360px;
   bottom: -37px;
   left: -50%;
   transform: translateX(-50%);
-  width: 2px;
+  width: 4px;
   height: 39px;
   background-color: #8b7513;
   z-index: 0;
@@ -199,7 +199,7 @@ width:360px;
   top: -27px;
   left: -50%;
   transform: translateX(-50%);
-  width: 2px;
+  width: 4px;
   height: 40px;
   background-color: #8b7513; /* 브라운 */
   z-index: 0;
