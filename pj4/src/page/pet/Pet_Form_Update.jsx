@@ -31,7 +31,8 @@ const Pet_Form_Update = () => {
   const [gender, setGender] = useState('');
   const [imageFile, setImageFile] = useState(null);
   const [existingImageUrl, setExistingImageUrl] = useState('');
-  const safeUrl = existingImageUrl || '';
+  const [fileUrl, setFileUrl] = useState();
+  
   console.log("동물 ID 확인:", animalId); // → 8이어야 정상
   const { showAlert } = useCmDialog();
   // RTK Query mutation 훅
@@ -54,18 +55,17 @@ const Pet_Form_Update = () => {
       setAnimalMemo(fetchedPet.animalMemo || '');
       setAnimalAdoptionDate(fetchedPet.animalAdoptionDate ? dayjs(fetchedPet.animalAdoptionDate) : null);
       setBirthDate(fetchedPet.birthDate ? dayjs(fetchedPet.birthDate) : null);
-      setGender(fetchedPet.gender?.trim() || ''); // 공백 제거
-      // 서버에서 받아온 이미지 URL 저장
-      
-    if (fetchedPet.fileUrl) {
-      setExistingImageUrl(fetchedPet.fileUrl);  // 이미 전체 URL임
+      setGender(fetchedPet.gender?.trim() || '');
+      console.log("fileUrl", fileUrl);
+      if (fetchedPet.fileUrl) {
+        setFileUrl(fetchedPet.fileUrl); // ✅ 이거 추가
+        setExistingImageUrl(`/uploads/pet/2025-06-16/20250616_174717164_376505274455000____.jpg`);
+        console.log("fileUrl", fetchedPet.fileUrl);
+      } else {
+        setExistingImageUrl('');
+      }
     }
-    }
-    console.log("✅ RTK Query 응답 data:", data);
-    console.log("existingImageUrl:", existingImageUrl);
-    console.log("imageFile:", imageFile);
   }, [data]);
-
   useEffect(() => {
     console.log("existingImageUrl 상태 업데이트 됨:", existingImageUrl);
   }, [existingImageUrl]);
@@ -152,9 +152,12 @@ const Pet_Form_Update = () => {
       }}
     >
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 2, position: 'relative' }}>
-        <Avatar
-          src={imageFile ? URL.createObjectURL(imageFile) : existingImageUrl}
-          key={imageFile ? imageFile.name : existingImageUrl} // key로 강제 리렌더링 유도
+       <Avatar
+          src={
+            imageFile
+              ? URL.createObjectURL(imageFile)
+              : existingImageUrl
+          }
           sx={{ width: 100, height: 100 }}
         />
        

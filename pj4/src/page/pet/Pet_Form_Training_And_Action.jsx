@@ -391,30 +391,30 @@ const Pet_Form_Training_And_Action = () => {
         </Box>
       
         <Button
-            variant="contained"
-            size="small"
-            sx={{
-              position: 'relative',
-              top: -101,
-              right: -80,
-              backgroundColor: '#889F7F',
-              color: '#fff',
-              fontSize: '12px',
-              fontWeight: 'normal',
-              borderRadius: '55%',
-              width: 40,
-              height: 26,
-              minWidth: 'unset',
-              padding: 0,
-              zIndex: 2,
-              textTransform: 'none',
-            }}
-            onClick={() => {
-              navigate(`/pet/petFormUpdate.do?animalId=${animalId}`);
-            }}
-          >
-            수정
-          </Button>
+          variant="contained"
+          size="small"
+          sx={{
+            position: 'relative',
+            top: -101,
+            right: -80,
+            backgroundColor: '#889F7F',
+            color: '#fff',
+            fontSize: '12px',
+            fontWeight: 'normal',
+            borderRadius: '55%',
+            width: 40,
+            height: 26,
+            minWidth: 'unset',
+            padding: 0,
+            zIndex: 2,
+            textTransform: 'none',
+          }}
+          onClick={() => {
+            navigate(`/pet/petFormUpdate.do?animalId=${animalId}`);
+          }}
+        >
+          수정
+        </Button>
       </Box>
     </Box>
    

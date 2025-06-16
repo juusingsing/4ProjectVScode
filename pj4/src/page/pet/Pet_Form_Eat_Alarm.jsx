@@ -430,7 +430,7 @@ const tabIndexToPath = [
           textTransform: 'none',
         }}
         onClick={() => {
-          navigate(`/pet/petFormUpdate.do?animalId=${animalId}`);+
+          navigate(`/pet/petFormUpdate.do?animalId=${animalId}`);
         }}
       >
         수정
