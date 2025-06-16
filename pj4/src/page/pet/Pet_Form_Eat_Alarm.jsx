@@ -246,11 +246,7 @@ const Pet_Form_Eat_Alarm = () => {
     '/pet/petFormTrainingAndAction.do': 2,
   };
 
-  const tabIndexToPath = [
-    '/pet/petFormHospital.do',
-    '/pet/petFormEatAlarm.do',
-    '/pet/petFormTrainingAndAction.do',
-  ];
+  
   const [selectedTab, setSelectedTab] = useState(0);
   const [animalId, setAnimalId] = useState(null);
   const [alarmId, setAlarmId] = useState('');
@@ -270,6 +266,13 @@ const Pet_Form_Eat_Alarm = () => {
   const [imageFile, setImageFile] = useState(null);
   const [existingImageUrl, setExistingImageUrl] = useState('');
   const safeUrl = existingImageUrl || '';
+
+const tabIndexToPath = [
+    `/pet/petFormHospital.do?animalId=${animalId}`,
+    `/pet/petFormEatAlarm.do?animalId=${animalId}`,
+    `/pet/petFormTrainingAndAction.do?animalId=${animalId}`,
+  ];
+
   console.log("동물 ID 확인:", animalId); // → 8이어야 정상
   useEffect(() => {
   if (data?.data) {
@@ -363,7 +366,7 @@ const Pet_Form_Eat_Alarm = () => {
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
           <Button
             variant="contained"
-            type="submit"
+            onClick={() => navigate(`/pet/walk.do?id=${animalId}`)}
             sx={{
               bottom: 3,
               left: 25,
