@@ -38,11 +38,14 @@ export const petApi = createApi({
       }),
     }),
     getPetById: builder.query({
-      query: (animalId) => ({
-        url: `/pet/getPetById.do`,
+      query: ( animalId ) => ({
+        url: '/pet/getPetById.do',
         method: 'GET',
         params: { animalId },
       }),
+      keepUnusedDataFor: 0, // = cacheTime: 0
+      refetchOnMountOrArgChange: true,
+      staleTime: 0, // 이건 RTK Query에서 직접 사용되진 않음. react-query에서 쓰는 용어
     }),
     Pet_Form_Hospital_Update: builder.mutation({
       query: (formData) => ({
