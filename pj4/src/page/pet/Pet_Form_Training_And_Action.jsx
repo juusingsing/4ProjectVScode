@@ -95,11 +95,7 @@ const Pet_Form_Training_And_Action = () => {
     '/pet/petFormTrainingAndAction.do': 2,
   };
 
-  const tabIndexToPath = [
-    '/pet/petFormHospital.do',
-    '/pet/petFormEatAlarm.do',
-    '/pet/petFormTrainingAndAction.do',
-  ];
+  
   const [animalAdoptionDate, setAnimalAdoptionDate] = useState(dayjs());
   const [animalTrainingAction, setAnimalTrainingAction] = useState('');
   const [animalRecordDate, setAnimalRecordDate] = useState(dayjs());
@@ -127,6 +123,15 @@ const Pet_Form_Training_And_Action = () => {
   const { data, isLoading: isPetLoading } = useGetPetByIdQuery(animalId, {
       skip: !animalId,
   });
+
+
+
+  const tabIndexToPath = [
+    `/pet/petFormHospital.do?animalId=${animalId}`,
+    `/pet/petFormEatAlarm.do?animalId=${animalId}`,
+    `/pet/petFormTrainingAndAction.do?animalId=${animalId}`,
+  ];
+
   useEffect(() => {
     if (data?.data) {
       const fetchedPet = data.data;
@@ -340,7 +345,7 @@ const Pet_Form_Training_And_Action = () => {
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
           <Button
             variant="contained"
-            type="submit"
+            onClick={() => navigate(`/pet/walk.do?id=${animalId}`)}
             sx={{
               bottom: 3,
               left: 25,
