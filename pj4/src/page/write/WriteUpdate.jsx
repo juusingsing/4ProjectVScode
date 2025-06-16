@@ -310,20 +310,14 @@ const WriteUpdate = () => {
             <Box
               key={`existing-${index}`}
               sx={{
-                display: "flex",
-                flexDirection: "row",
-                overflowX: "auto", // 가로 스크롤
-                gap: 2,
-                whiteSpace: "nowrap", // 스크롤 허용
-                maxWidth: "100%", // 부모 너비 기준
-                pb: 1, // 아래 여백
-                "&::-webkit-scrollbar": {
-                  height: "6px",
-                },
-                "&::-webkit-scrollbar-thumb": {
-                  backgroundColor: "#ccc",
-                  borderRadius: "4px",
-                },
+                position: 'relative',
+                  minWidth: 140,
+                  height: 140,
+                  borderRadius: '5px',
+                  overflow: 'hidden',
+                  backgroundColor: '#ccc',
+                  scrollSnapAlign: 'start',
+                  flexShrink: 0,
               }}
             >
               <img
