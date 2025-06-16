@@ -41,12 +41,18 @@ const ResetPassword = () => {
       navigate('/user/findPw.do');
       return;
     }
+    
+    // const formData = new FormData();
+    // formData.append("usersId", usersId);
+    // formData.append("newPassword", newPassword);
+    // formData.append("confirmPassword", confirmPassword);
 
     try {
       await resetPassword({ usersId, newPassword, confirmPassword }).unwrap();
       showAlert('비밀번호가 성공적으로 변경되었습니다.');
       navigate('/user/login.do');
     } catch (error) {
+      console.log("error : " + error?.[0]);
       showAlert(error?.data?.message || '비밀번호 변경 중 오류가 발생했습니다.');
     }
   };

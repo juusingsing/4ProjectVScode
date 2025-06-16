@@ -144,6 +144,8 @@ const Register = () => {
         body: JSON.stringify({ usersEmail, usersId })
       });
       const data = await res.json();
+      console.log('data:', data);
+      console.log('data.message:', data.message);
 
       if (data.success) {
         // 인증 성공 시 타이머 초기화 및 설정
