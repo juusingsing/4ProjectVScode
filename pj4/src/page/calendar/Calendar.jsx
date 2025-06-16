@@ -71,13 +71,13 @@ const CalendarComponent = () => {
     return log.name === filterName;
   });
   const categoryToUrl = {
-    병원진료: (id) => `/pet/petFormHospital.do?id=${id}`,
-    훈련: (id) => `/animaltraining.do?id=${id}`,
+    병원진료: (id) => `/pet/petFormHospital.do?animalId=${id}`,
+    훈련: (id) => `/pet/petFormTrainingAndAction.do?animalId=${id}`,
 
-    물주기: (id) => `/plantwatering.do?id=${id}`,
-    병충해: (id) => `/plantpest.do?id=${id}`,
-    분갈이: (id) => `/plantrepotting.do?id=${id}`,
-    일조량: (id) => `/plantsunlight.do?id=${id}`
+    물주기: (id) => `/plantwatering.do?plantId=${id}`,
+    병충해: (id) => `/plantpest.do?plantId=${id}`,
+    분갈이: (id) => `/plantrepotting.do?plantId=${id}`,
+    일조량: (id) => `/PlantSunlighting.do?plantId=${id}`
   }
   const navigate = useNavigate();
   const handleLogClick = (log) => {
@@ -173,7 +173,7 @@ const CalendarComponent = () => {
                 <select
                   name="정렬"
                   value={filterName}
-                  style={{ padding: "3px", borderRadius: "5px" }}
+                  style={{ padding: "3px", borderRadius: "5px", textAlign:"center" }}
                   onChange={(e) => setFilterName(e.target.value)}
                 >
                   <option value="all">전체</option>
@@ -224,7 +224,7 @@ const CalendarComponent = () => {
                 >
                 </div>
                 <div className='log-content' onClick={() => handleLogClick(log)}>
-                  <span>{log.name} {log.category} {log.category === '산책' && log.time ? `- ${log.time}` : ''}</span>
+                  <span>{log.name} {log.category}</span>
                 </div>
               </div>
             );

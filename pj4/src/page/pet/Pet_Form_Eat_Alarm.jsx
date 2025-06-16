@@ -80,18 +80,17 @@ const FormRow1 = ({ label, value = '', onChange, multiline = false, inputRef, fi
 const Pet_Form_Eat_Alarm = () => { 
   const navigate = useNavigate();
   const location = useLocation();
+
    const pathToTabIndex = {
     '/pet/petFormHospital.do': 0,
     '/pet/petFormEatAlarm.do': 1,
     '/pet/petFormTrainingAndAction.do': 2,
   };
 
-  const tabIndexToPath = [
-    '/pet/petFormHospital.do',
-    '/pet/petFormEatAlarm.do',
-    '/pet/petFormTrainingAndAction.do',
-  ];
+
   const [AlarmCreate] = useAlarmCreateMutation({});
+
+
   const [selectedTab, setSelectedTab] = useState(0);
   const [searchParams] = useSearchParams();
   const animalId = searchParams.get('id');    // 식물아이디 plantId parm에 저장
@@ -112,6 +111,7 @@ const Pet_Form_Eat_Alarm = () => {
   const [imageFile, setImageFile] = useState(null);
   const [existingImageUrl, setExistingImageUrl] = useState('');
   const safeUrl = existingImageUrl || '';
+
   const alarmNameRef = useRef();
   const [alarmCycle, setAlarmCycle] = useState('');   // 선택된 주기
   const { data: dbAlarmList, error, isLoading, refetch } = useAlarmListQuery({
@@ -220,6 +220,14 @@ const Pet_Form_Eat_Alarm = () => {
     }
   };
 
+
+const tabIndexToPath = [
+    `/pet/petFormHospital.do?animalId=${animalId}`,
+    `/pet/petFormEatAlarm.do?animalId=${animalId}`,
+    `/pet/petFormTrainingAndAction.do?animalId=${animalId}`,
+  ];
+
+
   console.log("동물 ID 확인:", animalId); // → 8이어야 정상
   useEffect(() => {
   if (data?.data) {
@@ -325,7 +333,7 @@ const Pet_Form_Eat_Alarm = () => {
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
             <Button
               variant="contained"
-              type="submit"
+              onClick={() => navigate(`/pet/walk.do?id=${animalId}`)}
               sx={{
                 bottom: 3,
                 left: 25,
@@ -389,7 +397,7 @@ const Pet_Form_Eat_Alarm = () => {
               textTransform: 'none',
             }}
             onClick={() => {
-              window.location.href = '/pet/petFormUpdate.do';
+              navigate(`/pet/petFormUpdate.do?animalId=${animalId}`);
             }}
           >
             수정

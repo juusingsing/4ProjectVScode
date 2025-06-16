@@ -39,7 +39,7 @@ const DiaryList = () => {
         <>
             <Box sx={{ maxWidth: 800 }}>
                 <Box className="diary-top-section">
-                    <Typography variant="h4" >
+                    <Typography variant="h4" sx={{ml: '8px'}}>
                         일기
                     </Typography>
                     <Box className='diary-top-section-button'>
