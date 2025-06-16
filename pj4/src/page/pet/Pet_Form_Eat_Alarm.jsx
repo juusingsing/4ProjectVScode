@@ -427,7 +427,7 @@ const Pet_Form_Eat_Alarm = () => {
           textTransform: 'none',
         }}
         onClick={() => {
-          window.location.href = '/pet/petFormUpdate.do';
+          navigate(`/pet/petFormUpdate.do?animalId=${animalId}`);+
         }}
       >
         수정

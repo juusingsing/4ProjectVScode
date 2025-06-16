@@ -222,7 +222,7 @@ const Pet_Form_Hospital = () => {
   const { showAlert } = useCmDialog();
   const [selectedTab, setSelectedTab] = useState(pathToTabIndex[location.pathname] || 0);
   const [animalName, setAnimalName] = useState('');
-  const [animalId, setAnimalId] = useState(null);
+  const [animalId, setAnimalId] = useState(23);
   const [records, setRecords] = useState([]);
   const [expanded, setExpanded] = useState(false);
   const [visibleCount, setVisibleCount] = useState(5); // 현재 보여줄 데이터 개수
@@ -230,9 +230,10 @@ const Pet_Form_Hospital = () => {
   const [editId, setEditId] = useState(null);
   const [animalHospitalTreatmentId, setAnimalHospitalTreatmentId] = useState(null);
   const { data: comboData, isLoading: comboLoading } = useComboListByGroupQuery('Medical');
-  const { data, isLoading: isPetLoading } = useGetPetByIdQuery(animalId, {
-      skip: !animalId,
-  });
+  const { data, error, isLoading: isPetLoading } = useGetPetByIdQuery(
+    {
+      animalId: 23
+    });
   const [treatmentTypeMap, setTreatmentTypeMap] = useState({}); // codeId → codeName 매핑 객체
   const [imageFile, setImageFile] = useState(null);
   const [existingImageUrl, setExistingImageUrl] = useState('');
@@ -240,6 +241,8 @@ const Pet_Form_Hospital = () => {
  
   console.log("동물 ID 확인:", animalId); // → 8이어야 정상
   useEffect(() => {
+    console.log("data?.data: " + data?.data);
+    console.log("error : " + error);
       if (data?.data) {
         const fetchedPet = data.data;
         setAnimalName(fetchedPet.animalName || '');
@@ -314,6 +317,7 @@ const Pet_Form_Hospital = () => {
   }, [location.search]);
   
   useEffect(() => {
+    console.log("comboData : " + comboData);
     if (comboData?.data) {
       const map = {};
       comboData.data.forEach(item => {
@@ -522,7 +526,7 @@ const Pet_Form_Hospital = () => {
             textTransform: 'none',
           }}
           onClick={() => {
-            window.location.href = '/pet/petFormUpdate.do';
+            navigate(`/pet/petFormUpdate.do?animalId=${animalId}`);
           }}
         >
           수정
