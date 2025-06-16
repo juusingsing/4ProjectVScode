@@ -170,7 +170,7 @@ const WriteView = () => {
             <CmComment
               comment={data?.data?.comments || []}
               user={user}
-              writingId={writing.createId}
+              writingId={writing.writingId}
               refetchComments={refetch}
             />
           </Box>

@@ -29,7 +29,6 @@ const PlantCreate = () => {
   const [files, setFiles] = useState([]);
   const [createPlant] = useCreatePlantMutation();
   const navigate = useNavigate();
-
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {

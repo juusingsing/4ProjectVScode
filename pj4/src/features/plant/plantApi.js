@@ -20,8 +20,8 @@ export const plantApi = createApi({
     updatePlant: builder.mutation({
       query: (formData) => {
         return {
-          url: "/plant/update.do",
-          method: "PUT",
+          url: "/plant/updatePlant.do",
+          method: "POST",
           body: formData,
         };
       },
