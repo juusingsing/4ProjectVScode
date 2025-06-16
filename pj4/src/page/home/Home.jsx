@@ -11,15 +11,9 @@ import {
   Button
 } from "@mui/material";
 import { useLocation, Link } from "react-router-dom";
-import { useSelector } from "react-redux"; // useSelector 임포트 추가
-
-// TabCombo 컴포넌트 임포트 (경로 확인 필요)
+import { useSelector } from "react-redux";
 import TabCombo from "../../page/combo/TabCombo";
-
-// RTK Query 훅 임포트 (경로 확인 필요)
 import { useAnimalListQuery, usePlantListQuery } from "../../features/home/homeApi";
-
-// 이미지 임포트 (기존 코드에서 가져옴)
 import PetTestMain from "../../image/petTestMain.png";
 import PlantTestMain from "../../image/plantTestMain.png";
 
@@ -29,17 +23,8 @@ const Home = () => {
   const [sortBy, setSortBy] = useState("name"); // 정렬 기준: 'name' (이름순), 'date' (등록일순)
   const [sortOrder, setSortOrder] = useState("DESC"); // 정렬 순서: 'ASC' (오름차순), 'DESC' (내림차순)
 
-  // Redux 스토어에서 사용자 정보 가져오기
   const user = useSelector((state) => state.user.user);
-  // 디버깅을 위해 user 객체의 내용을 콘솔에 출력
-  console.log("Redux user 객체:", user);
-
-  // user 객체의 실제 usersId 필드명에 따라 'user.users_id'로 변경했습니다.
-  const currentFrontendUserId = user ? user.users_id : null; // user.users_id가 사용자의 ID라고 가정
-  // 디버깅을 위해 currentFrontendUserId의 값을 콘솔에 출력
-  console.log("Redux에서 가져온 usersId (users_id 필드 사용):", currentFrontendUserId);
-
-  // 환경 변수에서 API 베이스 URL 가져오기
+  const currentFrontendUserId = user ? user.users_id : null;
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:8080";
 
   useEffect(() => {
@@ -53,12 +38,11 @@ const Home = () => {
     }
   }, [location.search]);
 
-  // RTK Query 훅 호출
   const queryParams = {
-    usersId: currentFrontendUserId, // Redux에서 가져온 usersId 추가
+    usersId: currentFrontendUserId,
     sortField: activeTab === "N01"
-      ? (sortBy === "name" ? "ANIMAL_NAME" : "CREATE_DT") // 동물 테이블 컬럼명
-      : (sortBy === "name" ? "PLANT_NAME" : "PLANT_PURCHASE_DATE"), // 식물 테이블 컬럼명
+      ? (sortBy === "name" ? "ANIMAL_NAME" : "CREATE_DT") 
+      : (sortBy === "name" ? "PLANT_NAME" : "PLANT_PURCHASE_DATE"),
     sortOrder: sortOrder,
   };
 
@@ -97,129 +81,8 @@ const Home = () => {
     setActiveTab(selectedTabValue);
     window.history.pushState(null, "", `/?tab=${selectedTabValue}`);
   }, []);
-
-  // 현재 활성화된 탭에 따라 테스트 이미지 결정 (기존 코드)
   const currentTestImage = activeTab === "N01" ? PetTestMain : PlantTestMain;
-  // 현재 활성화된 탭에 따라 심리테스트 링크 연결 (기존 코드)
   const currentTestLink = `/test/main.do?tab=${activeTab}`;
-
-  // 목록 아이템을 렌더링하는 함수
-  const renderItems = (items) => {
-    // console.log("렌더링할 아이템:", items); // 디버깅을 위한 로그 추가
-
-    if (!items || items.length === 0) {
-      return (
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{ textAlign: "center", mt: 4 }}
-        >
-          데이터가 없습니다.
-        </Typography>
-      );
-    }
-
-    return (
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)",
-          gap: "16px",
-          mt: 1,
-          px: 1,
-          pb: 8,
-        }}
-      >
-        {items.map((item) => {
-          const itemId = activeTab === "N01" ? item.animalId : item.plantId;
-          const itemName = activeTab === "N01" ? item.animalName : item.plantName;
-          const itemFileId = item.fileId;
-
-          const imageUrl = itemFileId
-            ? + `${process.env.REACT_APP_API_BASE_URL}/api/file/imgDown.do?fileId=${item.fileId}`
-            : "https://placehold.co/100x90/FFD700/FFFFFF?text=No+Image";
-          const itemLink =
-            activeTab === "N01"
-              ? `/pet/petFormHospital.do?animalId=${itemId}`
-              : `/plantwatering.do?plantId=${itemId}`;
-
-          return (
-            <Link to={itemLink} key={itemId} style={{ textDecoration: "none", color:"inherit"}}>
-              <Box
-                sx={{
-                  border: "1px solid #ddd",
-                  borderRadius: "8px",
-                  overflow: "hidden",
-                  textAlign: "center",
-                  boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
-                  transition: "transform 0.3s",
-                  "&:hover": {
-                    transform: "translateY(-5px)",
-                    boxShadow: "0px 4px 8px rgba(0,0,0,0.15)",
-                  },
-                  cursor: "pointer",
-                }}
-              >
-                <Box
-                  sx={{
-                    width: "100%",
-                    height: "70px",
-                    bgcolor: "#eee",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    mb: 1,
-                    backgroundImage: `url(${imageUrl})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    textDecoration: "none"
-                  }}
-                />
-                <Typography
-                  component="div"
-                  sx={{ fontSize: "15px", mt: "5px", mb: "5px", textDecoration: "none", color: 'inherit' }}
-                >
-                  {itemName || "이름 없음"}
-                </Typography>
-              </Box>
-            </Link>
-          );
-        })}
-
-        {/* '+' 추가 버튼 */}
-        <Link
-          to={activeTab === "N01" ? "/pet/petForm.do" : "/PlantCreate.do"}
-          style={{ textDecoration: "none" }}
-        >
-          <Box
-            sx={{
-              border: "1px dashed #ccc",
-              borderRadius: "8px",
-              height: "110px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              bgcolor: "#f9f9f9",
-              "&:hover": { bgcolor: "#f0f0f0" },
-              boxShadow: "0px 2px 4px rgba(0,0,0,0.05)",
-            }}
-          >
-            <Typography
-              variant="h4"
-              sx={{ color: "#2ecc71", fontSize: "3rem" }}
-            >
-              +
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              {activeTab === "N01" ? "동물 추가" : "식물 추가"}
-            </Typography>
-          </Box>
-        </Link>
-      </Box>
-    );
-  };
 
   return (
     <Box sx={{ maxWidth: 360, width: "100%", mx: "auto" }}>
@@ -278,7 +141,7 @@ const Home = () => {
         </FormControl>
       </Box>
 
-      {/* 로딩/오류/데이터 표시 */}
+      {/* 로딩/오류/데이터 표시 및 추가 버튼 */}
       {currentIsLoading ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '160px', mt: 2 }}>
           <CircularProgress />
@@ -297,7 +160,115 @@ const Home = () => {
           </Typography>
         </Alert>
       ) : (
-        renderItems(currentData?.data)
+        // 데이터를 표시할 그리드 컨테이너와 '+' 추가 버튼
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: "repeat(4, 1fr)",
+            gap: "16px",
+            mt: 1,
+            px: 1,
+            pb: 8, // 하단 패딩은 필요에 따라 조정
+          }}
+        >
+          {/* 실제 아이템 렌더링 */}
+          {currentData?.data && currentData.data.length > 0 ? (
+            currentData.data.map((item) => {
+              const itemId = activeTab === "N01" ? item.animalId : item.plantId;
+              const itemName = activeTab === "N01" ? item.animalName : item.plantName;
+              const itemFileId = item.fileId;
+
+              const imageUrl = itemFileId
+                ? `${process.env.REACT_APP_API_BASE_URL}/api/file/imgDown.do?fileId=${item.fileId}`
+                : "https://placehold.co/100x90/FFD700/FFFFFF?text=No+Image";
+              const itemLink =
+                activeTab === "N01"
+                  ? `/pet/petFormHospital.do?animalId=${itemId}`
+                  : `/plantwatering.do?plantId=${itemId}`;
+
+              return (
+                <Link to={itemLink} key={itemId} style={{ textDecoration: "none", color: "inherit" }}>
+                  <Box
+                    sx={{
+                      border: "1px solid #ddd",
+                      borderRadius: "8px",
+                      overflow: "hidden",
+                      textAlign: "center",
+                      boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
+                      transition: "transform 0.3s",
+                      "&:hover": {
+                        transform: "translateY(-5px)",
+                        boxShadow: "0px 4px 8px rgba(0,0,0,0.15)",
+                      },
+                      cursor: "pointer",
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        width: "100%",
+                        height: "70px",
+                        bgcolor: "#eee",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        mb: 1,
+                        backgroundImage: `url(${imageUrl})`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                        textDecoration: "none"
+                      }}
+                    />
+                    <Typography
+                      component="div"
+                      sx={{ fontSize: "15px", mt: "5px", mb: "5px", textDecoration: "none", color: 'inherit' }}
+                    >
+                      {itemName || "이름 없음"}
+                    </Typography>
+                  </Box>
+                </Link>
+              );
+            })
+          ) : (
+            // 데이터가 없을 때 "데이터가 없습니다" 메시지를 그리드 내의 독립적인 Box로 렌더링
+            <Box sx={{ gridColumn: 'span 4', textAlign: 'center', mt: 2, mb: 2 }}>
+              <Typography variant="body2" color="text.secondary">
+                데이터가 없습니다.
+              </Typography>
+            </Box>
+          )}
+
+          {/* '+' 추가 버튼은 항상 이 그리드 컨테이너 내부에 렌더링 */}
+          <Link
+            to={activeTab === "N01" ? "/pet/petForm.do" : "/PlantCreate.do"}
+            style={{ textDecoration: "none" }}
+          >
+            <Box
+              sx={{
+                border: "1px dashed #ccc",
+                borderRadius: "8px",
+                height: "110px",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                bgcolor: "#f9f9f9",
+                "&:hover": { bgcolor: "#f0f0f0" },
+                boxShadow: "0px 2px 4px rgba(0,0,0,0.05)",
+              }}
+            >
+              <Typography
+                variant="h4"
+                sx={{ color: "#2ecc71", fontSize: "3rem" }}
+              >
+                +
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                {activeTab === "N01" ? "동물 추가" : "식물 추가"}
+              </Typography>
+            </Box>
+          </Link>
+        </Box>
       )}
     </Box>
   );
