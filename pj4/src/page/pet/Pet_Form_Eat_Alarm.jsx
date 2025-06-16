@@ -4,7 +4,8 @@ import {
   Button,
   Typography,
   InputBase,
-  TextField
+  TextField,
+  Switch
 } from '@mui/material';
 import { LocalizationProvider, DatePicker, TimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -20,6 +21,8 @@ import { useGetPetByIdQuery } from '../../features/pet/petApi';
 import { 
   useAlarmCreateMutation,
   useAlarmListQuery,
+  useAlarmUpdateMutation,
+  useAlarmDeleteMutation,
 } from "../../features/alarm/alarmApi";
 
 
@@ -89,30 +92,31 @@ const Pet_Form_Eat_Alarm = () => {
 
 
   const [AlarmCreate] = useAlarmCreateMutation({});
+  const [alarmUpdate] = useAlarmUpdateMutation();
+  const [alarmDel] = useAlarmDeleteMutation();
 
 
   const [selectedTab, setSelectedTab] = useState(0);
   const [searchParams] = useSearchParams();
-  const animalId = searchParams.get('id');    // 식물아이디 plantId parm에 저장
-  const [alarmId, setAlarmId] = useState('');
+  const animalId = searchParams.get('animalId');    // 동물아이디 animalId parm에 저장
   const [alarmName, setAlarmName] = useState('');
-  const [frequency, setFrequency] = useState('');
   const newFormattedTimes = [];
   const [alarmDate, setAlarmDate] = useState(dayjs());
   const [alarmTime, setAlarmTime] = useState(dayjs().hour(9).minute(0));
-  const [alarmList, setAlarmList] = useState();
+  const [alarmList, setAlarmList] = useState([]);
   const [isActive, setIsActive] = useState('');
   const { showAlert } = useCmDialog();
   const [animalName, setAnimalName] = useState('');
   const [animalAdoptionDate, setAnimalAdoptionDate] = useState(dayjs());
   const { data, isLoading: isPetLoading } = useGetPetByIdQuery(animalId, {
       skip: !animalId,
-  });
+  });         // 그 동물아이디의 정보 가져오기 ( 헤더 삽입할 데이터 조회 )
   const [imageFile, setImageFile] = useState(null);
   const [existingImageUrl, setExistingImageUrl] = useState('');
   const safeUrl = existingImageUrl || '';
 
   const alarmNameRef = useRef();
+  const [eatType, setEatType] = useState('');   // 선택된 먹이
   const [alarmCycle, setAlarmCycle] = useState('');   // 선택된 주기
   const { data: dbAlarmList, error, isLoading, refetch } = useAlarmListQuery({
     petId: animalId,     // plantId 아이디조회  백단에서 이 아이디로만든 알람있으면 update, 없으면 insert
@@ -138,6 +142,7 @@ const Pet_Form_Eat_Alarm = () => {
       const alarms = response.data.data.map((alarm) => {
         const alarmId = parseInt(alarm.alarmId, 10);
         const petId = parseInt(alarm.petId, 10);
+        const alarmName = alarm.alarmName;
         const year = 2000 + parseInt(alarm.year, 10);
         const month = alarm.month;
         const day = parseInt(alarm.day, 10);
@@ -146,9 +151,15 @@ const Pet_Form_Eat_Alarm = () => {
         const daysDate = dayjs(alarm.startDate);               // 불러온 세팅날짜 dayjs 로
         const daysTime = dayjs(alarm.alarmTime, 'HH:mm');      // 불러온 세팅시간 dayjs 로
 
-        setAlarmDate(daysDate);        // 알람리스트가 있으면 초기 alarmdate설정
-        setAlarmTime(daysTime);        // 알람리스트가 있으면 초기 alarmtime설정
 
+        let type = "";
+        switch (alarm.type) {
+          case 'E01': type = "사료"; break;
+          case 'E02': type = "간식"; break;
+          case 'E03': type = "영양제"; break;
+          case 'E04': type = "약"; break;
+          default: type = "";
+        }
 
         let cycleDays = 0;
         switch (alarm.alarmCycle) {
@@ -178,12 +189,14 @@ const Pet_Form_Eat_Alarm = () => {
           type: "SET_ALARM",
           alarmId,
           petId,
+          alarmName,
           year,
           month,
           day,
           hour,
           min,
           alarmCycle: cycleDays,
+          type: type,
           enabled: isactive,  // 초기에는 켜져있다고 가정
           message: "알람아이디 : " + alarmId + " // " + cycleDays + "분주기"
           // message: "물 주는 시간입니다!"
@@ -230,6 +243,7 @@ const tabIndexToPath = [
 
   console.log("동물 ID 확인:", animalId); // → 8이어야 정상
   useEffect(() => {
+    console.log("data : ", data);
   if (data?.data) {
       const fetchedPet = data.data;
       setAnimalName(fetchedPet.animalName || '');
@@ -242,9 +256,7 @@ const tabIndexToPath = [
       setExistingImageUrl(fetchedPet.fileUrl);  // 이미 전체 URL임
     }
   }
-    console.log("✅ RTK Query 응답 data:", data);
-    console.log("existingImageUrl:", existingImageUrl);
-    console.log("imageFile:", imageFile);
+
   }, [data]);
   
 
@@ -280,7 +292,7 @@ const tabIndexToPath = [
       alarmCycle: alarmCycle,
       alarmTime: alarmTime.format('HH:mm'),
       startDate: alarmDate.format('YY/MM/DD'),
-      type: "WAT",
+      type: eatType,
       category: "ANI",       // 식물물주기는 PLA    동물먹이는 ANI
     };
      
@@ -295,7 +307,77 @@ const tabIndexToPath = [
     } 
 
   };
+
+
+  const toggleAlarm = (alarmId) => {
+    setAlarmList(prevList =>
+      prevList.map(alarm => {
+        if (alarm.alarmId === alarmId) {
+          const newEnabled = !alarm.enabled;
+
+          if (newEnabled) {
+            // 알람 켜기 - Android AlarmSet 호출
+            if (window.Android && window.Android.AlarmSet) {
+              const alarmData = JSON.stringify([alarm]);
+              window.Android.AlarmSet(alarmData);
+            }
+          } else {
+            // 알람 끄기 - Android cancelAlarm 호출
+            if (window.Android && window.Android.cancelAlarm) {
+              window.Android.cancelAlarm(String(alarmId));
+            }
+          }
+
+          // 2. 서버 상태 업데이트
+          alarmUpdate({
+            alarmId: alarm.alarmId,
+            activeYn: newEnabled ? 'Y' : 'N'
+          }).unwrap()
+            .then(() => {
+              console.log(`서버 알람 ${alarmId} 상태 업데이트 완료`);
+            })
+            .catch(err => {
+              console.error('알람 업데이트 실패', err);
+              showAlert('알람 상태 업데이트 실패');
+            });
+
+          // 3. 프론트 상태 변경
+          return { ...alarm, enabled: newEnabled };
+        }
+        return alarm;
+      })
+    );
+  };
   
+  const alarmDelete = (alarmId) => {
+
+    const isConfirmed = window.confirm('알람을 삭제하시겠습니까?');
+
+    if (!isConfirmed) return; // 아니오를 누르면 종료
+        
+    // 2. 서버 상태 업데이트
+    alarmDel({
+      alarmId: alarmId,
+      delYn: 'Y',
+    }).unwrap()
+      .then(() => {
+        console.log(`서버 알람 ${alarmId} 상태 업데이트 완료`);
+
+        // 알람 끄기 - Android cancelAlarm 호출
+        if (window.Android && window.Android.cancelAlarm) {
+          window.Android.cancelAlarm(String(alarmId));
+        }
+
+        // 프론트 상태에서 제거
+        setAlarmList(prevList => prevList.filter(alarm => alarm.alarmId !== alarmId));
+
+      })
+      .catch(err => {
+        console.error('알람 업데이트 실패', err);
+        showAlert('알람 상태 업데이트 실패');
+      });
+  };
+
 
   return (
     <>
@@ -448,22 +530,21 @@ const tabIndexToPath = [
         </Box>
 
         <FormRow1 label="알림 이름" value={alarmName} onChange={setAlarmName} inputRef={alarmNameRef}/>
-        주기 <Combo
-            groupId="AlarmCycle"
-            onSelectionChange={setAlarmCycle}
-            defaultValue={alarmList?.[0]?.alamrCycleCode}
-        />
+            <Combo
+              groupId="EatType"
+              onSelectionChange={setEatType}
+            />
+
+            <Combo
+              groupId="AlarmCycle"
+              onSelectionChange={setAlarmCycle}
+            />
 
         <TimePicker
           label="알림 시간"
-          value={alarmList?.[0]?.daysTime ?? alarmTime}
+          value={alarmTime}
           onChange={(newValue) => {
             setAlarmTime(newValue);
-            setAlarmList(prev => {
-              const updated = [...prev];
-              updated[0] = { ...updated[0], daysTime: newValue };
-              return updated;
-            });
           }}
           ampm
           />
@@ -476,14 +557,9 @@ const tabIndexToPath = [
 
         <DatePicker
           label="알림 날짜"
-          value={alarmList?.[0]?.daysDate ?? alarmDate}
+          value={alarmDate}
           onChange={(newValue) => {
             setAlarmDate(newValue);
-            setAlarmList(prev => {
-              const updated = [...prev];
-              updated[0] = { ...updated[0], daysDate: newValue };
-              return updated;
-            });
           }}
 
           renderInput={(params) => <TextField size="small" {...params} fullWidth />}
@@ -491,6 +567,23 @@ const tabIndexToPath = [
 
       </Box>
     </Box> 
+
+      <Typography variant="h6" gutterBottom>
+        알람 시간 목록:
+      </Typography>
+      {alarmList.map((alarm, idx) => (
+        <Typography key={idx} variant="body1" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          • {`알람이름: ${alarm.alarmName} / 먹이종류: ${alarm.type} /`} <br/>
+            {`(주기: ${alarm.alarmCycle}일) ${alarm.year}-${alarm.month}-${alarm.day} ${alarm.hour}:${alarm.min}`} 
+          <Switch
+            checked={alarm.enabled}
+            onChange={() => toggleAlarm(alarm.alarmId)}
+            color="primary"
+            inputProps={{ 'aria-label': 'toggle alarm' }}
+          />
+          <button onClick={() => alarmDelete(alarm.alarmId)}>삭제</button>
+        </Typography>
+      ))}
   </LocalizationProvider>
   </>
 );
