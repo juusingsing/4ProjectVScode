@@ -46,6 +46,13 @@ export const alarmApi = createApi({
         body: data,
       }),
     }),
+    AlarmDelete: builder.mutation({
+      query: (data) => ({
+        url: '/alarm/delete.do',
+        method: 'POST',
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -55,4 +62,5 @@ export const {
     useAlarmCreateMutation,
     useAlarmUpdateMutation,
     useAlarmAllUpdateMutation,
+    useAlarmDeleteMutation,
 } = alarmApi;

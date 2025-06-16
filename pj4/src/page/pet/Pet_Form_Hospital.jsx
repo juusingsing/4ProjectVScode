@@ -197,10 +197,6 @@ const DateInputRow = ({ label, value, onChange }) => {
 const Pet_Form_Hospital = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [animalId, setAnimalId] = useState(null);
-  const { data, isLoading: isPetLoading } = useGetPetByIdQuery(animalId, {
-    skip: !animalId,
-  });
   const pathToTabIndex = {
     '/pet/petFormHospital.do': 0,
     '/pet/petFormEatAlarm.do': 1,
