@@ -62,6 +62,7 @@ const PlantCreate = () => {
       setPlantGrowthStatus('');
       setImagePreview(null);
       setFiles([]);
+      navigate('/home.do');
     } catch (err) {
       alert('등록 실패');
     }

@@ -2,7 +2,7 @@
 
 .plant-create-container {
   max-width: 400px;
-  margin: 20px auto;
+
   padding: 20px;
   background-color: #ffffff; /* 컨테이너 배경색을 흰색으로 */
   border-radius: 12px; /* 컨테이너 모서리 둥글게 */
@@ -14,7 +14,7 @@
 .header-icon-container {
   display: flex;
   justify-content: flex-start; /* 왼쪽 정렬 */
-  margin-bottom: 20px; /* 아래 여백 */
+
 }
 
 /* 뒤로가기 버튼 스타일 */

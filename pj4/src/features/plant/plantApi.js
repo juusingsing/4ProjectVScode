@@ -47,12 +47,16 @@ export const plantApi = createApi({
       },
     }),
 
-    // 식물 삭제 (DELETE)
+    // 식물 삭제
     deletePlant: builder.mutation({
-      query: (plantId) => {
+      query: (formData) => {
         return {
-          url: `/plant/${plantId}`,
-          method: "DELETE",
+          url: "/plant/deletePlant.do",
+          method: "POST",
+          body: formData,
+          headers: {
+            "Content-Type": "application/json",
+          },
         };
       },
     }),
@@ -148,17 +152,17 @@ export const plantApi = createApi({
         };
       },
     }),
-      //식물 분갈이 단건 조회
-      repottingBlist: builder.query({
-        query: (params) => ({
-          url: "/plant/repotting-blist.do",
-          method: "POST",
-          body: params,
-        }),
-        keepUnusedDataFor: 0,
-        refetchOnMountOrArgChange: true,
-        staleTime: 0,
+    //식물 분갈이 단건 조회
+    repottingBlist: builder.query({
+      query: (params) => ({
+        url: "/plant/repotting-blist.do",
+        method: "POST",
+        body: params,
       }),
+      keepUnusedDataFor: 0,
+      refetchOnMountOrArgChange: true,
+      staleTime: 0,
+    }),
     //식물 분갈이 개별 수정
     repottingUpdateLogs: builder.mutation({
       query: (formData) => {
@@ -224,7 +228,7 @@ export const plantApi = createApi({
 
 export const {
   usePlantInfoQuery,
-  useUpdatePestLogsMutation,  //식물 병충해 개별 수정
+  useUpdatePestLogsMutation, //식물 병충해 개별 수정
   useDeletePestLogsMutation, // 식물 병충해 개별 삭제
   usePestLogsQuery, //식물 병충해 조회
   useSavePestInfoMutation, //식물 병충해 저장

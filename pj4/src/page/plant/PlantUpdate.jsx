@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useCmDialog } from "../../cm/CmDialogUtil";
 import {
   Box,
   Button,
@@ -46,6 +47,8 @@ const PlantUpdate = ({ mode = "create" }) => {
   const [sunlightPreference, setSunlightPreference] = useState("");
   const [plantGrowthStatus, setPlantGrowthStatus] = useState("");
   const [imagePreview, setImagePreview] = useState(DefaultImage);
+
+  const { showAlert } = useCmDialog();
 
   const [updatePlant] = useUpdatePlantMutation();
   const [deletePlant] = useDeletePlantMutation();
@@ -106,27 +109,28 @@ const PlantUpdate = ({ mode = "create" }) => {
     try {
       if (isEdit) {
         await updatePlant(formData).unwrap();
-        alert("수정 성공");
+        showAlert("수정 성공");
       } else {
         const result = await createPlant(formData).unwrap();
-        alert("등록 성공");
+        showAlert("등록 성공");
         navigate(`/PlantUpdate/${result.plantId}`);
         return;
       }
       navigate("/PlantSunlighting.do");
     } catch (err) {
-      alert(isEdit ? "수정 실패" : "등록 실패");
+      showAlert(isEdit ? "수정 실패" : "등록 실패");
     }
   };
 
   const handleDelete = async () => {
+    console.log(plantId);
     if (window.confirm("정말 삭제하시겠습니까?")) {
       try {
-        await deletePlant(plantId).unwrap();
-        alert("삭제 성공");
+        await deletePlant({ plantId: plantId }).unwrap();
+        showAlert("삭제 성공");
         navigate("/PlantSunlighting.do");
       } catch {
-        alert("삭제 실패");
+        showAlert("삭제 실패");
       }
     }
   };
