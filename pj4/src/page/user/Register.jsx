@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useRegisterMutation } from '../../features/user/userApi';
 import { useNavigate } from 'react-router-dom';
-import { TextField, Button, Box, Typography } from '@mui/material';
+import { TextField, Button, Box, Typography, backdropClasses } from '@mui/material';
 import { useCmDialog } from '../../cm/CmDialogUtil';
 import { CmUtil } from '../../cm/CmUtil';
 import { useEffect } from 'react';
@@ -238,20 +238,22 @@ const Register = () => {
       >
         <img src={back} alt="" sx={{ pl: '2px' }}></img>
       </Button>
+      <Box sx={{display:'flex', justifyContent:'center'}}>
       <Box
         sx={{
           backgroundColor: "rgba(34, 29, 29, 0.42)",
           width: "80%",
-          height: "85%",
+          height: "90%",
           display: 'flex',
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          margin: '0 auto',
+          margin: '0px 0px 40px 0px',
+          padding: '0px 0px 30px 0px'
 
         }}
       >
-        <Typography variant="h4" gutterBottom sx={{ color: "white" }}>회원가입</Typography>
+        <Typography variant="h4" gutterBottom sx={{ color: "white", marginTop: '20px'}}>회원가입</Typography>
         <Box sx={{ width: "90%" }}>
           <Typography sx={{ color: "white" }}>닉네임*</Typography>
           <UserTextField
@@ -354,25 +356,38 @@ const Register = () => {
             <Typography variant="body2" color="error" sx={{ mt: 1 }}>
               남은 시간: {formatTime(timer)}
             </Typography>
-            <TextField
-              label="인증번호 확인*"
+            <Box sx={{ width: "90%" }}>
+          <Typography sx={{ color: "white" , marginTop:'15px'}}>인증번호 확인*</Typography>
+            <Box sx={{
+              display:'flex',
+              flexDirection:'row',
+              alignItems: 'center', 
+              width: '90%', 
+              gap: 1}}>
+                
+            <UserTextField
               fullWidth
               margin="normal"
               value={emailCode}
               onChange={(e) => setEmailCode(e.target.value)}
+              
             />
+            
             <Button
               onClick={handleVerifyEmailCode}
               variant="contained"
               sx={{
-                marginTop: 3,
+                marginTop: 1,
                 backgroundColor: '#4B6044',
                 borderRadius: '10px',
-                width: "150px"
+                width: "90px",
+                fontSize: "10px"
               }}
             >
-              인증번호 확인
+              인증번호<br/>확인
             </Button>
+            </Box>
+            </Box>
           </>
         )}
 
@@ -389,6 +404,7 @@ const Register = () => {
           회원가입
         </Button>
       </Box>
+    </Box>
     </Box>
   );
 };
