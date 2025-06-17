@@ -16,6 +16,8 @@ import TabCombo from "../../page/combo/TabCombo";
 import { useAnimalListQuery, usePlantListQuery } from "../../features/home/homeApi";
 import PetTestMain from "../../image/petTestMain.png";
 import PlantTestMain from "../../image/plantTestMain.png";
+import DefaultPlant from "../../image/default-plant.png";
+import DefaultAnimal from "../../image/dafault-animal.png";
 
 const Home = () => {
   const location = useLocation();
@@ -64,6 +66,7 @@ const Home = () => {
   const currentData = activeTab === "N01" ? animalData : plantData;
   const currentError = activeTab === "N01" ? animalError : plantError;
   const currentIsLoading = activeTab === "N01" ? isAnimalLoading || isAnimalFetching : isPlantLoading || isPlantFetching;
+  const currentDefaultImage = activeTab === "N01" ? DefaultAnimal : DefaultPlant;
 
   // 정렬 기준 변경 핸들러
   const handleSortChange = (event) => {
@@ -184,7 +187,7 @@ const Home = () => {
               const imageUrl =
                 item.postFiles && item.postFiles.length > 0 && item.postFiles[0].postFileId
                   ? `${process.env.REACT_APP_API_BASE_URL}/file/imgDown.do?fileId=${item.postFiles[0].postFileId}`
-                  : "https://placehold.co/100x90/FFD700/FFFFFF?text=No+Image";
+                  : currentDefaultImage;
 
               const itemLink =
                 activeTab === "N01"
