@@ -13,7 +13,7 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { FaCamera } from "react-icons/fa";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import "../../css/plantCreate.css";
 //훅
 import {
@@ -26,7 +26,8 @@ import Combo from "../combo/combo";
 import DefaultImage from "../../image/default-plant.png";
 
 const PlantUpdate = ({ mode = "create" }) => {
-  const { plantId } = useParams();
+  const [searchParams] = useSearchParams();
+  const plantId = searchParams.get("plantId"); // 식물아이디 plantId parm에 저장
   const isEdit = mode === "edit" || !!plantId;
 
   const navigate = useNavigate();
