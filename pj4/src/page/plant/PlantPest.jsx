@@ -17,7 +17,6 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import dayjs from "dayjs";
 //훅
 import {
   useSavePestInfoMutation,

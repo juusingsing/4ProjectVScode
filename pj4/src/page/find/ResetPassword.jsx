@@ -107,7 +107,10 @@ const ResetPassword = () => {
         <Typography variant="h4" gutterBottom sx={{ color: "black" }}>비밀번호 재설정</Typography>
         <Box sx={{ padding: '20px' }}>
           <form onSubmit={handleReset}>
-            <Typography sx={{ color: "black", marginBottom: '-10px' }}>새 비밀번호</Typography>
+            <Box sx={{display:'flex', marginTop:'5px'}}>
+            <Typography sx={{ color: "black", marginBottom: '-8px', marginRight:'5px'}}>새 비밀번호</Typography>
+            <Typography sx={{ color: "black", fontSize:'10px', marginTop:'5px' }}>영문, 숫자, 특수문자 조합 8자 이상</Typography>
+            </Box>
             <UserTextField
               type="password"
               fullWidth

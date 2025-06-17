@@ -290,7 +290,10 @@ const Register = () => {
             </Box>
           </Box>
           <Box sx={{ width: "90%" }}>
-            <Typography sx={{ color: "black" }}>비밀번호*</Typography>
+            <Box sx={{display:'flex', marginTop:'5px'}}>
+            <Typography sx={{ color: "black" , marginRight:'5px'}}>비밀번호*</Typography>
+            <Typography sx={{ color: "black", fontSize:'10px', marginTop:'5px' }}>영문, 숫자, 특수문자 조합 8자 이상</Typography>
+            </Box>
             <UserTextField
               type="password"
               fullWidth

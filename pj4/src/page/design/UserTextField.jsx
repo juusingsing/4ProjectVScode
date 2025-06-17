@@ -21,6 +21,11 @@ const StyledTextField = styled(TextField)({
     '&:after': { // 포커스 시 언더라인 제거
       borderBottom: 'none !important', // !important로 우선순위 높임
     },
+    '& input:-webkit-autofill': {
+      boxShadow: '0 0 0 1000px #D9D9D9 inset',
+      WebkitTextFillColor: 'black',
+      transition: 'background-color 5000s ease-in-out 0s',
+    },
   },
   '& .MuiInputBase-input': { // 실제 input 요소
     padding: '12px 14px', // 내부 텍스트 패딩 조절

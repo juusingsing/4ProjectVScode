@@ -76,7 +76,7 @@ const WriteUpdate = () => {
     const maxFile = 5;
   const handleFileChange = (e) => {
      const newFiles = Array.from(e.target.files);
-     const totalFiles = files.length + newFiles.length;
+     const totalFiles = existingFiles.length+files.length + newFiles.length;
       if (totalFiles > maxFile) {
       showAlert(`사진은 최대 ${maxFile}장까지 업로드 할 수 있습니다.`);
        e.target.value = null;

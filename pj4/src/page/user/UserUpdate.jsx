@@ -10,88 +10,95 @@ import Plus from '../../image/imagePlus.png';
 import Delete from '../../image/imageDelete.png'
 
 const LabeledTextFieldRow = ({ label, value, onChange, inputRef, disabled = false, type = 'text' }) => {
-    const commonContentWrapperStyle = {
-      flexGrow: 1,
-      display: 'flex',
-      alignItems: 'center',
-      borderRadius: '20px',
-      minHeight: '30px',
-    };
+  const commonContentWrapperStyle = {
+    flexGrow: 1,
+    display: 'flex',
+    alignItems: 'center',
+    borderRadius: '20px',
+    minHeight: '30px',
+  };
 
-    return (
-      <Box
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        backgroundColor: "rgba(217, 217, 217, 0.21)",
+        paddingX: "10px",
+        paddingY: "5px",
+        borderRadius: '20px',
+        width: '90%',
+      }}
+    >
+      <Typography
+        variant="subtitle1"
+        color="text.secondary"
         sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          backgroundColor: "rgba(217, 217, 217, 0.21)",
-          paddingX: "10px",
-          paddingY: "5px",
-          borderRadius: '20px',
-          width: '90%',
+          flexShrink: 0,
+          mr: 2,
+          minWidth: '90px',
         }}
       >
+        {label}
+      </Typography>
+
+      {disabled ? (
         <Typography
-          variant="subtitle1"
-          color="text.secondary"
+          variant="body1"
           sx={{
-            flexShrink: 0,
-            mr: 2,
-            minWidth: '90px',
+            ...commonContentWrapperStyle,
+            color: 'black',
+            opacity: 1,
+            boxShadow: 'none',
+            padding: '0 12px',
+            justifyContent: 'flex-end'
           }}
         >
-          {label}
+          {value}
         </Typography>
-
-        {disabled ? (
-          <Typography
-            variant="body1"
-            sx={{
-              ...commonContentWrapperStyle,
-              color: 'black',
-              opacity: 1,
-              boxShadow: 'none',
-              padding: '0 12px',
-              justifyContent: 'flex-end'
-            }}
-          >
-            {value}
-          </Typography>
-        ) : (
+      ) : (
+        <Box
+          sx={{
+            ...commonContentWrapperStyle,
+            backgroundColor: 'white',
+            '&:focus-within': {
+              backgroundColor: "rgba(255, 255, 255, 0.8)",
+            },
+            padding: '0 12px',
+          }}
+        >
           <Box
+            component="input"
+            ref={inputRef}
+            value={value}
+            onChange={onChange}
+            type={type}
+            placeholder={label === "비밀번호" ? "영문, 숫자, 특수문자 조합 8자 이상" : ""}
             sx={{
-              ...commonContentWrapperStyle,
-              backgroundColor: 'white',
-              '&:focus-within': {
-                backgroundColor: "rgba(255, 255, 255, 0.8)",
+              flexGrow: 1,
+              border: 'none',
+              outline: 'none',
+              backgroundColor: 'transparent',
+              padding: '0',
+              height: '100%',
+              fontSize: '1rem',
+              color: 'rgba(0, 0, 0, 0.87)',
+              cursor: 'text',
+              WebkitTextFillColor: 'rgba(0, 0, 0, 0.87)',
+              opacity: 1,
+              '&::placeholder': {
+                fontSize: '10px',  // 원하는 placeholder 크기
+                color: '#888',
+                textAlign:'center'
               },
-              padding: '0 12px',
             }}
-          >
-            <input
-              ref={inputRef}
-              value={value}
-              onChange={onChange}
-              type={type}
-              style={{
-                flexGrow: 1,
-                border: 'none',
-                outline: 'none',
-                backgroundColor: 'transparent',
-                padding: '0',
-                height: '100%',
-                fontSize: '1rem',
-                color: 'rgba(0, 0, 0, 0.87)',
-                cursor: 'text',
-                WebkitTextFillColor: 'rgba(0, 0, 0, 0.87)',
-                opacity: 1,
-              }}
-            />
-          </Box>
-        )}
-      </Box>
-    );
-  };
+          />
+        </Box>
+      )}
+    </Box>
+  );
+};
 
 const UserUpdate = () => {
   const user = useSelector((state) => state.user.user);
@@ -117,7 +124,7 @@ const UserUpdate = () => {
 
   const { showAlert } = useCmDialog();
 
-  const [userUpdate ] = useUserUpdateMutation();
+  const [userUpdate] = useUserUpdateMutation();
   const { data, isSuccess } = useViewQuery({ usersId: user?.usersId });
 
   useEffect(() => {
@@ -224,7 +231,7 @@ const UserUpdate = () => {
       showAlert(error.data?.message || '회원정보 수정에 실패했습니다. 서버 오류 또는 네트워크 문제.');
     }
   };
-  
+
   return (
     <Box
       sx={{
@@ -369,7 +376,9 @@ const UserUpdate = () => {
           value={usersPassword}
           inputRef={usersPasswordRef}
           onChange={(e) => setUsersPassword(e.target.value)}
+
         />
+
 
         <LabeledTextFieldRow
           label="비밀번호 확인"
@@ -382,11 +391,11 @@ const UserUpdate = () => {
       <Button
         onClick={handleUpdateClick}
         variant="contained"
-        sx={{ 
-          marginTop: 4, 
-          backgroundColor: '#385C4F', 
+        sx={{
+          marginTop: 4,
+          backgroundColor: '#385C4F',
           borderRadius: '15px',
-          width:"150px"
+          width: "150px"
         }}
       >
         저장
