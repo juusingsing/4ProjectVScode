@@ -17,6 +17,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import { useLocation, useNavigate } from 'react-router-dom';
 import dayjs from "dayjs";
 //훅
 import {
@@ -52,7 +53,7 @@ const PestContent = ({
       <DatePicker
         value={plantPestDate}
         onChange={(newValue) => setPlantPestDate(newValue)}
-        inputFormat="YYYY-MM-DD"
+        format="YYYY.MM.DD"
         renderInput={(params) => (
           <TextField
             {...params}
@@ -202,6 +203,8 @@ const PestContent = ({
 
 // 메인 컴포넌트
 const PlantPest = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const { showAlert } = useCmDialog();
   const [savePestInfo] = useSavePestInfoMutation(); // 등록용
   const [updatePestLogs] = useUpdatePestLogsMutation(); // 수정용
@@ -209,7 +212,7 @@ const PlantPest = () => {
   const [plantId] = useState(9); //동적으로 가져오게 수정해야함
 
   // 중앙에서 탭 상태를 관리합니다.
-  const [currentTab, setCurrentTab] = useState(3); // 일조량 탭이 기본 선택
+  // const [currentTab, setCurrentTab] = useState(3); // 일조량 탭이 기본 선택
 
   const [plantPestDate, setPlantPestDate] = useState(null);
   const [plantPestMemo, setPlantPestMemo] = useState("");
@@ -226,6 +229,26 @@ const PlantPest = () => {
   const [editStatus, setStatus] = useState("");
   const [editMemo, setMemo] = useState("");
 
+  const pathToTabIndex = {
+    '/plant/PlantWatering.do': 0,
+    '/plant/PlantSunlighting.do': 1,
+    '/plant/PlantRepotting.do': 2,
+    '/plant/PlantPest.do': 3,
+  };
+
+
+const [currentTab, setCurrentTab] = useState();
+
+
+const tabIndexToPath = [
+    `/PlantWatering.do?plantId=${plantId}`,
+    `/PlantSunlighting.do?plantId=${plantId}`,
+    `/PlantRepotting.do?plantId=${plantId}`,
+    `/PlantPest.do?plantId=${plantId}`,
+  ];
+﻿
+
+
   const handleSelectLog = (log) => {
     setSelectedLog(log);
     setStatus(log.soilCondition);
@@ -237,6 +260,8 @@ const PlantPest = () => {
 
   const handleTabChange = (event, newValue) => {
     setCurrentTab(newValue);
+    navigate(tabIndexToPath[newValue]);
+
   };
 
   // 처음 렌더링 시 데이터 가져오기
@@ -245,6 +270,14 @@ const PlantPest = () => {
       setPestLogs(fetchedLogs.data);
     }
   }, [fetchedLogs]);
+  
+  // 페이지가 바뀌면 selectedTab도 바뀌도록 설정
+  useEffect(() => {
+    const currentPath = location.pathname;
+    if (pathToTabIndex.hasOwnProperty(currentPath)) {
+      setCurrentTab(pathToTabIndex[currentPath]);
+    }
+  }, [location.pathname]);
 
   const handleSave = () => {
     const formData = new FormData(); 
@@ -398,10 +431,6 @@ const PlantPest = () => {
         </Box>
 
         <Box className="tab-content-display">
-          {currentTab === 0 && <PlantWatering tabName="물주기" />}
-          {currentTab === 1 && <PlantSunlighting tabName="일조량" />}
-          {currentTab === 2 && <PlantRepotting tabName="분갈이" />}
-          {currentTab === 3 && (
             <PestContent
               plantPestDate={plantPestDate}
               setPlantPestDate={setPlantPestDate}
@@ -414,7 +443,6 @@ const PlantPest = () => {
               selectedFileName={selectedFileName}
               handleFileChange={handleFileChange}
             />
-          )}
         </Box>
       </Box>
     </LocalizationProvider>

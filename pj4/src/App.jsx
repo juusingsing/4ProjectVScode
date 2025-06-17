@@ -24,6 +24,7 @@ import PlantSunlighting from './page/plant/PlantSunlighting';
 import PlantRepotting from './page/plant/PlantRepotting.jsx';
 import PlantPest from './page/plant/PlantPest';
 
+
 import DiaryList from './page/diary/DiaryList';
 import DiaryView from './page/diary/DiaryView';
 import DiaryUpdate from './page/diary/DiaryUpdate';
@@ -53,7 +54,7 @@ import TestMain from './page/test/TestMain';
 import TestPage from './page/test/TestPage';
 import TestResult from './page/test/TestResult';
 import Calendar from './page/calendar/Calendar';
-import First from './page/First';
+
 
 const App = () => {
   const navigate = useNavigate();
@@ -70,7 +71,6 @@ const App = () => {
 
 
         <Route path="/" element={<Main />} />
-        <Route path="/first" element={<LayoutNoLogin><First/></LayoutNoLogin>}/>
 
         <Route path="/position" element={<Position />} />
         <Route path="/combo" element={<Combo />} />
@@ -88,10 +88,12 @@ const App = () => {
         {/* 식물탭 */}
         <Route path="/PlantCreate.do" element={<PlantCreate />} />
         <Route path="/PlantUpdate/:plantId" element={<PlantUpdate />} />
-        <Route path="/PlantWatering.do" element={<LayoutLogin><PlantWatering /></LayoutLogin>} />
+        <Route path="/PlantWatering.do" element={<PlantWatering />} />
         <Route path="/PlantSunlighting.do" element={<PlantSunlighting />} />
         <Route path="/PlantRepotting.do" element={<PlantRepotting />} />
         <Route path="/PlantPest.do" element={<PlantPest />} />
+
+
 
       
         {/* 게시판 */}

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useCmDialog } from "../../cm/CmDialogUtil";
-import { useSearchParams } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -15,7 +14,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import dayjs from 'dayjs';
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import dayjs from "dayjs";
 //훅
 import {
   useRepottingLogsQuery,
@@ -23,6 +23,7 @@ import {
   useRepottingUpdateLogsMutation,
   useRepottingBlistQuery,
   useSaveRepottingInfoMutation,
+  usePlantInfoQuery,
 } from "../../features/plant/plantApi";
 import "../../css/plantRepotting.css";
 
@@ -49,7 +50,7 @@ const RepottingContent = ({
       <DatePicker
         value={repottingDate}
         onChange={(newValue) => setRepottingDate(newValue)}
-        inputFormat="YYYY-MM-DD"
+        format="YYYY.MM.DD"
         renderInput={(params) => (
           <TextField
             {...params}
@@ -135,7 +136,9 @@ const RepottingContent = ({
         repottingLogs.map((log) => (
           <Box key={log.plantRepottingId} className="log-entry">
             <Box className="log-details">
-              <Typography>{log.repottingDate} | {log.soilCondition}</Typography>
+              <Typography>
+                {log.repottingDate} | {log.soilCondition}
+              </Typography>
               <Typography>{log.repottingMemo}</Typography>
             </Box>
             <Box className="log-actions">
@@ -163,14 +166,16 @@ const RepottingContent = ({
 
 // 메인 컴포넌트
 const PlantRepotting = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const { showAlert } = useCmDialog();
   const [saveRepottingInfo] = useSaveRepottingInfoMutation(); // 등록용
   const [repottingUpdateLogs] = useRepottingUpdateLogsMutation(); // 수정용
 
-  const [plantId] = useState("1"); // 실제 값은 API에서 받아야 함
+  const [plantId] = useState("9"); // 실제 값은 API에서 받아야 함
   const [plantName] = useState("몬스테라");
-  const [purchaseDate] = useState("2023-01-15");
-  const [currentTab, setCurrentTab] = useState(2); // 일조량 탭이 기본 선택
+  const [purchaseDate] = useState(null);
+  // const [currentTab, setCurrentTab] = useState(2); // 일조량 탭이 기본 선택
 
   const [repottingDate, setRepottingDate] = useState(null);
   const [soilConditionText, setSoilConditionText] = useState("");
@@ -178,16 +183,34 @@ const PlantRepotting = () => {
 
   const [repottingLogs, setRepottingLogs] = useState([]);
   const [deleteRepottingLogs] = useDeleteRepottingLogsMutation();
+  const { data: plantInfo } = usePlantInfoQuery(plantId);
+
   const [searchParams] = useSearchParams();
 
-  const [editingLog, setSelectedLog] = useState(null); 
-  const [editStatus, setStatus] = useState(""); 
-  const [editMemo, setMemo] = useState(""); 
+  const [editingLog, setSelectedLog] = useState(null);
+  const [editStatus, setStatus] = useState("");
+  const [editMemo, setMemo] = useState("");
+
+  const pathToTabIndex = {
+    "/plant/PlantWatering.do": 0,
+    "/plant/PlantSunlighting.do": 1,
+    "/plant/PlantRepotting.do": 2,
+    "/plant/PlantPest.do": 3,
+  };
+
+  const [currentTab, setCurrentTab] = useState();
+
+  const tabIndexToPath = [
+    `/PlantWatering.do?plantId=${plantId}`,
+    `/PlantSunlighting.do?plantId=${plantId}`,
+    `/PlantRepotting.do?plantId=${plantId}`,
+    `/PlantPest.do?plantId=${plantId}`,
+  ];
 
   const handleSelectLog = (log) => {
     setSelectedLog(log);
-    setStatus(log.soilCondition); 
-    setMemo(log.repottingMemo); 
+    setStatus(log.soilCondition);
+    setMemo(log.repottingMemo);
   };
 
   const id = searchParams.get("id");
@@ -199,6 +222,7 @@ const PlantRepotting = () => {
 
   const handleTabChange = (event, newValue) => {
     setCurrentTab(newValue);
+    navigate(tabIndexToPath[newValue]);
   };
 
   // 처음 렌더링 시 데이터 가져오기
@@ -208,12 +232,20 @@ const PlantRepotting = () => {
     }
   }, [fetchedLogs, refetch]);
 
+  // 페이지가 바뀌면 selectedTab도 바뀌도록 설정
+      useEffect(() => {
+        const currentPath = location.pathname;
+        if (pathToTabIndex.hasOwnProperty(currentPath)) {
+          setCurrentTab(pathToTabIndex[currentPath]);
+        }
+      }, [location.pathname]);
+
   const handleSave = () => {
     const formData = {
       plantId: parseInt(plantId),
       repottingDate: repottingDate ? repottingDate.format("YYYY-MM-DD") : null,
       soilCondition: soilConditionText,
-      repottingMemo: repottingMemoText
+      repottingMemo: repottingMemoText,
     };
 
     if (editingLog !== null) {
@@ -259,7 +291,7 @@ const PlantRepotting = () => {
     try {
       await deleteRepottingLogs(id).unwrap(); // 삭제 요청
       showAlert("일지가 성공적으로 삭제되었습니다.");
-      
+
       refetch();
     } catch (error) {
       console.error("삭제실패:", error);
@@ -271,26 +303,86 @@ const PlantRepotting = () => {
     const logToEdit = repottingLogs.find((log) => log.plantRepottingId === id);
     if (logToEdit) {
       setRepottingDate(dayjs(logToEdit.repottingDate));
-      setSoilConditionText(logToEdit.soilCondition); 
-      setRepottingMemoText(logToEdit.repottingMemo); 
+      setSoilConditionText(logToEdit.soilCondition);
+      setRepottingMemoText(logToEdit.repottingMemo);
       setSelectedLog(id);
     }
   };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <RepottingContent
-              repottingDate={repottingDate}
-              setRepottingDate={setRepottingDate}
-              soilConditionText={soilConditionText}
-              setSoilConditionText={setSoilConditionText}
-              repottingMemoText={repottingMemoText}
-              setRepottingMemoText={setRepottingMemoText}
-              handleSave={handleSave}
-              repottingLogs={repottingLogs}
-              onDeleteLog={handleDeleteLog}
-              onEditLog={handleEditLog}
-            />
+      <Box className="plant-care-container">
+        {/*식물 정보 수정 버튼*/}
+        <Button variant="contained" className="edit-top-button">
+          수정
+        </Button>
+
+        <Box className="plant-info-header">
+          <Box className="plant-details">
+            <Box className="plant-detail-row">
+              <Typography className="plant-label">식물 이름</Typography>
+              <Box className="plant-value-box">
+                <Typography sx={{ fontSize: "0.8rem", textAlign: "center" }}>
+                  {/* 배열안에 데이터 있음 */}
+                  {plantInfo?.data && plantInfo.data.length > 0
+                    ? plantInfo.data[0].plantName
+                    : "정보 없음"}
+                </Typography>
+              </Box>
+            </Box>
+            <Box className="plant-detail-row">
+              <Typography className="plant-label">입수일 날짜</Typography>
+              <Box className="plant-value-box">
+                <Typography sx={{ fontSize: "0.8rem", textAlign: "center" }}>
+                  {/* 배열안에 데이터 있음 */}
+                  {plantInfo?.data && plantInfo.data.length > 0
+                    ? plantInfo.data[0].plantPurchaseDate
+                    : "정보 없음"}
+                </Typography>
+              </Box>
+            </Box>
+          </Box>
+          <Avatar
+            src={`${
+              process.env.REACT_APP_API_BASE_URL
+            }/file/imgDown.do?fileId=${
+              plantInfo?.data && plantInfo.data.length > 0
+                ? plantInfo.data[0].fileId
+                : ""
+            }`}
+            className="plant-avatar"
+          />
+        </Box>
+
+        <Box className="tab-menu-container">
+          <Tabs
+            value={currentTab}
+            onChange={handleTabChange}
+            className="plant-care-tabs"
+            TabIndicatorProps={{ style: { backgroundColor: "black" } }}
+          >
+            <Tab label="물주기" />
+            <Tab label="일조량" />
+            <Tab label="분갈이" />
+            <Tab label="병충해" />
+          </Tabs>
+        </Box>
+
+        <Box className="tab-content-display">
+          <RepottingContent
+            repottingDate={repottingDate}
+            setRepottingDate={setRepottingDate}
+            soilConditionText={soilConditionText}
+            setSoilConditionText={setSoilConditionText}
+            repottingMemoText={repottingMemoText}
+            setRepottingMemoText={setRepottingMemoText}
+            handleSave={handleSave}
+            repottingLogs={repottingLogs}
+            onDeleteLog={handleDeleteLog}
+            onEditLog={handleEditLog}
+          />
+        </Box>
+      </Box>
     </LocalizationProvider>
   );
 };
