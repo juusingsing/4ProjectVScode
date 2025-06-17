@@ -18,7 +18,6 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { useLocation, useNavigate } from 'react-router-dom';
-import dayjs from "dayjs";
 //훅
 import {
   useSavePestInfoMutation,
@@ -28,11 +27,13 @@ import {
   usePlantInfoQuery,
 } from "../../features/plant/plantApi";
 // import "../../css/plantPest.css";
+import dayjs from 'dayjs';
 
 import PlantWatering from "./PlantWatering"; // 물주기 탭
 import PlantSunlighting from "./PlantSunlighting"; // 일조량 탭
 import PlantRepotting from "./PlantRepotting"; // 분갈이 탭
 import DefaultImage from "../../image/default-plant.png";
+
 
 const PestContent = ({
   plantPestDate,
@@ -49,6 +50,7 @@ const PestContent = ({
 }) => (
   <Box className="pest-tab-content">
     <Box className="pest-date">
+      <Box sx={{display:'flex'}}>
       <Typography className="date-label">병충해날짜</Typography>
       <DatePicker
         value={plantPestDate}
@@ -78,10 +80,19 @@ const PestContent = ({
           />
         )}
       />
+      </Box>
     </Box>
 
     {/* 파일 업로드*/}
-    <Box sx={{ textAlign: "center", position: "relative", marginBottom: 3 }}>
+    <Box sx={{ textAlign: "center", position: "relative", marginBottom: 3, display:'flex' }}>
+      {selectedFileName && (
+        <Typography
+         sx={{ marginTop: 1, display:'block'}}>
+          선택된 파일: {selectedFileName}
+        </Typography>
+      )}
+      
+      
       <input
         id="file"
         type="file"
@@ -108,12 +119,7 @@ const PestContent = ({
         </IconButton>
       </label>
 
-      {selectedFileName && (
-        <Typography
-         sx={{ marginTop: 1, display:'block'}}>
-          선택된 파일: {selectedFileName}
-        </Typography>
-      )}
+      
     </Box>
     
 
@@ -136,15 +142,15 @@ const PestContent = ({
       sx={
         editingLog !== null
           ? {
-              backgroundColor: "#88AE97 !important",
+              backgroundColor: "#6e927e !important",
               "&:hover": {
-                backgroundColor: "#6e927e !important",
+                backgroundColor: "#88AE97 !important",
               },
             }
           : undefined
       }
     >
-      {editingLog !== null ? "수정" : "저장"}
+      {editingLog !== null ? "저장" : "수정"}
     </Button>
 
     <Box className="pest-log-section">
@@ -161,24 +167,11 @@ const PestContent = ({
         <Typography>일지가 없습니다.</Typography>
       ) : (
         pestLogs.map((log) => (
-          <Box key={log.plantPestId} className="log-entry">
+          <Box key={log.plantPestId} className="log-entry" sx={{marginTop:'30px'}}>
             <Box className="log-details">
-              <Typography>{log.plantPestDate}</Typography>
-              {log.fileId && (
-                <img
-                  src={`${process.env.REACT_APP_API_BASE_URL}/file/imgDown.do?fileId=${log.fileId}`}
-                  alt="Pest Log"
-                  style={{
-                    width: "50px",
-                    height: "50px",
-                    borderRadius: "4px",
-                    marginRight: "8px",
-                  }}
-                />
-              )}
-              <Typography>{log.plantPestMemo}</Typography>
-            </Box>
-            <Box className="log-actions">
+              <Box sx={{display:'flex', justifyContent:'space-between'}}>
+              <Typography>{dayjs(log.plantPestDate).format('YYYY.MM.DD')}</Typography>
+              <Box className="log-actions" sx={{marginTop:'-70px'}}>
               <Button
                 variant="text"
                 className="log-action-button"
@@ -193,7 +186,28 @@ const PestContent = ({
               >
                 수정
               </Button>
+              </Box>
             </Box>
+            <Box sx={{display:'flex'}}>
+              {log.fileId && (
+                <img
+                  src={`${process.env.REACT_APP_API_BASE_URL}/file/imgDown.do?fileId=${log.fileId}`}
+                  alt="Pest Log"
+                  style={{
+                    width: "70px",
+                    height: "70px",
+                    borderRadius: "4px",
+                    marginRight: "8px",
+                    marginBlock:'auto'
+                  }}
+                />
+              )}
+              <Box>
+              <Typography>{log.plantPestMemo}</Typography>
+              </Box>
+              </Box>
+            </Box>
+            
           </Box>
         ))
       )}
