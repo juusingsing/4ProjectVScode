@@ -147,6 +147,7 @@ const FindId = () => {
     <Box sx={{
       maxWidth: "360px",
       width: "100%",
+      height: '100%',
       display: 'flex',
       flexDirection: "column",
       justifyContent: "center",
@@ -158,8 +159,6 @@ const FindId = () => {
         onClick={() => navigate(-1)}
         sx={{
           display: 'flex',
-          position: 'absolute',
-          top: '10px',
           justifyContent: 'center',
           borderRadius: '10px',
           height: '35px',
@@ -167,6 +166,7 @@ const FindId = () => {
           width: '35px',
           marginTop: '15px',
           marginLeft: "15px",
+          marginBottom: "20px",
           '&:hover': {
             backgroundColor: '#363636'
           },
@@ -185,18 +185,17 @@ const FindId = () => {
           alignItems: "center",
           margin: '0 auto',
           gap: 1,
-          marginTop:'20px',
           paddingBottom: '100px'
         }}
       >
 
 
-        <Typography variant="h4" gutterBottom sx={{ marginTop: '80px',  color: "black" }}>아이디 찾기</Typography>
+        <Typography variant="h4" gutterBottom sx={{color: "black" }}>아이디 찾기</Typography>
 
         {!showResult && (
           <>
             <Box sx={{ width: "90%" }}>
-              <Typography sx={{ color: "black", marginBottom:'-10px'}}>이메일</Typography>
+              <Typography sx={{ color: "black", marginBottom: '-10px' }}>이메일</Typography>
 
               <UserTextField
                 type="email"
@@ -223,18 +222,18 @@ const FindId = () => {
 
             {emailSent && (
               <>
-                
+
                 <Box sx={{ width: "90%" }}>
-                  <Box sx={{display:'flex', marginTop:'20px',marginBottom:'-10px'}}>
-                <Typography sx={{ color: "black" }}>인증번호 확인 </Typography>
-                <Typography color="error"sx={{marginLeft:'10px', fontSize:'14px'}}>
-                  남은 시간: {formatTime(timer)}
-                </Typography>
-                </Box>
-                <UserTextField
-                fullWidth margin="normal" 
-                value={emailCode}
-                onChange={(e) => setEmailCode(e.target.value)} />
+                  <Box sx={{ display: 'flex', marginTop: '20px', marginBottom: '-10px' }}>
+                    <Typography sx={{ color: "black" }}>인증번호 확인 </Typography>
+                    <Typography color="error" sx={{ marginLeft: '10px', fontSize: '14px' }}>
+                      남은 시간: {formatTime(timer)}
+                    </Typography>
+                  </Box>
+                  <UserTextField
+                    fullWidth margin="normal"
+                    value={emailCode}
+                    onChange={(e) => setEmailCode(e.target.value)} />
                 </Box>
                 <Button onClick={handleVerifyEmailCode}
                   variant="contained"
@@ -246,7 +245,7 @@ const FindId = () => {
                   }}>
                   인증번호 확인
                 </Button>
-                
+
               </>
             )}
 
@@ -272,14 +271,14 @@ const FindId = () => {
         {/* 결과 출력부 */}
         {showResult && foundId && (
           <>
-            <Typography variant="h7" sx={{ mt: 4, color: 'white' }}>
+            <Typography variant="h7" sx={{ mt: 4, color: 'black' }}>
               회원님의 아이디는 다음과 같습니다.
             </Typography>
-            <Box sx={{ mt: 2, textAlign:'left'}}>
-              <Typography variant="body1" sx={{ color: 'white', fontWeight: 'bold' }}>
+            <Box sx={{ mt: 2, textAlign: 'left' }}>
+              <Typography variant="body1" sx={{ color: 'black', fontWeight: 'bold' }}>
                 아이디: {foundId.usersId}
               </Typography>
-              <Typography variant="body1" sx={{ color: 'white', fontWeight: 'bold', mt: 1 }}>
+              <Typography variant="body1" sx={{ color: 'black', fontWeight: 'bold', mt: 1 }}>
                 가입일자: {dayjs(foundId.createDt).format('YYYY.MM.DD')}
               </Typography>
             </Box>

@@ -209,6 +209,7 @@ const Register = () => {
       sx={{
         maxWidth: "360px",
         width: "100%",
+        height: '100%',
         display: 'flex',
         flexDirection: "column",
         justifyContent: "center",
@@ -224,7 +225,7 @@ const Register = () => {
           height: '35px',
           minWidth: '0',
           width: '35px',
-          marginTop:"15px",
+          marginTop: "15px",
           marginLeft: "15px",
           marginBottom: "20px",
           '&:hover': {
@@ -236,170 +237,171 @@ const Register = () => {
       >
         <img src={back} alt="" sx={{ pl: '2px' }}></img>
       </Button>
-      <Box sx={{display:'flex', justifyContent:'center'}}>
-      <Box
-        sx={{
-          width: "80%",
-          display: 'flex',
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          margin: '0px 0px 40px 0px',
-
-        }}
-      >
-        <Typography variant="h4" gutterBottom sx={{ color: "black", marginTop: '20px'}}>회원가입</Typography>
-        <Box sx={{ width: "90%" }}>
-          <Typography sx={{ color: "black" }}>닉네임*</Typography>
-          <UserTextField
-            fullWidth
-            margin="normal"
-            value={usersName}
-            inputRef={usersNameRef}
-            onChange={(e) => setUsersName(e.target.value)}
-            onKeyPress={handleKeyPress}
-          />
-        </Box>
-        <Box sx={{ width: "90%" }}>
-          <Typography sx={{ color: "black" }}>아이디*</Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', gap: 1 }}>
-            <UserTextField
-              fullWidth
-              value={usersId}
-              inputRef={usersIdRef}
-              onChange={(e) => {
-                setUsersId(e.target.value);
-                setIsUserIdAvailable(false); // 아이디 변경 시 상태 초기화
-              }}
-              onKeyPress={handleKeyPress}
-            />
-            <Button
-              onClick={handleCheckUserId}
-              variant="contained"
-              sx={{
-                marginTop: 1,
-                backgroundColor: '#4B6044',
-                borderRadius: '10px',
-                width: "90px",
-                height:"50px",
-                fontSize:"10px"
-              }}>
-              중복확인
-            </Button>
-          </Box>
-        </Box>
-        <Box sx={{ width: "90%" }}>
-          <Typography sx={{ color: "black" }}>비밀번호*</Typography>
-          <UserTextField
-            type="password"
-            fullWidth
-            margin="normal"
-            value={usersPassword}
-            inputRef={usersPasswordRef}
-            onChange={(e) => setUsersPassword(e.target.value)}
-            onKeyPress={handleKeyPress}
-          />
-        </Box>
-        <Box sx={{ width: "90%" }}>
-          <Typography sx={{ color: "black" }}>비밀번호 확인*</Typography>
-          <UserTextField
-            type="password"
-            fullWidth
-            margin="normal"
-            value={usersPassword_confirm}
-            inputRef={usersPassword_confirmRef}
-            onChange={(e) => setUsersPassword_confirm(e.target.value)}
-            onKeyPress={handleKeyPress}
-          />
-        </Box>
-        <Box sx={{ width: "90%" }}>
-          <Typography sx={{ color: "black" }}>이메일*</Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', gap: 1 }}>
-            <UserTextField
-              type="email"
-              fullWidth
-              margin="normal"
-              value={usersEmail}
-              inputRef={usersEmailRef}
-              inputProps={{ maxLength: 200 }} // <- 여기 추가
-              onChange={(e) => {
-                setUsersEmail(e.target.value);
-                setIsEmailVerified(false);
-                setEmailSent(false);
-                setEmailCode('');
-              }}
-              onKeyPress={handleKeyPress}
-            />
-            <Button
-              onClick={handleSendEmailCode}
-              variant="contained"
-              sx={{
-                marginTop: 1,
-                backgroundColor: '#4B6044',
-                borderRadius: '10px',
-                width: "90px",
-                fontSize: "10px"
-              }}
-            >
-              인증번호
-              전송
-            </Button>
-          </Box>
-        </Box>
-        {emailSent && (
-          <>
-            <Typography variant="body2" color="error" sx={{ mt: 1 }}>
-              남은 시간: {formatTime(timer)}
-            </Typography>
-            <Box sx={{ width: "90%" }}>
-          <Typography sx={{ color: "black" , marginTop:'15px'}}>인증번호 확인*</Typography>
-            <Box sx={{
-              display:'flex',
-              flexDirection:'row',
-              alignItems: 'center', 
-              width: '90%', 
-              gap: 1}}>
-                
-            <UserTextField
-              fullWidth
-              margin="normal"
-              value={emailCode}
-              onChange={(e) => setEmailCode(e.target.value)}
-              
-            />
-            
-            <Button
-              onClick={handleVerifyEmailCode}
-              variant="contained"
-              sx={{
-                marginTop: 1,
-                backgroundColor: '#4B6044',
-                borderRadius: '10px',
-                width: "90px",
-                fontSize: "10px"
-              }}
-            >
-              인증번호<br/>확인
-            </Button>
-            </Box>
-            </Box>
-          </>
-        )}
-
-        <Button
-          onClick={handleRegisterClick}
-         variant="contained"
+      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Box
           sx={{
-            marginTop: 3,
-            backgroundColor: '#4B6044',
-            borderRadius: '10px',
-            width: "150px"
+            width: "80%",
+            display: 'flex',
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            margin: '0px 0px 40px 0px',
+
           }}
         >
-          회원가입
-        </Button>
+          <Typography variant="h4" gutterBottom sx={{ color: "black"}}>회원가입</Typography>
+          <Box sx={{ width: "90%" }}>
+            <Typography sx={{ color: "black" }}>닉네임*</Typography>
+            <UserTextField
+              fullWidth
+              margin="normal"
+              value={usersName}
+              inputRef={usersNameRef}
+              onChange={(e) => setUsersName(e.target.value)}
+              onKeyPress={handleKeyPress}
+            />
+          </Box>
+          <Box sx={{ width: "90%" }}>
+            <Typography sx={{ color: "black" }}>아이디*</Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', gap: 1 }}>
+              <UserTextField
+                fullWidth
+                value={usersId}
+                inputRef={usersIdRef}
+                onChange={(e) => {
+                  setUsersId(e.target.value);
+                  setIsUserIdAvailable(false); // 아이디 변경 시 상태 초기화
+                }}
+                onKeyPress={handleKeyPress}
+              />
+              <Button
+                onClick={handleCheckUserId}
+                variant="contained"
+                sx={{
+                  marginTop: 1,
+                  backgroundColor: '#4B6044',
+                  borderRadius: '10px',
+                  width: "90px",
+                  height: "50px",
+                  fontSize: "10px"
+                }}>
+                중복확인
+              </Button>
+            </Box>
+          </Box>
+          <Box sx={{ width: "90%" }}>
+            <Typography sx={{ color: "black" }}>비밀번호*</Typography>
+            <UserTextField
+              type="password"
+              fullWidth
+              margin="normal"
+              value={usersPassword}
+              inputRef={usersPasswordRef}
+              onChange={(e) => setUsersPassword(e.target.value)}
+              onKeyPress={handleKeyPress}
+            />
+          </Box>
+          <Box sx={{ width: "90%" }}>
+            <Typography sx={{ color: "black" }}>비밀번호 확인*</Typography>
+            <UserTextField
+              type="password"
+              fullWidth
+              margin="normal"
+              value={usersPassword_confirm}
+              inputRef={usersPassword_confirmRef}
+              onChange={(e) => setUsersPassword_confirm(e.target.value)}
+              onKeyPress={handleKeyPress}
+            />
+          </Box>
+          <Box sx={{ width: "90%" }}>
+            <Typography sx={{ color: "black" }}>이메일*</Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', gap: 1 }}>
+              <UserTextField
+                type="email"
+                fullWidth
+                margin="normal"
+                value={usersEmail}
+                inputRef={usersEmailRef}
+                inputProps={{ maxLength: 200 }} // <- 여기 추가
+                onChange={(e) => {
+                  setUsersEmail(e.target.value);
+                  setIsEmailVerified(false);
+                  setEmailSent(false);
+                  setEmailCode('');
+                }}
+                onKeyPress={handleKeyPress}
+              />
+              <Button
+                onClick={handleSendEmailCode}
+                variant="contained"
+                sx={{
+                  marginTop: 1,
+                  backgroundColor: '#4B6044',
+                  borderRadius: '10px',
+                  width: "90px",
+                  fontSize: "10px"
+                }}
+              >
+                인증번호
+                전송
+              </Button>
+            </Box>
+          </Box>
+          {emailSent && (
+            <>
+              <Typography variant="body2" color="error" sx={{ mt: 1 }}>
+                남은 시간: {formatTime(timer)}
+              </Typography>
+              <Box sx={{ width: "90%" }}>
+                <Typography sx={{ color: "black", marginTop: '15px' }}>인증번호 확인*</Typography>
+                <Box sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  width: '90%',
+                  gap: 1
+                }}>
+
+                  <UserTextField
+                    fullWidth
+                    margin="normal"
+                    value={emailCode}
+                    onChange={(e) => setEmailCode(e.target.value)}
+
+                  />
+
+                  <Button
+                    onClick={handleVerifyEmailCode}
+                    variant="contained"
+                    sx={{
+                      marginTop: 1,
+                      backgroundColor: '#4B6044',
+                      borderRadius: '10px',
+                      width: "90px",
+                      fontSize: "10px"
+                    }}
+                  >
+                    인증번호<br />확인
+                  </Button>
+                </Box>
+              </Box>
+            </>
+          )}
+
+          <Button
+            onClick={handleRegisterClick}
+            variant="contained"
+            sx={{
+              marginTop: 3,
+              backgroundColor: '#4B6044',
+              borderRadius: '10px',
+              width: "150px"
+            }}
+          >
+            회원가입
+          </Button>
+        </Box>
       </Box>
-    </Box>
     </Box>
   );
 };

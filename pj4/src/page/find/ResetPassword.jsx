@@ -14,13 +14,13 @@ const ResetPassword = () => {
   const navigate = useNavigate();
   const { showAlert } = useCmDialog();
 
-    // ✅ useLocation으로 전달된 userId 사용
+  // ✅ useLocation으로 전달된 userId 사용
   const usersId = location.state?.usersId;
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [resetPassword] = useResetPasswordMutation();
 
-  
+
   const handleReset = async (e) => {
     e.preventDefault();
 
@@ -44,7 +44,7 @@ const ResetPassword = () => {
       navigate('/user/findPw.do');
       return;
     }
-    
+
     // const formData = new FormData();
     // formData.append("usersId", usersId);
     // formData.append("newPassword", newPassword);
@@ -70,76 +70,74 @@ const ResetPassword = () => {
       // justifyContent: "center",
       alignContent: "center",
       margin: "auto",
-      paddingBottom:'30px'
+      paddingBottom: '30px'
     }}>
       <Button
-              onClick={() => navigate(-1)}
-              sx={{
-                display: 'flex',
-                position: 'absolute',
-                top: '10px',
-                justifyContent: 'center',
-                borderRadius: '10px',
-                height: '35px',
-                minWidth: '0',
-                width: '35px',
-                marginTop: '15px',
-                marginLeft: "15px",
-                '&:hover': {
-                  backgroundColor: '#363636'
-                },
-                backgroundColor: 'rgba(54, 54, 54, 0.4)'
-      
-              }}
-            >
-              <img src={back} alt="" sx={{ pl: '2px' }}></img>
-            </Button>
-            <Box
-                    sx={{
-                      width: "80%",
-                      height: "70%",
-                      display: 'flex',
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      margin: '0 auto',
-                      gap: 2,
-                      marginTop: '40px',
-                    }}
-                  >
-      <Typography variant="h4" gutterBottom sx={{ marginTop: '20px', top: '100px', color: "black" }}>비밀번호 재설정</Typography>
-      <Box sx={{padding:'20px'}}>
-      <form onSubmit={handleReset}>
-        <Typography sx={{ color: "black", marginBottom:'-10px'}}>새 비밀번호</Typography>
-        <UserTextField
-          type="password"
-          fullWidth
-          margin="normal"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-        />
-        <Typography sx={{ color: "black", marginBottom:'-10px'}}>비밀번호 확인</Typography>
-        <UserTextField
-          type="password"
-          fullWidth
-          margin="normal"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-        />
-        <Box sx={{display:'flex', justifyContent:'center', marginTop:'40px'}}>
-        <Button variant="contained" color="primary" fullWidth type="submit"
-         sx={{
+        onClick={() => navigate(-1)}
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          borderRadius: '10px',
+          height: '35px',
+          minWidth: '0',
+          width: '35px',
+          marginTop: '15px',
+          marginLeft: "15px",
+          marginBottom: "20px",
+          '&:hover': {
+            backgroundColor: '#363636'
+          },
+          backgroundColor: 'rgba(54, 54, 54, 0.4)'
 
-                backgroundColor: '#4B6044',
-                borderRadius: '10px',
-                width: "60%",
-                height: '40px',
-              }}>
-          비밀번호 변경
-        </Button>
+        }}
+      >
+        <img src={back} alt="" sx={{ pl: '2px' }}></img>
+      </Button>
+      <Box
+        sx={{
+          width: "80%",
+          height: "70%",
+          display: 'flex',
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          margin: '0 auto',
+          gap: 2,
+        }}
+      >
+        <Typography variant="h4" gutterBottom sx={{ color: "black" }}>비밀번호 재설정</Typography>
+        <Box sx={{ padding: '20px' }}>
+          <form onSubmit={handleReset}>
+            <Typography sx={{ color: "black", marginBottom: '-10px' }}>새 비밀번호</Typography>
+            <UserTextField
+              type="password"
+              fullWidth
+              margin="normal"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+            />
+            <Typography sx={{ color: "black", marginBottom: '-10px' }}>비밀번호 확인</Typography>
+            <UserTextField
+              type="password"
+              fullWidth
+              margin="normal"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+            <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '40px' }}>
+              <Button variant="contained" color="primary" fullWidth type="submit"
+                sx={{
+
+                  backgroundColor: '#4B6044',
+                  borderRadius: '10px',
+                  width: "60%",
+                  height: '40px',
+                }}>
+                비밀번호 변경
+              </Button>
+            </Box>
+          </form>
         </Box>
-      </form>
-      </Box>
       </Box>
     </Box>
   );

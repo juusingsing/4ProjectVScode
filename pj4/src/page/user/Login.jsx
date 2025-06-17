@@ -59,6 +59,7 @@ const Login = () => {
       sx={{
         maxWidth: "360px",
         width: "100%",
+        height:'100%',
         display: 'flex',
         flexDirection: "column",
         justifyContent: "center",
@@ -95,6 +96,7 @@ const Login = () => {
           justifyContent: "center",
           alignItems: "center",
           margin: '0 auto',
+          marginTop:'30px',
           gap: 3,
           paddingBottom:'30px'
         }}

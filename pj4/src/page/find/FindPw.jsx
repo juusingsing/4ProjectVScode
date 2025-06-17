@@ -155,8 +155,6 @@ const FindPw = () => {
         onClick={() => navigate(-1)}
         sx={{
           display: 'flex',
-          position: 'absolute',
-          top: '10px',
           justifyContent: 'center',
           borderRadius: '10px',
           height: '35px',
@@ -164,6 +162,7 @@ const FindPw = () => {
           width: '35px',
           marginTop: '15px',
           marginLeft: "15px",
+          marginBottom: "20px",
           '&:hover': {
             backgroundColor: '#363636'
           },
@@ -182,11 +181,11 @@ const FindPw = () => {
           alignItems: "center",
           margin: '0 auto',
           gap: 2,
-          marginTop: '70px',
+
           paddingBottom: '120px'
         }}
       >
-        <Typography variant="h4" gutterBottom sx={{ marginTop: '20px', top: '100px', color: "black" }}>비밀번호 찾기</Typography>
+        <Typography variant="h4" gutterBottom sx={{ color: "black" }}>비밀번호 찾기</Typography>
         {/* ✅ 성공 시 메시지 표시 */}
         {findSuccess ? (
           <>
