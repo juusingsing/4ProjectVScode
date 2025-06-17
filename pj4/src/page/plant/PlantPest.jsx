@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useCmDialog } from "../../cm/CmDialogUtil";
-import { useSearchParams } from "react-router-dom";
 import { FaCamera } from "react-icons/fa";
 
 import {
@@ -17,7 +16,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import dayjs from "dayjs";
 //훅
 import {
   useSavePestInfoMutation,
@@ -223,7 +223,8 @@ const PlantPest = () => {
   const [savePestInfo] = useSavePestInfoMutation(); // 등록용
   const [updatePestLogs] = useUpdatePestLogsMutation(); // 수정용
 
-  const [plantId] = useState(9); //동적으로 가져오게 수정해야함
+  const [searchParams] = useSearchParams();
+  const plantId = searchParams.get("plantId"); // 식물아이디 plantId parm에 저장
 
   // 중앙에서 탭 상태를 관리합니다.
   // const [currentTab, setCurrentTab] = useState(3); // 일조량 탭이 기본 선택
@@ -237,7 +238,6 @@ const PlantPest = () => {
   const [deletePestLogs] = useDeletePestLogsMutation(); // 로그 삭제용
   const { data: plantInfo } = usePlantInfoQuery(plantId);
 
-  const [searchParams] = useSearchParams();
 
   const [editingLog, setSelectedLog] = useState(null);
   const [editStatus, setStatus] = useState("");

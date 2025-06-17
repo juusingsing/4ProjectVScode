@@ -39,7 +39,11 @@ import {
   useAlarmAllUpdateMutation,
 } from "../../features/alarm/alarmApi";
 //훅
-import { usePlantInfoQuery } from "../../features/plant/plantApi";
+import {
+  usePlantInfoQuery,
+  useWaterCreateMutation,
+  useWaterListQuery,
+} from "../../features/plant/plantApi";
 
 import { useSelector } from "react-redux";
 import Days from "react-calendar/dist/MonthView/Days";
@@ -59,7 +63,9 @@ const WateringContent = ({
   alarmAllUpdateSend,
   toggleAlarm,
   user,
-  wateringLogs,
+  waterList,
+  waterAdd,
+  formatDate,
 
 }) => {
   return (
@@ -156,7 +162,7 @@ const WateringContent = ({
       <Typography className="section-title">💧 물주기 기록</Typography>
 
       <Box className="water-log-action">
-        <Button variant="contained" className="watered-button">
+        <Button onClick={() => waterAdd()} variant="contained" className="watered-button">
           물 줬어요!
         </Button>
       </Box>
@@ -173,14 +179,14 @@ const WateringContent = ({
           </IconButton>
         </Box>
 
-        {!wateringLogs || wateringLogs.length === 0 ? (
+        {!waterList || waterList.length === 0 ? (
           <Typography>일지가 없습니다.</Typography>
         ) : (
-          wateringLogs.map((log) => (
+          waterList.map((log) => (
             <Box key={log.plantWateringId} className="log-entry">
               <Box className="log-details">
                 <Typography>
-                  {log.wateringDate} | {log.soilCondition}
+                  {formatDate(log.waterDt)} || {log.soilCondition}
                 </Typography>
                 <Typography>{log.wateringMemo}</Typography>
               </Box>
@@ -218,6 +224,12 @@ const PlantWatering = () => {
   const [alarmToggle, setAlarmToggle] = useState(true);
   const newFormattedTimes = [];
 
+  const [WaterCreate] = useWaterCreateMutation({});
+  const { data: waterData, error: waterError, isLoading:WaterLoading, refetch:waterListLoad } = useWaterListQuery({
+    plantId: plantId, // plantId 아이디조회
+  });
+  const [waterList, setWaterList] = useState([]);
+
   const pathToTabIndex = {
     "/plant/PlantWatering.do": 0,
     "/plant/PlantSunlighting.do": 1,
@@ -225,7 +237,7 @@ const PlantWatering = () => {
     "/plant/PlantPest.do": 3,
   };
 
-  const [currentTab, setCurrentTab] = useState();
+  const [currentTab, setCurrentTab] = useState(0);
 
   const tabIndexToPath = [
     `/PlantWatering.do?plantId=${plantId}`,
@@ -241,7 +253,18 @@ const PlantWatering = () => {
 
   useEffect(() => {
     alarmSet();
+    waterListLoad();
   }, []);
+
+  // 불러온데이터확인
+  useEffect(() => {
+    console.log("plantInfo : ", plantInfo);
+  }, [plantInfo]);
+
+  useEffect(() => {
+    console.log("waterData : ", waterData);
+    setWaterList(waterData);
+  }, [waterData]);
 
   // 페이지가 바뀌면 selectedTab도 바뀌도록 설정
   useEffect(() => {
@@ -385,6 +408,8 @@ const PlantWatering = () => {
       const response = await AlarmCreate(data).unwrap();
       console.log("응답 내용 >>", response); // 여기에 찍히는 걸 확인해야 해!
       alert("등록성공ㅎㅎㅎ");
+      
+
     } catch (error) {
       console.error("요청 실패:", error);
       alert("등록실패!!!!!!!!!!");
@@ -422,6 +447,27 @@ const PlantWatering = () => {
       showAlert("알람 상태 업데이트 실패");
     }
   };
+
+  const waterAdd = async () => {
+    console.log("waterAdd 실행");
+    // const formData = new FormData();
+    // formData.append("plantId", plantId);
+    const data = {
+      plantId: plantId, // << 변수값 넣으면됨
+    };
+
+    try {
+      const response = await WaterCreate(data).unwrap();
+      console.log("응답 내용 >>", response); // 여기에 찍히는 걸 확인해야 해!
+      alert("등록성공ㅎㅎㅎ");
+
+      waterListLoad();  // 페이지 다시렌더링유도
+
+    } catch (error) {
+      console.error("요청 실패:", error);
+      alert("등록실패!!!!!!!!!!");
+    }
+  }
 
   const toggleAlarm = (alarmId) => {
     console.log("toggleAlarm 실행");
@@ -466,12 +512,32 @@ const PlantWatering = () => {
     );
   };
 
+  const formatDate = (isoString) => {
+    if (!isoString) return '';
+
+    const date = new Date(isoString);
+
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1; // 0부터 시작하니 +1
+    const day = date.getDate();
+
+    let hours = date.getHours();
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+
+    hours = hours % 12;
+    if (hours === 0) hours = 12; // 12시 표시 처리
+
+    return `${year}.${month}.${day}  ${ampm} ${hours.toString().padStart(2, '0')}:${minutes}`;
+  };
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
 
       <Box className="plant-care-container">
         {/*식물 정보 수정 버튼*/}
-        <Button variant="contained" className="edit-top-button">
+        <Button onClick={()=>navigate(`/PlantUpdate.do?plantId=${plantId}`)} variant="contained" className="edit-top-button">
           수정
         </Button>
 
@@ -540,7 +606,9 @@ const PlantWatering = () => {
           alarmAllUpdateSend={alarmAllUpdateSend} 
           toggleAlarm={toggleAlarm}
           user={user}    
-          wateringLogs={plantInfo?.data && plantInfo.data.length > 0 ? plantInfo.data[0].wateringLogs : []} // 물주기 로그 데이터    
+          waterList={waterList} // 물주기 로그 데이터    
+          waterAdd={waterAdd}
+          formatDate={formatDate}
           />
         </Box>
       </Box>

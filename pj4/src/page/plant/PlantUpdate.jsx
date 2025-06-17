@@ -13,7 +13,7 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { FaCamera } from "react-icons/fa";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import "../../css/plantCreate.css";
 //훅
 import {
@@ -26,7 +26,8 @@ import Combo from "../combo/combo";
 import DefaultImage from "../../image/default-plant.png";
 
 const PlantUpdate = ({ mode = "create" }) => {
-  const { plantId } = useParams();
+  const [searchParams] = useSearchParams();
+  const plantId = searchParams.get("plantId"); // 식물아이디 plantId parm에 저장
   const isEdit = mode === "edit" || !!plantId;
 
   const navigate = useNavigate();
@@ -110,6 +111,7 @@ const PlantUpdate = ({ mode = "create" }) => {
       if (isEdit) {
         await updatePlant(formData).unwrap();
         showAlert("수정 성공");
+        navigate(-1);
       } else {
         const result = await createPlant(formData).unwrap();
         showAlert("등록 성공");
@@ -128,7 +130,7 @@ const PlantUpdate = ({ mode = "create" }) => {
       try {
         await deletePlant({ plantId: plantId }).unwrap();
         showAlert("삭제 성공");
-        navigate("/PlantSunlighting.do");
+        navigate("/home.do?tab=N02");
       } catch {
         showAlert("삭제 실패");
       }

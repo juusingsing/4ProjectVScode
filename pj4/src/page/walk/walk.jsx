@@ -23,25 +23,26 @@ const chunkArray = (array, size) => {
 const Main = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const animalId = searchParams.get('id');    // 동물아이디 animalId parm에 저장
+  const [walkId, setWalkId] = useState();
+  const animalId = searchParams.get('animalId');    // 동물아이디 animalId parm에 저장
   const { data: IdResult, refetch : refetch2, isLoading: isLoading2 } = usePetWalkLoadQuery({
     animalId: animalId,    // < 동물 아이디로 가장 최근 산책아이디 조회해올거임
   });
   const [images, setImages] = useState([]);
-  const [walkId, setWalkId] = useState();
   const { data: imgResult, refetch, isLoading } = usePetImgLoadQuery({
     postFileKey: walkId,  // 가장최근 산책아이디
     postFileCategory: "WAL"
-  });
+  }, {skip: !walkId});
 
   const [walkInfoview, setWalkInfoview] = useState();
   const { data: walkInfo, refetch: currentWalk, isLoading: iscurrentLoading } = usePetCurrentWalkLoadQuery({
     walkId: walkId,  // 가장최근 산책아이디
-  }); 
+  }, {skip: !walkId}); 
 
   useEffect(() => {
-    refetch2();
-    if (IdResult != null) {
+    console.log("IdResult" , IdResult);
+    if (IdResult != null && IdResult != undefined &&
+      IdResult?.[0]?.walkId != null && IdResult?.[0]?.walkId != undefined) {
       const newWalkId = IdResult[0].walkId;
       console.log("11111111111  :" +newWalkId);
       setWalkId(newWalkId);
@@ -118,7 +119,7 @@ const Main = () => {
           style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
         <button
-          onClick={() => navigate('/pet/walkRecord.do?id='+animalId)}
+          onClick={() => navigate('/pet/walkRecord.do?animalId='+animalId)}
                                                 // 동물아이디   사진찍을때쓸 다음 워크아이디저장
           style={{
             position: "absolute",

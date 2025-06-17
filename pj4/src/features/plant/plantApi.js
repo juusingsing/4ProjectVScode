@@ -223,6 +223,23 @@ export const plantApi = createApi({
       refetchOnMountOrArgChange: true,
       staleTime: 0,
     }),
+    WaterCreate: builder.mutation({
+      query: (data) => ({
+        url: '/plant/waterCreate.do',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+    WaterList: builder.query({
+      query: (data) => ({
+        url: '/plant/waterList.do',
+        method: 'POST',
+        body: data,
+      }),
+      keepUnusedDataFor: 0, // = cacheTime: 0
+      refetchOnMountOrArgChange: true,
+      staleTime: 0, // 이건 RTK Query에서 직접 사용되진 않음. react-query에서 쓰는 용어
+    }),
   }),
 });
 
@@ -247,4 +264,6 @@ export const {
   useGetPlantQuery, // 식물 단건 조회
   useGetPlantListQuery, // 식물 목록 조회
   useDeletePlantMutation, // 식물 삭제
+  useWaterCreateMutation, // 물주기
+  useWaterListQuery,      //물주기 조회
 } = plantApi;

@@ -169,7 +169,8 @@ const PlantSunlighting = () => {
   const [saveSunlightInfo] = useSaveSunlightInfoMutation(); // 등록용
   const [updateSunlightLogs] = useUpdateSunlightLogsMutation(); // 수정용
 
-  const [plantId] = useState("1"); // 실제 값은 API에서 받아야 함
+  const [searchParams] = useSearchParams();
+  const plantId = searchParams.get("plantId"); // 식물아이디 plantId parm에 저장
   const [plantName] = useState("몬스테라");
   const [purchaseDate] = useState("2023-01-15");
   // const [currentTab, setCurrentTab] = useState(1); // 분갈이 탭
@@ -181,8 +182,6 @@ const PlantSunlighting = () => {
   const [sunlightLogs, setSunlightLogs] = useState([]);
   const [deleteSunlightLogs] = useDeleteSunlightLogsMutation();
   const { data: plantInfo } = usePlantInfoQuery(plantId);
-
-  const [searchParams] = useSearchParams();
 
   const [editingLog, setSelectedLog] = useState(null); // 현재 수정 중인 로그
   const [editStatus, setStatus] = useState(""); // 수정할 상태
@@ -213,13 +212,12 @@ const PlantSunlighting = () => {
     setMemo(log.sunlightMemo); // 메모 채우기
   };
 
-  const id = searchParams.get("id");
   // const { data, isLoading } = useSunlightAlistQuery({ plantSunlightingId: id });
   const {
     data: fetchedLogs,
     error,
     refetch,
-  } = useSunlightLogsQuery({ plantId: 1 });
+  } = useSunlightLogsQuery({ plantId: plantId });
 
   const handleTabChange = (event, newValue) => {
     setCurrentTab(newValue);
@@ -277,7 +275,7 @@ const PlantSunlighting = () => {
           setSelectedLog(null);
 
           const plantData = new FormData();
-          plantData.append("plantId", 1);
+          plantData.append("plantId", plantId);
           refetch();
         })
         .catch((err) => {
