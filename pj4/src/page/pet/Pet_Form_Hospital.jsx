@@ -481,7 +481,7 @@ const Pet_Form_Hospital = () => {
               textTransform: 'none',
             }}
             onClick={() => {
-              window.location.href = '/pet/petFormUpdate.do';
+              navigate(`/pet/petFormUpdate.do?animalId=${animalId}`);
             }}
           >
             수정
