@@ -35,7 +35,7 @@ const Pet_Form_Update = () => {
   const [imageFile, setImageFile] = useState(null);
   const [existingImageUrl, setExistingImageUrl] = useState('');
   const [fileUrl, setFileUrl] = useState();
-  
+  const normalizedFileUrl = fileUrl?.replace(/\\/g, '/');
   console.log("동물 ID 확인:", animalId); // → 8이어야 정상
   const { showAlert } = useCmDialog();
   // RTK Query mutation 훅
@@ -161,7 +161,7 @@ const Pet_Form_Update = () => {
        <Avatar
           src={
             fileUrl
-              ? 'http://localhost:8081'+fileUrl
+              ? 'http://localhost:8081/'+ fileUrl
               : imageFile
                 ? URL.createObjectURL(imageFile)
                 : existingImageUrl
