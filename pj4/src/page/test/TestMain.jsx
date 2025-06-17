@@ -36,7 +36,7 @@ const handleStart = async () => {
         
         <button
             className='back-test-button'
-            onClick={() => navigate(`/`)}
+            onClick={() => navigate(-1)}
           >
             <img src={back} alt="" sx={{ pl: '2px' }}></img>
           </button>

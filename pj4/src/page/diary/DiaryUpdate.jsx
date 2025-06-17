@@ -144,7 +144,7 @@ const DiaryUpdate = () => {
       <Box sx={{ maxWidth: 800 }}>
         <Box mt={3} mb={3} className='diary-top-section'>
           <Button
-            onClick={() => navigate(`/diary/view.do?id=${id}`)}
+            onClick={() => navigate(-1)}
             // variant="contained"
             sx={{
               display: 'flex',

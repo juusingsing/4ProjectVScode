@@ -40,7 +40,7 @@ const DiaryView = () => {
                 <>
                     <Box className='diary-top-section'>
                         <Button
-                            onClick={() => navigate('/diary/list.do')}
+                            onClick={() => navigate(-1)}
                             sx={{
                                 display: 'flex',
                                 justifyContent: 'center',

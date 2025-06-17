@@ -115,7 +115,7 @@ const DiaryCreate = () => {
       <Box sx={{ maxWidth: 800 }}>
         <Box mt={3} mb={3} className='diary-top-section'>
           <Button
-            onClick={() => navigate('/diary/list.do')}
+            onClick={() => navigate(-1)}
             // variant="contained"
             sx={{
               display: 'flex',
