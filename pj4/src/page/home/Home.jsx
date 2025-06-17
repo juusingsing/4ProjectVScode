@@ -21,11 +21,10 @@ const Home = () => {
   const location = useLocation();
   const [activeTab, setActiveTab] = useState("N01"); // "N01": 동물, "N02": 식물
   const [sortBy, setSortBy] = useState("name"); // 정렬 기준: 'name' (이름순), 'date' (등록일순)
-  const [sortOrder, setSortOrder] = useState("DESC"); // 정렬 순서: 'ASC' (오름차순), 'DESC' (내림차순)
+  const [sortOrder, setSortOrder] = useState("ASC"); // 정렬 순서: 'ASC' (오름차순), 'DESC' (내림차순)
 
   const user = useSelector((state) => state.user.user);
   const currentFrontendUserId = user ? user.users_id : null;
-  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:8080";
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -38,10 +37,11 @@ const Home = () => {
     }
   }, [location.search]);
 
+
   const queryParams = {
     usersId: currentFrontendUserId,
     sortField: activeTab === "N01"
-      ? (sortBy === "name" ? "ANIMAL_NAME" : "CREATE_DT") 
+      ? (sortBy === "name" ? "ANIMAL_NAME" : "CREATE_DT")
       : (sortBy === "name" ? "PLANT_NAME" : "PLANT_PURCHASE_DATE"),
     sortOrder: sortOrder,
   };
@@ -68,13 +68,15 @@ const Home = () => {
   // 정렬 기준 변경 핸들러
   const handleSortChange = (event) => {
     const newSortBy = event.target.value;
-    if (sortBy === newSortBy) {
-      setSortOrder(prev => prev === "ASC" ? "DESC" : "ASC");
-    } else {
       setSortBy(newSortBy);
       setSortOrder("ASC");
-    }
   };
+
+  useEffect(() => {
+    if (plantData != 0) {
+      console.log("확인하고 싶은", plantData);
+    }
+  }, [plantData])
 
   // 탭 변경 핸들러
   const handleTabChange = useCallback((selectedTabValue) => {
@@ -174,17 +176,21 @@ const Home = () => {
           {/* 실제 아이템 렌더링 */}
           {currentData?.data && currentData.data.length > 0 ? (
             currentData.data.map((item) => {
+              console.log("확인해야 할 PostFiles 콘솔", item.postFiles); 
+
               const itemId = activeTab === "N01" ? item.animalId : item.plantId;
               const itemName = activeTab === "N01" ? item.animalName : item.plantName;
-              const itemFileId = item.fileId;
 
-              const imageUrl = itemFileId
-                ? `${process.env.REACT_APP_API_BASE_URL}/api/file/imgDown.do?fileId=${item.fileId}`
-                : "https://placehold.co/100x90/FFD700/FFFFFF?text=No+Image";
+              const imageUrl =
+                item.postFiles && item.postFiles.length > 0 && item.postFiles[0].postFileId
+                  ? `${process.env.REACT_APP_API_BASE_URL}/file/imgDown.do?fileId=${item.postFiles[0].postFileId}`
+                  : "https://placehold.co/100x90/FFD700/FFFFFF?text=No+Image";
+
               const itemLink =
                 activeTab === "N01"
                   ? `/pet/petFormHospital.do?animalId=${itemId}`
                   : `/plantwatering.do?plantId=${itemId}`;
+
 
               return (
                 <Link to={itemLink} key={itemId} style={{ textDecoration: "none", color: "inherit" }}>
@@ -207,13 +213,12 @@ const Home = () => {
                       sx={{
                         width: "100%",
                         height: "70px",
-                        bgcolor: "#eee",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         mb: 1,
                         backgroundImage: `url(${imageUrl})`,
-                        backgroundSize: "cover",
+                        backgroundSize:'cover',
                         backgroundPosition: "center",
                         textDecoration: "none"
                       }}
@@ -230,10 +235,7 @@ const Home = () => {
             })
           ) : (
             // 데이터가 없을 때 "데이터가 없습니다" 메시지를 그리드 내의 독립적인 Box로 렌더링
-            <Box sx={{ gridColumn: 'span 4', textAlign: 'center', mt: 2, mb: 2 }}>
-              <Typography variant="body2" color="text.secondary">
-                데이터가 없습니다.
-              </Typography>
+            <Box sx={{ gridColumn: 'span 4', textAlign: 'center'}}>
             </Box>
           )}
 
