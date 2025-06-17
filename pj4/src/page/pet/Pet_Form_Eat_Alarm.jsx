@@ -113,7 +113,8 @@ const Pet_Form_Eat_Alarm = () => {
   });         // 그 동물아이디의 정보 가져오기 ( 헤더 삽입할 데이터 조회 )
   const [imageFile, setImageFile] = useState(null);
   const [existingImageUrl, setExistingImageUrl] = useState('');
-  const safeUrl = existingImageUrl || '';
+  const [fileUrl, setFileUrl] = useState();
+    
 
   const alarmNameRef = useRef();
   const [eatType, setEatType] = useState('');   // 선택된 먹이
@@ -131,10 +132,6 @@ const Pet_Form_Eat_Alarm = () => {
       // 알람아이디없으면 catch 로감
     try {
       const response = await refetch();
-      if(response?.data?.data.length == 0) {
-        // alert("데이터없음");
-        return;
-      };
       console.log('aaaaaaa', response);
       console.log("response.data:", response.data);
       console.log("response.data.success:", response.data.success, typeof response.data.success);
@@ -255,9 +252,12 @@ const tabIndexToPath = [
       setAnimalAdoptionDate(fetchedPet.animalAdoptionDate ? dayjs(fetchedPet.animalAdoptionDate) : null);
       
       // 서버에서 받아온 이미지 URL 저장
-      
+     console.log("fileUrl", fileUrl);  
     if (fetchedPet.fileUrl) {
-      setExistingImageUrl(fetchedPet.fileUrl);  // 이미 전체 URL임
+      setFileUrl(fetchedPet.fileUrl); // ✅ 이거 추가
+      console.log("fileUrl", fetchedPet.fileUrl);
+    } else {
+      setExistingImageUrl('');
     }
   }
 
@@ -304,6 +304,8 @@ const tabIndexToPath = [
       const response = await AlarmCreate(data).unwrap();
       console.log("응답 내용 >>", response); // 여기에 찍히는 걸 확인해야 해!
       alert("등록성공ㅎㅎㅎ");
+
+      await alarmSet();
 
     } catch (error) {
       console.error("요청 실패:", error);
@@ -440,8 +442,6 @@ const tabIndexToPath = [
               {/* 오른쪽 이미지 */}
         <Box sx={{ position: 'relative', left: '35px', top: 8 }}>
           <Box
-            src={imageFile ? URL.createObjectURL(imageFile) : existingImageUrl}
-            key={imageFile ? imageFile.name : existingImageUrl} // key로 강제 리렌더링 유도
             sx={{
               width: 100,
               height: 76,
@@ -455,7 +455,11 @@ const tabIndexToPath = [
             }}
           >
             <img
-              
+              src={
+                fileUrl
+                  ? 'http://localhost:8081'+fileUrl
+                  : imageFile
+              }
               style={{
                 width: '100%',
                 height: '100%',

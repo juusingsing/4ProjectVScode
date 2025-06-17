@@ -1,3 +1,5 @@
+
+
 import React, { useState, useRef, useEffect } from 'react';
 import {
   Box, Typography, InputBase, Button,
@@ -44,8 +46,10 @@ const Pet_Form_Update = () => {
   });
 
   const handleImageChange = (e) => {
+    console.log("선택한파일 : ", e.target.files?.[0]);
     const file = e.target.files?.[0];
     if (file) setImageFile(file);
+    setFileUrl(null);
   };
   useEffect(() => {
     if (data?.data) {
@@ -59,7 +63,6 @@ const Pet_Form_Update = () => {
       console.log("fileUrl", fileUrl);
       if (fetchedPet.fileUrl) {
         setFileUrl(fetchedPet.fileUrl); // ✅ 이거 추가
-        setExistingImageUrl(`/uploads/pet/2025-06-16/20250616_174717164_376505274455000____.jpg`);
         console.log("fileUrl", fetchedPet.fileUrl);
       } else {
         setExistingImageUrl('');
@@ -86,20 +89,21 @@ const Pet_Form_Update = () => {
     try {
       const formData = new FormData();
       console.log("animalId", animalId);
-      // Pet 객체를 JSON 문자열로 직렬화해서 data라는 key에 넣기
-      const petData = {
-        animalId, // 0이하(0, null, undefined)는 제외
-        animalName: animalName,
-        animalSpecies: animalSpecies,
-        animalMemo: animalMemo,
-        gender,
-        animalAdoptionDate: animalAdoptionDate?.format('YYYY-MM-DD'),
-        birthDate: birthDate?.format('YYYY-MM-DD'),
-      };
-      formData.append('data', new Blob([JSON.stringify(petData)], { type: 'application/json' }));
+      console.log("animalName", animalName);
+      console.log("animalSpecies", animalSpecies);
+      console.log("animalMemo", animalMemo);
+
+
+      formData.append('animalId', animalId);
+      formData.append('animalName', animalName);
+      formData.append('animalSpecies', animalSpecies);
+      formData.append('animalMemo', animalMemo);
+      formData.append('gender', gender);
+      formData.append('animalAdoptionDate', animalAdoptionDate.format("YYYY-MM-DD"));
+      formData.append('birthDate', birthDate.format("YYYY-MM-DD"));
 
       if (imageFile) {
-        formData.append('imageFile', imageFile);
+        formData.append('files', imageFile);
       }
 
       // RTK Query mutation 호출
@@ -154,9 +158,11 @@ const Pet_Form_Update = () => {
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 2, position: 'relative' }}>
        <Avatar
           src={
-            imageFile
-              ? URL.createObjectURL(imageFile)
-              : existingImageUrl
+            fileUrl
+              ? 'http://localhost:8081'+fileUrl
+              : imageFile
+                ? URL.createObjectURL(imageFile)
+                : existingImageUrl
           }
           sx={{ width: 100, height: 100 }}
         />
