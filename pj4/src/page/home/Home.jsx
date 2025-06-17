@@ -125,20 +125,18 @@ const Home = () => {
       </Box>
 
       {/* TabCombo 컴포넌트 삽입 */}
-      <Box sx={{ mt: 2 }}>
+      <Box >
         <TabCombo onChange={handleTabChange} defaultValue={activeTab} />
       </Box>
 
       <Box sx={{ width: "100%", display: "flex", justifyContent: "flex-end", mt: '10px' }}>
         {/* 정렬 셀렉트 박스 */}
         <FormControl variant="outlined" size="small" sx={{ minWidth: 120, backgroundColor: 'white', borderRadius: '8px', boxShadow: '0px 2px 4px rgba(0,0,0,0.1)' }}>
-          <InputLabel id="sort-by-label">정렬</InputLabel>
           <Select
             labelId="sort-by-label"
             id="sort-by-select"
             value={sortBy}
             onChange={handleSortChange}
-            label="정렬"
           >
             <MenuItem value="name">이름 순</MenuItem>
             <MenuItem value="date">등록일 순</MenuItem>
