@@ -36,7 +36,14 @@ const DiaryCreate = () => {
   const { showAlert } = useCmDialog();
 
   const navigate = useNavigate();
+  const maxFile=5;
   const handleFileChange = (e) => {
+    const newFiles = Array.from(e.target.files);
+    const totalFiles = files.length + newFiles.length;
+    if(totalFiles > maxFile){
+      showAlert(`사진은 최대 ${maxFile}장까지 업로드 할 수 있습니다.`);
+      return;
+    }
     setFiles((prevFiles) => [...prevFiles, ...Array.from(e.target.files)]);
   };
   const handleFileDelete = (indexToRemove) => {
@@ -51,8 +58,8 @@ const DiaryCreate = () => {
       titleRef.current?.focus();
       return;
     }
-    if (!CmUtil.maxLength(title, 100)) {
-      showAlert("제목을 최대 100자까지 입력할 수 있습니다.");
+    if (!CmUtil.maxLength(title, 30)) {
+      showAlert("제목을 최대 30자까지 입력할 수 있습니다.");
       titleRef.current?.focus();
       return;
     }
@@ -70,8 +77,8 @@ const DiaryCreate = () => {
       showAlert("내용을 입력해주세요", () => { contentRef?.current?.focus(); });
       return;
     }
-    if (!CmUtil.maxLength(content, 2000)) {
-      showAlert("내용은 최대 2000자까지 입력할 수 있습니다.",
+    if (!CmUtil.maxLength(content, 1000)) {
+      showAlert("내용은 최대 1000자까지 입력할 수 있습니다.",
         () => { contentRef?.current?.focus(); });
       return;
     }

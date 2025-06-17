@@ -38,8 +38,18 @@ const WriteCreate = () => {
     setWritingSortation(newValue);
   };
 
+
+   const maxFile = 5;
   const handleFileChange = (e) => {
-    setFiles((prevFiles) => [...prevFiles, ...Array.from(e.target.files)]);
+     const newFiles = Array.from(e.target.files);
+     const totalFiles = files.length + newFiles.length;
+      if (totalFiles > maxFile) {
+      showAlert(`사진은 최대 ${maxFile}장까지 업로드 할 수 있습니다.`);
+       e.target.value = null;
+      return;
+    }
+     setFiles((prevFiles) => [...prevFiles, ...newFiles]);
+     e.target.value = null;
   };
 
   const handleFileDelete = (indexToRemove) => {
@@ -74,23 +84,16 @@ const WriteCreate = () => {
     }
 
     // 제목 길이 체크
-    if (!CmUtil.maxLength(Title, 100)) {
-      showAlert("제목은 최대 100자까지 입력할 수 있습니다.");
-      writingTitleRef.current?.focus();
+    if (!CmUtil.maxLength(contentText, 50)) {
+      showAlert("제목은 최대 50자까지 입력할 수 있습니다.", () =>
+        writingTitleRef.current?.focus()
+      );
       return;
     }
 
     // 내용이 비어있는지 체크
     if (CmUtil.isEmpty(contentText)) {
       showAlert("내용을 입력해주세요.", () => editorRef.current?.focus());
-      return;
-    }
-
-    // 내용 길이 체크
-    if (!CmUtil.maxLength(contentText, 2000)) {
-      showAlert("내용은 최대 2000자까지 입력할 수 있습니다.", () =>
-        editorRef.current?.focus()
-      );
       return;
     }
 

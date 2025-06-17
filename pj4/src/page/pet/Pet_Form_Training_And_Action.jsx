@@ -1,3 +1,5 @@
+
+
 import React, { useState, useRef, useEffect } from 'react';
 import {
   Box,
@@ -115,7 +117,7 @@ const Pet_Form_Training_And_Action = () => {
   const [editId, setEditId] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [existingImageUrl, setExistingImageUrl] = useState('');
-  const safeUrl = existingImageUrl || '';
+  const [fileUrl, setFileUrl] = useState();
   console.log("동물 ID 확인:", animalId); // → 8이어야 정상
   const { data: comboData, isLoading: comboLoading } = useComboListByGroupQuery('Exercise');
   const [trainingTypeMap, setTrainingTypeMap] = useState({}); // codeId → codeName 매핑 객체
@@ -142,8 +144,11 @@ const Pet_Form_Training_And_Action = () => {
       // 서버에서 받아온 이미지 URL 저장
       
     if (fetchedPet.fileUrl) {
-      setExistingImageUrl(fetchedPet.fileUrl);  // 이미 전체 URL임
-    }
+        setFileUrl(fetchedPet.fileUrl); // ✅ 이거 추가
+        console.log("fileUrl", fetchedPet.fileUrl);
+      } else {
+        setExistingImageUrl('');
+      }
     }
     console.log("✅ RTK Query 응답 data:", data);
     console.log("existingImageUrl:", existingImageUrl);
@@ -366,8 +371,6 @@ const Pet_Form_Training_And_Action = () => {
              {/* 오른쪽 이미지 */}
       <Box sx={{ position: 'relative', left: '35px', top: 8 }}>
         <Box
-          src={imageFile ? URL.createObjectURL(imageFile) : existingImageUrl}
-          key={imageFile ? imageFile.name : existingImageUrl} // key로 강제 리렌더링 유도
           sx={{
             width: 100,
             height: 76,
@@ -381,7 +384,11 @@ const Pet_Form_Training_And_Action = () => {
           }}
         >
           <img
-            
+            src={
+              fileUrl
+                ? 'http://localhost:8081'+fileUrl
+                : imageFile
+            }
             style={{
               width: '100%',
               height: '100%',

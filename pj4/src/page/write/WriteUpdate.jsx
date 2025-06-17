@@ -72,8 +72,18 @@ const WriteUpdate = () => {
   const { showAlert, showConfirm } = useCmDialog();
   const navigate = useNavigate();
 
+
+    const maxFile = 5;
   const handleFileChange = (e) => {
-    setFiles((prevFiles) => [...prevFiles, ...Array.from(e.target.files)]);
+     const newFiles = Array.from(e.target.files);
+     const totalFiles = files.length + newFiles.length;
+      if (totalFiles > maxFile) {
+      showAlert(`사진은 최대 ${maxFile}장까지 업로드 할 수 있습니다.`);
+       e.target.value = null;
+      return;
+    }
+     setFiles((prevFiles) => [...prevFiles, ...newFiles]);
+     e.target.value = null;
   };
   const handleFileDelete = (indexToRemove) => {
     setFiles((prevFiles) =>

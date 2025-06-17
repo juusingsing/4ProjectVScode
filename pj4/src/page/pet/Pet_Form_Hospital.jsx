@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import {
   Box,
@@ -29,60 +30,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CheckBoxIcon from '@mui/icons-material/CheckBox'; // 체크된 박스 아이콘
 import { useComboListByGroupQuery } from '../../features/combo/combo';
 import { useGetPetByIdQuery } from '../../features/pet/petApi';
-const FormRow = ({ label, value = '', onChange, multiline = false, inputRef, fieldKey = '' }) => {
-  let backgroundColor = '#E0E0E0';
-  let border = '1px solid #ccc';
-  let borderRadius = '20px';
-  let textDecoration = 'none';
-  let fontWeight = 'normal';
-  let color = 'inherit';
-  let minHeight = undefined;
 
-  if (fieldKey === 'notes') {
-    backgroundColor = '#D9D9D9';
-    fontWeight = 'bold';
-    color = '#000';
-    minHeight = 80;
-  }
-
-  return (
-    <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 2 }}>
-      <Typography sx={{ width: '90px', fontSize: 14, fontWeight: 500, mt: multiline ? '6px' : 0, position: 'relative', left:30, top: 7 }}>
-        {label}
-      </Typography>
-      <InputBase
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={`${label} 입력`}
-        multiline={multiline}
-        inputRef={inputRef}
-        inputProps={{
-          style: {
-            padding: 0,
-            textAlign: 'center',
-            fontSize: '8px',
-            ...(multiline ? { paddingTop: 4 } : {}),
-          }
-        }}
-        sx={{
-          top: 7,
-          left: '20px',  
-          width: '70px',
-          height: '20px',
-          backgroundColor,
-          border,
-          borderRadius,
-          px: 1,
-          py: 1,
-          fontWeight,
-          textDecoration,
-          color,
-          ...(multiline && { minHeight }),
-        }}
-      />
-    </Box>
-  );
-};
 const FormRow1 = ({ label, value = '', onChange, multiline = false, inputRef, fieldKey = '' }) => {
   let backgroundColor = '#E0E0E0';
   let border = '1px solid #ccc';
@@ -233,8 +181,9 @@ const Pet_Form_Hospital = () => {
   const [treatmentTypeMap, setTreatmentTypeMap] = useState({}); // codeId → codeName 매핑 객체
   const [imageFile, setImageFile] = useState(null);
   const [existingImageUrl, setExistingImageUrl] = useState('');
-  const safeUrl = existingImageUrl || '';
-
+  const [fileUrl, setFileUrl] = useState();
+  
+  
   const tabIndexToPath = [
     `/pet/petFormHospital.do?animalId=${animalId}`,
     `/pet/petFormEatAlarm.do?animalId=${animalId}`,
@@ -252,9 +201,12 @@ const Pet_Form_Hospital = () => {
       setAnimalAdoptionDate(fetchedPet.animalAdoptionDate ? dayjs(fetchedPet.animalAdoptionDate) : null);
 
       // 서버에서 받아온 이미지 URL 저장
-
+      console.log("fileUrl", fileUrl);
       if (fetchedPet.fileUrl) {
-        setExistingImageUrl(fetchedPet.fileUrl);  // 이미 전체 URL임
+        setFileUrl(fetchedPet.fileUrl); // ✅ 이거 추가
+        console.log("fileUrl", fetchedPet.fileUrl);
+      } else {
+        setExistingImageUrl('');
       }
     }
     console.log("✅ RTK Query 응답 data:", data);
@@ -381,7 +333,7 @@ const Pet_Form_Hospital = () => {
     }
 
     formData.append('animalId', animalId);
-    formData.append('animalVisitDate', dayjs(animalVisitDate).format('YYYY-MM-DD'));
+    formData.append('animalVisitDate', animalVisitDate.format('YYYY-MM-DD'));
     formData.append('animalHospitalName', animalHospitalName);
     formData.append('animalMedication', animalMedication);
     formData.append('animalTreatmentType', animalTreatmentType);
@@ -483,8 +435,6 @@ const Pet_Form_Hospital = () => {
         {/* 오른쪽 이미지 */}
         <Box sx={{ position: 'relative', left: '35px', top: 8 }}>
           <Box
-            src={imageFile ? URL.createObjectURL(imageFile) : existingImageUrl}
-            key={imageFile ? imageFile.name : existingImageUrl} // key로 강제 리렌더링 유도
             sx={{
               width: 100,
               height: 76,
@@ -498,7 +448,11 @@ const Pet_Form_Hospital = () => {
             }}
           >
             <img
-
+              src={
+                fileUrl
+                  ? 'http://localhost:8081'+fileUrl
+                  : imageFile
+              }
               style={{
                 width: '100%',
                 height: '100%',
