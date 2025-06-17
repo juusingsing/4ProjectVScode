@@ -226,7 +226,7 @@ const Register = () => {
           height: '35px',
           minWidth: '0',
           width: '35px',
-          marginTop:"10px",
+          marginTop:"20px",
           marginLeft: "15px",
           marginBottom: "20px",
           '&:hover': {

@@ -2,11 +2,15 @@ import React, { useState, useRef } from 'react';
 import { useFindIdMutation } from '../../features/find/findApi';
 import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Box, Typography } from '@mui/material';
-import { useCmDialog } from '../../cm/CmDialogUtil';  
+import { useCmDialog } from '../../cm/CmDialogUtil';
 import { CmUtil } from '../../cm/CmUtil';
 import { useEffect } from 'react';
+import back from '../../image/back.png';
+import Background from '../../image/background.png';
+import UserTextField from '../design/UserTextField';
+
 const FindId = () => {
-  
+
   const [usersEmail, setUsersEmail] = useState('');
   const emailRef = useRef();
 
@@ -20,11 +24,11 @@ const FindId = () => {
   const [timer, setTimer] = useState(180); // 3분
   const timerRef = useRef();
 
-  
-    useEffect(() => {
-      return () => clearInterval(timerRef.current);
-    }, []);
-  
+
+  useEffect(() => {
+    return () => clearInterval(timerRef.current);
+  }, []);
+
   const formatTime = (seconds) => {
     const min = String(Math.floor(seconds / 60)).padStart(2, '0');
     const sec = String(seconds % 60).padStart(2, '0');
@@ -139,66 +143,157 @@ const FindId = () => {
   };
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 8, maxWidth: 400, mx: 'auto' }}>
-      <Typography variant="h4" gutterBottom>아이디 찾기</Typography>
+    <Box sx={{
+      maxWidth: "360px",
+      width: "100%",
+      height: "640px",
+      display: 'flex',
+      flexDirection: "column",
+      justifyContent: "center",
+      alignContent: "center",
+      margin: "auto",
+      backgroundImage: `url(${Background})`,
+      backgroundSize: 'cover'
+    }}>
+      <Button
+        onClick={() => navigate(-1)}
+        sx={{
+          display: 'flex',
+          position: 'absolute',
+          top: '10px',
+          justifyContent: 'center',
+          borderRadius: '10px',
+          height: '35px',
+          minWidth: '0',
+          width: '35px',
+          marginTop: '11px',
+          marginLeft: "15px",
+          '&:hover': {
+            backgroundColor: '#363636'
+          },
+          backgroundColor: 'rgba(54, 54, 54, 0.4)'
 
-      {!showResult && (
-        <>
-          
-          <TextField label="이메일" type="email" fullWidth margin="normal" value={usersEmail} inputRef={emailRef}
-            onChange={(e) => {
-              setUsersEmail(e.target.value);
-              setIsEmailVerified(false);
-              setEmailSent(false);
-              setEmailCode('');
-            }} />
-          <Button onClick={handleSendEmailCode} variant="outlined" fullWidth sx={{ mt: 1 }}>인증번호 전송</Button>
+        }}
+      >
+        <img src={back} alt="" sx={{ pl: '2px' }}></img>
+      </Button>
+      <Box
+        sx={{
+          backgroundColor: "rgba(34, 29, 29, 0.42)",
+          width: "80%",
+          height: "70%",
+          display: 'flex',
+          flexDirection: "column",
+          // justifyContent: "center",
+          alignItems: "center",
+          margin: '0 auto',
+          gap: 2,
+          marginTop:'20px',
+          paddingBottom: '70px'
+        }}
+      >
 
-          {emailSent && (
-            <>
-              <Typography variant="body2" color="error" sx={{ mt: 1 }}>
-                남은 시간: {formatTime(timer)}
-              </Typography>
-              <TextField label="인증번호 입력" fullWidth margin="normal" value={emailCode}
+
+        <Typography variant="h4" gutterBottom sx={{ marginTop: '20px', top: '100px', color: "white" }}>아이디 찾기</Typography>
+
+        {!showResult && (
+          <>
+            <Box sx={{ width: "90%" }}>
+              <Typography sx={{ color: "white", marginBottom:'-10px'}}>이메일</Typography>
+
+              <UserTextField
+                type="email"
+                fullWidth
+                margin="normal"
+                value={usersEmail}
+                inputRef={emailRef}
+                onChange={(e) => {
+                  setUsersEmail(e.target.value);
+                  setIsEmailVerified(false);
+                  setEmailSent(false);
+                  setEmailCode('');
+                }} />
+            </Box>
+            <Button onClick={handleSendEmailCode}
+              fullWidth
+              variant="contained"
+              sx={{
+                backgroundColor: '#889F7F',
+                borderRadius: '10px',
+                width: "150px"
+              }}
+            >인증번호 전송</Button>
+
+            {emailSent && (
+              <>
+                <Typography variant="body2" color="error" sx={{ mt: 1 }}>
+                  남은 시간: {formatTime(timer)}
+                </Typography>
+                <Box sx={{ width: "90%" }}>
+                <Typography sx={{ color: "white" }}>인증번호 확인</Typography>
+                <UserTextField
+                fullWidth margin="normal" 
+                value={emailCode}
                 onChange={(e) => setEmailCode(e.target.value)} />
-              <Button onClick={handleVerifyEmailCode} variant="contained" color="success" fullWidth>
-                인증번호 확인
-              </Button>
-            </>
-          )}
+                </Box>
+                <Button onClick={handleVerifyEmailCode}
+                  variant="contained"
+                  fullWidth
+                  sx={{
+                    backgroundColor: '#889F7F',
+                    borderRadius: '10px',
+                    width: "150px"
+                  }}>
+                  인증번호 확인
+                </Button>
+                
+              </>
+            )}
 
 
-          <Button onClick={handleFindIdClick} variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
-            아이디 찾기
-          </Button>
-          
-        </>
-      )}
+            <Button
+              onClick={handleFindIdClick}
+              variant="contained"
+              fullWidth
+              sx={{
+                position: 'absolute',
+                bottom: '80px',
+                backgroundColor: '#4B6044',
+                borderRadius: '10px',
+                width: "60%",
+                height: '40px',
+              }}>
+              아이디 찾기
+            </Button>
 
-      {/* 결과 출력부 */}
-      {showResult && foundId && (
-        <>
-          <Typography variant="h6" sx={{ mt: 4 }}>
-            회원님의 아이디는 다음과 같습니다:
-          </Typography>
-          <Box sx={{ mt: 2 }}>
-            <Typography variant="body1" sx={{ color: 'black', fontWeight: 'bold' }}>
-              아이디 : {foundId.usersId}
+          </>
+        )}
+
+        {/* 결과 출력부 */}
+        {showResult && foundId && (
+          <>
+            <Typography variant="h6" sx={{ mt: 4 }}>
+              회원님의 아이디는 다음과 같습니다:
             </Typography>
-            <Typography variant="body1" sx={{ color: 'black', fontWeight: 'bold', mt: 1 }}>
-              가입일자 : {foundId.createDt}
-            </Typography>
-          </Box>
-          <Button
-            onClick={() => navigate('/user/login.do')}
-            variant="contained"
-            fullWidth
-            sx={{ mt: 3 }}
-          >
-            로그인
-          </Button>
-        </>
-      )}
+            <Box sx={{ mt: 2 }}>
+              <Typography variant="body1" sx={{ color: 'white', fontWeight: 'bold' }}>
+                아이디 : {foundId.usersId}
+              </Typography>
+              <Typography variant="body1" sx={{ color: 'white', fontWeight: 'bold', mt: 1 }}>
+                가입일자 : {foundId.createDt}
+              </Typography>
+            </Box>
+            <Button
+              onClick={() => navigate('/user/login.do')}
+              variant="contained"
+              fullWidth
+              sx={{ mt: 3 }}
+            >
+              로그인
+            </Button>
+          </>
+        )}
+      </Box>
     </Box>
   );
 };

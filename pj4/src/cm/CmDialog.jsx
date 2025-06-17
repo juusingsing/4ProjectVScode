@@ -68,15 +68,15 @@ const CmDialog = ({ title = "알림", isOpen, setIsOpen, message, yesCallBack, n
 
       <DialogActions sx={{ justifyContent: type === 'alert' ? 'center' : 'flex-end', px: 3, pb: 2 }}>
         {type === 'alert' ? (
-          <Button onClick={handleClose} variant="contained" color="primary">
+          <Button onClick={handleClose} variant="contained" sx={{backgroundColor:'#88AE97'}}>
             확인
           </Button>
         ) : (
           <>
-            <Button onClick={handleCancel} variant="outlined" color="secondary">
+            <Button onClick={handleCancel} variant="outlined" sx={{color:'#A44D4D', borderColor:'#A44D4D'}}>
               취소
             </Button>
-            <Button onClick={handleConfirm} variant="contained" color="primary">
+            <Button onClick={handleConfirm} variant="contained" sx={{backgroundColor:'#88AE97'}}>
               확인
             </Button>
           </>

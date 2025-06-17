@@ -77,8 +77,9 @@ const Login = () => {
           height: '35px',
           minWidth: '0',
           width: '35px',
+          marginTop:'11px',
           marginLeft: "15px",
-          marginBottom: "40px",
+          marginBottom: "20px",
           '&:hover': {
             backgroundColor: '#363636'
           },
