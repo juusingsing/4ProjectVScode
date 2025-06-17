@@ -172,7 +172,8 @@ const PlantRepotting = () => {
   const [saveRepottingInfo] = useSaveRepottingInfoMutation(); // 등록용
   const [repottingUpdateLogs] = useRepottingUpdateLogsMutation(); // 수정용
 
-  const [plantId] = useState("9"); // 실제 값은 API에서 받아야 함
+  const [searchParams] = useSearchParams();
+  const plantId = searchParams.get("plantId"); // 식물아이디 plantId parm에 저장
   const [plantName] = useState("몬스테라");
   const [purchaseDate] = useState(null);
   // const [currentTab, setCurrentTab] = useState(2); // 일조량 탭이 기본 선택
@@ -184,8 +185,6 @@ const PlantRepotting = () => {
   const [repottingLogs, setRepottingLogs] = useState([]);
   const [deleteRepottingLogs] = useDeleteRepottingLogsMutation();
   const { data: plantInfo } = usePlantInfoQuery(plantId);
-
-  const [searchParams] = useSearchParams();
 
   const [editingLog, setSelectedLog] = useState(null);
   const [editStatus, setStatus] = useState("");
@@ -213,12 +212,11 @@ const PlantRepotting = () => {
     setMemo(log.repottingMemo);
   };
 
-  const id = searchParams.get("id");
   const {
     data: fetchedLogs,
     error,
     refetch,
-  } = useRepottingLogsQuery({ plantId: 1 });
+  } = useRepottingLogsQuery({ plantId: plantId });
 
   const handleTabChange = (event, newValue) => {
     setCurrentTab(newValue);
@@ -277,7 +275,7 @@ const PlantRepotting = () => {
           setSelectedLog(null);
 
           const plantData = new FormData();
-          plantData.append("plantId", 1);
+          plantData.append("plantId", plantId);
           refetch();
         })
         .catch((err) => {

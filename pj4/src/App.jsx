@@ -87,7 +87,7 @@ const App = () => {
 
         {/* 식물탭 */}
         <Route path="/PlantCreate.do" element={<PlantCreate />} />
-        <Route path="/PlantUpdate/:plantId" element={<PlantUpdate />} />
+        <Route path="/PlantUpdate.do" element={<PlantUpdate />} />
         <Route path="/PlantWatering.do" element={<PlantWatering />} />
         <Route path="/PlantSunlighting.do" element={<PlantSunlighting />} />
         <Route path="/PlantRepotting.do" element={<PlantRepotting />} />
