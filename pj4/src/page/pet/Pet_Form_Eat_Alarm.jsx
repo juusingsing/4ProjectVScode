@@ -131,6 +131,10 @@ const Pet_Form_Eat_Alarm = () => {
       // 알람아이디없으면 catch 로감
     try {
       const response = await refetch();
+      if(response?.data?.data.length == 0) {
+        // alert("데이터없음");
+        return;
+      };
       console.log('aaaaaaa', response);
       console.log("response.data:", response.data);
       console.log("response.data.success:", response.data.success, typeof response.data.success);
