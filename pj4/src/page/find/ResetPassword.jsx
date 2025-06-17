@@ -5,6 +5,9 @@ import { TextField, Button, Box, Typography } from '@mui/material';
 import { useResetPasswordMutation } from '../../features/find/findApi';
 import { useCmDialog } from '../../cm/CmDialogUtil';
 import { CmUtil } from '../../cm/CmUtil';
+import back from '../../image/back.png';
+import Background from '../../image/background.png';
+import UserTextField from '../design/UserTextField';
 
 const ResetPassword = () => {
   const location = useLocation();
@@ -58,29 +61,86 @@ const ResetPassword = () => {
   };
 
   return (
-    <Box maxWidth={400} mx="auto" mt={8} p={3} boxShadow={3} borderRadius={2}>
-      <Typography variant="h5" gutterBottom>비밀번호 재설정</Typography>
+    <Box sx={{
+      maxWidth: "360px",
+      width: "100%",
+      height: "640px",
+      display: 'flex',
+      flexDirection: "column",
+      // justifyContent: "center",
+      alignContent: "center",
+      margin: "auto",
+      paddingBottom:'30px'
+    }}>
+      <Button
+              onClick={() => navigate(-1)}
+              sx={{
+                display: 'flex',
+                position: 'absolute',
+                top: '10px',
+                justifyContent: 'center',
+                borderRadius: '10px',
+                height: '35px',
+                minWidth: '0',
+                width: '35px',
+                marginTop: '15px',
+                marginLeft: "15px",
+                '&:hover': {
+                  backgroundColor: '#363636'
+                },
+                backgroundColor: 'rgba(54, 54, 54, 0.4)'
+      
+              }}
+            >
+              <img src={back} alt="" sx={{ pl: '2px' }}></img>
+            </Button>
+            <Box
+                    sx={{
+                      width: "80%",
+                      height: "70%",
+                      display: 'flex',
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      margin: '0 auto',
+                      gap: 2,
+                      marginTop: '40px',
+                    }}
+                  >
+      <Typography variant="h4" gutterBottom sx={{ marginTop: '20px', top: '100px', color: "black" }}>비밀번호 재설정</Typography>
+      <Box sx={{padding:'20px'}}>
       <form onSubmit={handleReset}>
-        <TextField
-          label="새 비밀번호"
+        <Typography sx={{ color: "black", marginBottom:'-10px'}}>새 비밀번호</Typography>
+        <UserTextField
           type="password"
           fullWidth
           margin="normal"
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
         />
-        <TextField
-          label="비밀번호 확인"
+        <Typography sx={{ color: "black", marginBottom:'-10px'}}>비밀번호 확인</Typography>
+        <UserTextField
           type="password"
           fullWidth
           margin="normal"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
         />
-        <Button variant="contained" color="primary" fullWidth type="submit" sx={{ mt: 2 }}>
+        <Box sx={{display:'flex', justifyContent:'center', marginTop:'40px'}}>
+        <Button variant="contained" color="primary" fullWidth type="submit"
+         sx={{
+
+                backgroundColor: '#4B6044',
+                borderRadius: '10px',
+                width: "60%",
+                height: '40px',
+              }}>
           비밀번호 변경
         </Button>
+        </Box>
       </form>
+      </Box>
+      </Box>
     </Box>
   );
 };

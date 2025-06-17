@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Calendar from 'react-calendar';
+import dayjs from 'dayjs';
 import { Box, Typography } from "@mui/material";
 import 'react-calendar/dist/Calendar.css';
 import '../../css/calendar.css';
@@ -163,9 +164,8 @@ const CalendarComponent = () => {
             flexDirection: 'column',
             justifyContent: 'center'
           }}>
-          {value.toLocaleDateString('ko-KR').replace(/\.$/, '')} 기록
+          {dayjs(value.toLocaleDateString('ko-KR')).format('YYYY.MM.DD')} 기록
         </Typography>
-
 
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', gap: 1, height: '25px' }}>
           <Box sx={{ display: "flex", height: '20px' }}>

@@ -144,14 +144,12 @@ const FindPw = () => {
     <Box sx={{
       maxWidth: "360px",
       width: "100%",
-      height: "640px",
       display: 'flex',
       flexDirection: "column",
       justifyContent: "center",
       alignContent: "center",
       margin: "auto",
-      backgroundImage: `url(${Background})`,
-      backgroundSize: 'cover'
+
     }}>
       <Button
         onClick={() => navigate(-1)}
@@ -164,7 +162,7 @@ const FindPw = () => {
           height: '35px',
           minWidth: '0',
           width: '35px',
-          marginTop: '11px',
+          marginTop: '15px',
           marginLeft: "15px",
           '&:hover': {
             backgroundColor: '#363636'
@@ -177,20 +175,18 @@ const FindPw = () => {
       </Button>
       <Box
         sx={{
-          backgroundColor: "rgba(34, 29, 29, 0.42)",
           width: "80%",
-          height: "70%",
           display: 'flex',
           flexDirection: "column",
           // justifyContent: "center",
           alignItems: "center",
           margin: '0 auto',
           gap: 2,
-          marginTop: '50px',
-          paddingBottom: '100px'
+          marginTop: '70px',
+          paddingBottom: '120px'
         }}
       >
-        <Typography variant="h4" gutterBottom sx={{ marginTop: '20px', top: '100px', color: "white" }}>비밀번호 찾기</Typography>
+        <Typography variant="h4" gutterBottom sx={{ marginTop: '20px', top: '100px', color: "black" }}>비밀번호 찾기</Typography>
         {/* ✅ 성공 시 메시지 표시 */}
         {findSuccess ? (
           <>
@@ -207,8 +203,8 @@ const FindPw = () => {
           </>
         ) : (
           <>
-            <Box sx={{ width: "90%", marginTop:'-10px'}}>
-              <Typography sx={{ color: "white", marginBottom: '-10px' }}>아이디</Typography>
+            <Box sx={{ width: "90%", marginTop: '-10px' }}>
+              <Typography sx={{ color: "black", marginBottom: '-10px' }}>아이디</Typography>
               <UserTextField
                 fullWidth
                 margin="normal"
@@ -217,7 +213,7 @@ const FindPw = () => {
                 onChange={(e) => setUsersId(e.target.value)}
                 onKeyPress={handleKeyPress}
               />
-              <Typography sx={{ color: "white", marginBottom: '-10px' }}>이메일</Typography>
+              <Typography sx={{ color: "black", marginBottom: '-10px' }}>이메일</Typography>
               <UserTextField
                 type="email"
                 fullWidth
@@ -242,7 +238,7 @@ const FindPw = () => {
                 backgroundColor: '#889F7F',
                 borderRadius: '10px',
                 width: "150px",
-                marginTop:'-10px'
+                marginTop: '-10px'
               }}
             >
               인증번호 전송
@@ -250,19 +246,20 @@ const FindPw = () => {
 
             {emailSent && (
               <>
-                <Typography variant="body2" color="error" sx={{ mt: 1 }}>
-                  남은 시간: {formatTime(timer)}
-                </Typography>
                 <Box sx={{ width: "90%" }}>
-                  <Typography sx={{ color: "white" }}>인증번호 확인</Typography>
-                
-                <UserTextField
-                  fullWidth
-                  margin="normal"
-                  value={emailCode}
-                  onChange={(e) => setEmailCode(e.target.value)}
-                />
-</Box>
+                  <Box sx={{ display: 'flex', marginTop: '20px', marginBottom: '-10px' }}>
+                    <Typography sx={{ color: "black", marginBottom: '-10px' }}>인증번호 확인</Typography>
+                    <Typography color="error" sx={{ marginLeft: '10px', fontSize: '14px' }}>
+                      남은 시간: {formatTime(timer)}
+                    </Typography>
+                  </Box>
+                  <UserTextField
+                    fullWidth
+                    margin="normal"
+                    value={emailCode}
+                    onChange={(e) => setEmailCode(e.target.value)}
+                  />
+                </Box>
                 <Button
                   onClick={handleVerifyEmailCode}
                   variant="contained"
@@ -283,11 +280,11 @@ const FindPw = () => {
               fullWidth
               sx={{
                 position: 'absolute',
-                bottom: '50px',
+                bottom: '20px',
                 backgroundColor: '#4B6044',
                 borderRadius: '10px',
                 width: "60%",
-                height: '40px',
+                height: '50px',
               }}
             >
               비밀번호 찾기

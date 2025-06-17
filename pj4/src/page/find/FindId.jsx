@@ -8,6 +8,7 @@ import { useEffect } from 'react';
 import back from '../../image/back.png';
 import Background from '../../image/background.png';
 import UserTextField from '../design/UserTextField';
+import dayjs from 'dayjs';
 
 const FindId = () => {
 
@@ -146,14 +147,12 @@ const FindId = () => {
     <Box sx={{
       maxWidth: "360px",
       width: "100%",
-      height: "640px",
       display: 'flex',
       flexDirection: "column",
       justifyContent: "center",
       alignContent: "center",
       margin: "auto",
-      backgroundImage: `url(${Background})`,
-      backgroundSize: 'cover'
+
     }}>
       <Button
         onClick={() => navigate(-1)}
@@ -166,7 +165,7 @@ const FindId = () => {
           height: '35px',
           minWidth: '0',
           width: '35px',
-          marginTop: '11px',
+          marginTop: '15px',
           marginLeft: "15px",
           '&:hover': {
             backgroundColor: '#363636'
@@ -179,27 +178,25 @@ const FindId = () => {
       </Button>
       <Box
         sx={{
-          backgroundColor: "rgba(34, 29, 29, 0.42)",
           width: "80%",
-          height: "70%",
           display: 'flex',
           flexDirection: "column",
           // justifyContent: "center",
           alignItems: "center",
           margin: '0 auto',
-          gap: 2,
+          gap: 1,
           marginTop:'20px',
-          paddingBottom: '70px'
+          paddingBottom: '100px'
         }}
       >
 
 
-        <Typography variant="h4" gutterBottom sx={{ marginTop: '20px', top: '100px', color: "white" }}>아이디 찾기</Typography>
+        <Typography variant="h4" gutterBottom sx={{ marginTop: '80px',  color: "black" }}>아이디 찾기</Typography>
 
         {!showResult && (
           <>
             <Box sx={{ width: "90%" }}>
-              <Typography sx={{ color: "white", marginBottom:'-10px'}}>이메일</Typography>
+              <Typography sx={{ color: "black", marginBottom:'-10px'}}>이메일</Typography>
 
               <UserTextField
                 type="email"
@@ -226,11 +223,14 @@ const FindId = () => {
 
             {emailSent && (
               <>
-                <Typography variant="body2" color="error" sx={{ mt: 1 }}>
+                
+                <Box sx={{ width: "90%" }}>
+                  <Box sx={{display:'flex', marginTop:'20px',marginBottom:'-10px'}}>
+                <Typography sx={{ color: "black" }}>인증번호 확인 </Typography>
+                <Typography color="error"sx={{marginLeft:'10px', fontSize:'14px'}}>
                   남은 시간: {formatTime(timer)}
                 </Typography>
-                <Box sx={{ width: "90%" }}>
-                <Typography sx={{ color: "white" }}>인증번호 확인</Typography>
+                </Box>
                 <UserTextField
                 fullWidth margin="normal" 
                 value={emailCode}
@@ -242,7 +242,7 @@ const FindId = () => {
                   sx={{
                     backgroundColor: '#889F7F',
                     borderRadius: '10px',
-                    width: "150px"
+                    width: "150px",
                   }}>
                   인증번호 확인
                 </Button>
@@ -257,7 +257,7 @@ const FindId = () => {
               fullWidth
               sx={{
                 position: 'absolute',
-                bottom: '80px',
+                bottom: '60px',
                 backgroundColor: '#4B6044',
                 borderRadius: '10px',
                 width: "60%",
@@ -272,22 +272,29 @@ const FindId = () => {
         {/* 결과 출력부 */}
         {showResult && foundId && (
           <>
-            <Typography variant="h6" sx={{ mt: 4 }}>
-              회원님의 아이디는 다음과 같습니다:
+            <Typography variant="h7" sx={{ mt: 4, color: 'white' }}>
+              회원님의 아이디는 다음과 같습니다.
             </Typography>
-            <Box sx={{ mt: 2 }}>
+            <Box sx={{ mt: 2, textAlign:'left'}}>
               <Typography variant="body1" sx={{ color: 'white', fontWeight: 'bold' }}>
-                아이디 : {foundId.usersId}
+                아이디: {foundId.usersId}
               </Typography>
               <Typography variant="body1" sx={{ color: 'white', fontWeight: 'bold', mt: 1 }}>
-                가입일자 : {foundId.createDt}
+                가입일자: {dayjs(foundId.createDt).format('YYYY.MM.DD')}
               </Typography>
             </Box>
             <Button
               onClick={() => navigate('/user/login.do')}
               variant="contained"
               fullWidth
-              sx={{ mt: 3 }}
+              sx={{
+                position: 'absolute',
+                bottom: '80px',
+                backgroundColor: '#4B6044',
+                borderRadius: '10px',
+                width: "60%",
+                height: '40px',
+              }}
             >
               로그인
             </Button>

@@ -59,14 +59,12 @@ const Login = () => {
       sx={{
         maxWidth: "360px",
         width: "100%",
-        height: "640px",
         display: 'flex',
         flexDirection: "column",
         justifyContent: "center",
         alignContent: "center",
         margin: "auto",
-        backgroundImage: `url(${Background})`,
-        backgroundSize: 'cover'
+
       }}>
       <Button
         onClick={() => navigate(-1)}
@@ -77,7 +75,7 @@ const Login = () => {
           height: '35px',
           minWidth: '0',
           width: '35px',
-          marginTop:'11px',
+          marginTop:'15px',
           marginLeft: "15px",
           marginBottom: "20px",
           '&:hover': {
@@ -91,22 +89,20 @@ const Login = () => {
       </Button>
       <Box
         sx={{
-          backgroundColor: "rgba(34, 29, 29, 0.42)",
           width: "80%",
-          height: "70%",
           display: 'flex',
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
           margin: '0 auto',
-          gap: 5,
+          gap: 3,
           paddingBottom:'30px'
         }}
       >
-        <Typography variant="h4" gutterBottom sx={{ color: "white" , marginTop:'20px'}}>로그인</Typography>
+        <Typography variant="h4" gutterBottom sx={{ color: "black" , marginTop:'20px'}}>로그인</Typography>
         {/* 아이디 입력 필드 (TextField로 복구 및 스타일 적용) */}
         <Box sx={{width:"90%"}}>
-          <Typography sx={{ color: "white", marginBottom:"5px"}}>아이디</Typography>
+          <Typography sx={{ color: "black", marginBottom:"5px"}}>아이디</Typography>
           <UserTextField
             fullWidth
             value={usersId}
@@ -115,7 +111,7 @@ const Login = () => {
           />
         </Box>
         <Box sx={{width:"90%"}}>
-          <Typography sx={{ color: "white", marginBottom:"5px"}}>비밀번호</Typography>
+          <Typography sx={{ color: "black", marginBottom:"5px"}}>비밀번호</Typography>
           {/* 비밀번호 입력 필드 (TextField로 복구 및 스타일 적용) */}
           <UserTextField
             fullWidth

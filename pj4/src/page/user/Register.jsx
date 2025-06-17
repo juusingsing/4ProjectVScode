@@ -214,8 +214,6 @@ const Register = () => {
         justifyContent: "center",
         alignContent: "center",
         margin: "auto",
-        backgroundImage: `url(${Background})`,
-        backgroundSize: 'cover'
       }}>
       <Button
         onClick={() => navigate(-1)}
@@ -226,7 +224,7 @@ const Register = () => {
           height: '35px',
           minWidth: '0',
           width: '35px',
-          marginTop:"20px",
+          marginTop:"15px",
           marginLeft: "15px",
           marginBottom: "20px",
           '&:hover': {
@@ -241,21 +239,18 @@ const Register = () => {
       <Box sx={{display:'flex', justifyContent:'center'}}>
       <Box
         sx={{
-          backgroundColor: "rgba(34, 29, 29, 0.42)",
           width: "80%",
-          height: "90%",
           display: 'flex',
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
           margin: '0px 0px 40px 0px',
-          padding: '0px 0px 30px 0px'
 
         }}
       >
-        <Typography variant="h4" gutterBottom sx={{ color: "white", marginTop: '20px'}}>회원가입</Typography>
+        <Typography variant="h4" gutterBottom sx={{ color: "black", marginTop: '20px'}}>회원가입</Typography>
         <Box sx={{ width: "90%" }}>
-          <Typography sx={{ color: "white" }}>닉네임*</Typography>
+          <Typography sx={{ color: "black" }}>닉네임*</Typography>
           <UserTextField
             fullWidth
             margin="normal"
@@ -266,7 +261,7 @@ const Register = () => {
           />
         </Box>
         <Box sx={{ width: "90%" }}>
-          <Typography sx={{ color: "white" }}>아이디*</Typography>
+          <Typography sx={{ color: "black" }}>아이디*</Typography>
           <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', gap: 1 }}>
             <UserTextField
               fullWidth
@@ -294,7 +289,7 @@ const Register = () => {
           </Box>
         </Box>
         <Box sx={{ width: "90%" }}>
-          <Typography sx={{ color: "white" }}>비밀번호*</Typography>
+          <Typography sx={{ color: "black" }}>비밀번호*</Typography>
           <UserTextField
             type="password"
             fullWidth
@@ -306,7 +301,7 @@ const Register = () => {
           />
         </Box>
         <Box sx={{ width: "90%" }}>
-          <Typography sx={{ color: "white" }}>비밀번호 확인*</Typography>
+          <Typography sx={{ color: "black" }}>비밀번호 확인*</Typography>
           <UserTextField
             type="password"
             fullWidth
@@ -318,7 +313,7 @@ const Register = () => {
           />
         </Box>
         <Box sx={{ width: "90%" }}>
-          <Typography sx={{ color: "white" }}>이메일*</Typography>
+          <Typography sx={{ color: "black" }}>이메일*</Typography>
           <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', gap: 1 }}>
             <UserTextField
               type="email"
@@ -357,7 +352,7 @@ const Register = () => {
               남은 시간: {formatTime(timer)}
             </Typography>
             <Box sx={{ width: "90%" }}>
-          <Typography sx={{ color: "white" , marginTop:'15px'}}>인증번호 확인*</Typography>
+          <Typography sx={{ color: "black" , marginTop:'15px'}}>인증번호 확인*</Typography>
             <Box sx={{
               display:'flex',
               flexDirection:'row',
