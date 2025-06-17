@@ -96,7 +96,6 @@ const ResetPassword = () => {
       <Box
         sx={{
           width: "80%",
-          height: "70%",
           display: 'flex',
           flexDirection: "column",
           justifyContent: "center",
@@ -130,8 +129,10 @@ const ResetPassword = () => {
 
                   backgroundColor: '#4B6044',
                   borderRadius: '10px',
-                  width: "60%",
-                  height: '40px',
+                  width: "180px",
+                  height: '45px',
+                  fontSize: '20px',
+                  fontWeight: '400'
                 }}>
                 비밀번호 변경
               </Button>

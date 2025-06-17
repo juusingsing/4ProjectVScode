@@ -59,7 +59,7 @@ const Login = () => {
       sx={{
         maxWidth: "360px",
         width: "100%",
-        height:'100%',
+        height: '100%',
         display: 'flex',
         flexDirection: "column",
         justifyContent: "center",
@@ -76,7 +76,7 @@ const Login = () => {
           height: '35px',
           minWidth: '0',
           width: '35px',
-          marginTop:'15px',
+          marginTop: '15px',
           marginLeft: "15px",
           marginBottom: "20px",
           '&:hover': {
@@ -96,15 +96,15 @@ const Login = () => {
           justifyContent: "center",
           alignItems: "center",
           margin: '0 auto',
-          marginTop:'30px',
+          marginTop: '30px',
           gap: 3,
-          paddingBottom:'30px'
+          paddingBottom: '30px'
         }}
       >
-        <Typography variant="h4" gutterBottom sx={{ color: "black" , marginTop:'20px'}}>로그인</Typography>
+        <Typography variant="h4" gutterBottom sx={{ color: "black", marginTop: '20px' }}>로그인</Typography>
         {/* 아이디 입력 필드 (TextField로 복구 및 스타일 적용) */}
-        <Box sx={{width:"90%"}}>
-          <Typography sx={{ color: "black", marginBottom:"5px"}}>아이디</Typography>
+        <Box sx={{ width: "90%" }}>
+          <Typography sx={{ color: "black", marginBottom: "5px" }}>아이디</Typography>
           <UserTextField
             fullWidth
             value={usersId}
@@ -112,8 +112,8 @@ const Login = () => {
             onChange={(e) => setUsersId(e.target.value)}
           />
         </Box>
-        <Box sx={{width:"90%"}}>
-          <Typography sx={{ color: "black", marginBottom:"5px"}}>비밀번호</Typography>
+        <Box sx={{ width: "90%" }}>
+          <Typography sx={{ color: "black", marginBottom: "5px" }}>비밀번호</Typography>
           {/* 비밀번호 입력 필드 (TextField로 복구 및 스타일 적용) */}
           <UserTextField
             fullWidth
@@ -130,14 +130,17 @@ const Login = () => {
             marginTop: 3,
             backgroundColor: '#4B6044',
             borderRadius: '10px',
-            width: "150px"
+            width: "180px",
+            height: '45px',
+            fontSize: '20px',
+            fontWeight: '400'
           }}
         >
           로그인
         </Button>
       </Box>
       {/* 아래 추가: 링크 묶음 */}
-      <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, marginTop: 2, marginBottom : 5}}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, marginTop: 2, marginBottom: 5 }}>
         <Link to="/find/findId.do" style={{ textDecoration: 'none', color: '#555' }}>아이디 찾기</Link>
         <span>|</span>
         <Link to="/find/findPw.do" style={{ textDecoration: 'none', color: '#555' }}>비밀번호 찾기</Link>

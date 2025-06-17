@@ -190,7 +190,7 @@ const FindId = () => {
       >
 
 
-        <Typography variant="h4" gutterBottom sx={{color: "black" }}>아이디 찾기</Typography>
+        <Typography variant="h4" gutterBottom sx={{ color: "black" }}>아이디 찾기</Typography>
 
         {!showResult && (
           <>
@@ -259,8 +259,10 @@ const FindId = () => {
                 bottom: '60px',
                 backgroundColor: '#4B6044',
                 borderRadius: '10px',
-                width: "60%",
-                height: '40px',
+                width: "180px",
+                height: '45px',
+                fontSize: '20px',
+                fontWeight: '400'
               }}>
               아이디 찾기
             </Button>
@@ -291,8 +293,10 @@ const FindId = () => {
                 bottom: '80px',
                 backgroundColor: '#4B6044',
                 borderRadius: '10px',
-                width: "60%",
-                height: '40px',
+                width: "180px",
+                height: '45px',
+                fontSize: '20px',
+                fontWeight: '400'
               }}
             >
               로그인

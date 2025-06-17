@@ -76,9 +76,9 @@ const CalendarComponent = () => {
     훈련: (id) => `/pet/petFormTrainingAndAction.do?animalId=${id}`,
     산책: (id) => `/pet/walk.do?id=${id}`,
 
-    물주기: (id) => `/plantwatering.do?plantId=${id}`,
-    병충해: (id) => `/plantpest.do?plantId=${id}`,
-    분갈이: (id) => `/plantrepotting.do?plantId=${id}`,
+    물주기: (id) => `/PlantWatering.do?plantId=${id}`,
+    병충해: (id) => `/PlantPest.do?plantId=${id}`,
+    분갈이: (id) => `/PlantRepotting.do?plantId=${id}`,
     일조량: (id) => `/PlantSunlighting.do?plantId=${id}`
   }
   const navigate = useNavigate();

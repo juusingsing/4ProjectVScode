@@ -249,7 +249,7 @@ const Register = () => {
 
           }}
         >
-          <Typography variant="h4" gutterBottom sx={{ color: "black"}}>회원가입</Typography>
+          <Typography variant="h4" gutterBottom sx={{ color: "black" }}>회원가입</Typography>
           <Box sx={{ width: "90%" }}>
             <Typography sx={{ color: "black" }}>닉네임*</Typography>
             <UserTextField
@@ -279,7 +279,7 @@ const Register = () => {
                 variant="contained"
                 sx={{
                   marginTop: 1,
-                  backgroundColor: '#4B6044',
+                  backgroundColor: '#889F7F',
                   borderRadius: '10px',
                   width: "90px",
                   height: "50px",
@@ -336,7 +336,7 @@ const Register = () => {
                 variant="contained"
                 sx={{
                   marginTop: 1,
-                  backgroundColor: '#4B6044',
+                  backgroundColor: '#889F7F',
                   borderRadius: '10px',
                   width: "90px",
                   fontSize: "10px"
@@ -395,7 +395,10 @@ const Register = () => {
               marginTop: 3,
               backgroundColor: '#4B6044',
               borderRadius: '10px',
-              width: "150px"
+              width: "180px",
+              height: '45px',
+              fontSize: '20px',
+              fontWeight: '400'
             }}
           >
             회원가입

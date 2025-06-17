@@ -282,8 +282,10 @@ const FindPw = () => {
                 bottom: '20px',
                 backgroundColor: '#4B6044',
                 borderRadius: '10px',
-                width: "60%",
-                height: '50px',
+                width: "180px",
+                height: '45px',
+                fontSize: '20px',
+                fontWeight: '400'
               }}
             >
               비밀번호 찾기
