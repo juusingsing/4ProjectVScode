@@ -13,7 +13,7 @@ import {
 const WalkTracker = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const animalId = searchParams.get('id');    // 동물아이디 animalId parm에 저장
+  const animalId = searchParams.get('animalId');    // 동물아이디 animalId parm에 저장
   const { data: IdResult, refetch : refetch2, isLoading: isLoading2 } = usePetWalkLoadQuery({
     animalId: animalId,    // < 동물 아이디   로 산책아이디 조회해올거임
   });
@@ -484,7 +484,7 @@ const WalkTracker = () => {
       {/* 상단 헤더 */}
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
         <button
-        onClick={() => navigate("/pet/walk.do?id="+animalId+"")}
+        onClick={() => navigate("/pet/walk.do?animalId="+animalId+"")}
         style={{ background: 'none', border: 'none', fontSize: '20px' }}>{'←'}
         </button>
         <h2 style={{ flex: 1, textAlign: 'center', margin: 0 }}>산책 기록</h2>
