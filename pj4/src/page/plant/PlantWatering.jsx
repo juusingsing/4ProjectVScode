@@ -256,6 +256,7 @@ const PlantWatering = () => {
     waterListLoad();
   }, []);
 
+  // 불러온데이터확인
   useEffect(() => {
     console.log("plantInfo : ", plantInfo);
   }, [plantInfo]);
@@ -407,6 +408,8 @@ const PlantWatering = () => {
       const response = await AlarmCreate(data).unwrap();
       console.log("응답 내용 >>", response); // 여기에 찍히는 걸 확인해야 해!
       alert("등록성공ㅎㅎㅎ");
+      
+
     } catch (error) {
       console.error("요청 실패:", error);
       alert("등록실패!!!!!!!!!!");
@@ -457,6 +460,9 @@ const PlantWatering = () => {
       const response = await WaterCreate(data).unwrap();
       console.log("응답 내용 >>", response); // 여기에 찍히는 걸 확인해야 해!
       alert("등록성공ㅎㅎㅎ");
+
+      waterListLoad();  // 페이지 다시렌더링유도
+
     } catch (error) {
       console.error("요청 실패:", error);
       alert("등록실패!!!!!!!!!!");
