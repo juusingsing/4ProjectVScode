@@ -414,7 +414,7 @@ const Pet_Form_Hospital = () => {
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
             <Button
               variant="contained"
-              onClick={() => navigate(`/pet/walk.do?id=${animalId}`)}
+              onClick={() => navigate(`/pet/walk.do?animalId=${animalId}`)}
               sx={{
                 bottom: 3,
                 left: 25,

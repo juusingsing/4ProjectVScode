@@ -19,6 +19,7 @@ import { useCmDialog } from '../../cm/CmDialogUtil';
 
 
 const Pet_Form_Update = () => {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const animalIdStr = searchParams.get('animalId');
   const animalId = (!animalIdStr || animalIdStr === 'null' || isNaN(Number(animalIdStr))) ? null : Number(animalIdStr);
@@ -111,6 +112,7 @@ const Pet_Form_Update = () => {
 
       if (result.success) {
         showAlert('수정 성공!');
+        navigate(-1);
       } else {
         showAlert(result.message || '수정 실패');
       }
@@ -131,7 +133,7 @@ const Pet_Form_Update = () => {
       const result = await deletePet({ animalId }).unwrap();
       if (result.success) {
         showAlert('삭제 성공!');
-        // 필요시 redirect('/petList') 등 이동 처리
+        navigate('/home.do');
       } else {
         showAlert(result.message || '삭제 실패');
       }

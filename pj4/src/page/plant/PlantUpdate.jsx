@@ -111,6 +111,7 @@ const PlantUpdate = ({ mode = "create" }) => {
       if (isEdit) {
         await updatePlant(formData).unwrap();
         showAlert("수정 성공");
+        navigate(-1);
       } else {
         const result = await createPlant(formData).unwrap();
         showAlert("등록 성공");
@@ -129,7 +130,7 @@ const PlantUpdate = ({ mode = "create" }) => {
       try {
         await deletePlant({ plantId: plantId }).unwrap();
         showAlert("삭제 성공");
-        navigate("/PlantSunlighting.do");
+        navigate("/home.do?tab=N02");
       } catch {
         showAlert("삭제 실패");
       }
