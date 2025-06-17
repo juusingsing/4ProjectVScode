@@ -38,10 +38,10 @@ const Combo = ({ groupId, onSelectionChange, defaultValue = "", sx }) => {
 
   // groupId에 따라 플레이스홀더 텍스트 변경 (선택 사항)
   const getPlaceholder = () => {
-    if (groupId === "AlarmCycle") return "주기 선택";
+    if (groupId === "AlarmCycle") return "";
     if (groupId === "Community") return "카테고리 선택";
     if (groupId === "WritingSortation") return "종류 선택";
-    if (groupId === "EatType") return "먹이 선택";
+    if (groupId === "EatType") return "";
     return "선택하세요";
   };
 

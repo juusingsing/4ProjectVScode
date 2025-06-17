@@ -24,8 +24,8 @@ import {
   useAlarmUpdateMutation,
   useAlarmDeleteMutation,
 } from "../../features/alarm/alarmApi";
-
-
+import {InputAdornment} from '@mui/material';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 const FormRow1 = ({ label, value = '', onChange, multiline = false, inputRef, fieldKey = '' }) => {
   let backgroundColor = '#E0E0E0';
   let border = '1px solid #ccc';
@@ -44,13 +44,13 @@ const FormRow1 = ({ label, value = '', onChange, multiline = false, inputRef, fi
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 2 }}>
-      <Typography sx={{ width: '90px', fontSize: 14, fontWeight: 'normal', mt: multiline ? '6px' : 0, position: 'relative', left:20, top: 5 }}>
+      <Typography sx={{ width: '90px', fontSize: 14, fontWeight: 'normal', mt: multiline ? '6px' : 0, position: 'relative', left:16, top: -29 }}>
         {label}
       </Typography>
       <InputBase
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        placeholder={`${label} 입력`}
+        placeholder={'ex)브랜드/양'}
         multiline={multiline}
         inputRef={inputRef}
         inputProps={{
@@ -62,9 +62,10 @@ const FormRow1 = ({ label, value = '', onChange, multiline = false, inputRef, fi
           }
         }}
         sx={{
-          left: '100px',  
-          width: '142px',
-          height: '30px',
+          left: '-2px',  
+          top: '-35px',
+          width: '240px',
+          height: '35px',
           backgroundColor,
           border,
           borderRadius: '11px',
@@ -114,7 +115,7 @@ const Pet_Form_Eat_Alarm = () => {
   const [imageFile, setImageFile] = useState(null);
   const [existingImageUrl, setExistingImageUrl] = useState('');
   const [fileUrl, setFileUrl] = useState();
-    
+   
 
   const alarmNameRef = useRef();
   const [eatType, setEatType] = useState('');   // 선택된 먹이
@@ -533,29 +534,162 @@ const tabIndexToPath = [
 
       <Box sx={{ width: '100%', maxWidth: 400, mx: 'auto', mt: 2 }}>
 
-        <Box sx={{ position: 'relative', left: '35px', top: 8 }}>
-            <Typography>먹이알림 설정</Typography>
+        <Box sx={{ position: 'relative', left: '17px', top: -2 }}>
+            <Typography fontWeight= 'bold' fontSize='14px'>먹이 알림 설정🔔</Typography>
         </Box>
+          <Combo
+            sx={{
+              width: 95,
+              height: 22,
+              position: 'relative',
+              left: 125,
+              top: -40,
+              borderRadius: '8px',
+              border: '1px solid black',
+              fontSize: '13px',
+              padding: '0 8px',
+              backgroundColor: 'white',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
 
-        <FormRow1 label="알림 이름" value={alarmName} onChange={setAlarmName} inputRef={alarmNameRef}/>
-            <Combo
-              groupId="EatType"
-              onSelectionChange={setEatType}
-            />
+              // 내부 선택 영역 스타일
+              '& .MuiSelect-select': {
+                paddingRight: '0px',
+                paddingLeft: '0px',
+                display: 'flex',
+                alignItems: 'center',
+                width: '100%',
+                border: 'none',
+              },
 
+              // 드롭다운 화살표 아이콘 스타일
+              '& .MuiSvgIcon-root': {
+                position: 'absolute',
+                right: 3, // 우측방향 조절
+                top: '40%', //화살표 위쪽 위치
+                transform: 'translateY(-50%)', //y축방향 위 아래
+                fontSize: '22px', // 화살표 크기 
+                pointerEvents: 'none',
+              },
+
+              // 세로줄
+              '&::before': {
+                content: '""',
+                position: 'absolute',
+                right: 24, // 아이콘 왼쪽 여백
+                top: '-2px', // 세로 길이 윗부분
+                bottom: '0px', // 세로 길이 아랫부분
+                width: '2px', // 굵기 조절 
+                
+                backgroundColor: 'black',
+              },
+              
+            }}
+          groupId="EatType"
+          onSelectionChange={setEatType}
+        />
+        <FormRow1 label="먹이 이름:" value={alarmName} onChange={setAlarmName} inputRef={alarmNameRef}/>
+            
+            <Typography sx={{ top: -40, position: 'relative', left: 100 }}>
+                  주기
+              </Typography>
             <Combo
+                sx={{
+                width: 80,
+                height: 30,
+                position: 'relative',
+                left: 100,
+                top: -50,
+                borderRadius: '8px',
+                border: '1px solid black',
+                fontSize: '13px',
+                padding: '0 8px',
+                backgroundColor: 'white',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+
+                // 내부 선택 영역 스타일
+                '& .MuiSelect-select': {
+                  paddingRight: '0px',
+                  paddingLeft: '0px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  width: '100%',
+                  border: 'none',
+                },
+
+                // 드롭다운 화살표 아이콘 스타일
+                '& .MuiSvgIcon-root': {
+                  position: 'absolute',
+                  right: 3, // 우측방향 조절
+                  top: '40%', //화살표 위쪽 위치
+                  transform: 'translateY(-50%)', //y축방향 위 아래
+                  fontSize: '22px', // 화살표 크기 
+                  pointerEvents: 'none',
+                },
+
+                // 세로줄
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  right: 24, // 아이콘 왼쪽 여백
+                  top: '-2px', // 세로 길이 윗부분
+                  bottom: '0px', // 세로 길이 아랫부분
+                  width: '2px', // 굵기 조절 
+                  
+                  backgroundColor: 'black',
+                },
+              }}
               groupId="AlarmCycle"
               onSelectionChange={setAlarmCycle}
-            />
-
-        <TimePicker
-          label="알림 시간"
-          value={alarmTime}
-          onChange={(newValue) => {
-            setAlarmTime(newValue);
-          }}
-          ampm
-          />
+            >
+            </Combo>
+        <Typography sx={{ top: -110, position: 'relative', left: 210 }}>
+              주기
+          </Typography>
+          <TimePicker
+            value={alarmTime}
+            onChange={(newValue) => setAlarmTime(newValue)}
+            ampm
+            closeOnSelect
+            slotProps={{
+              textField: {
+                InputProps: { readOnly: true },
+                sx: { display: 'none' }, // 숨기기
+              },
+            }}
+            renderInput={() => null}
+          >
+            {/* Custom Button UI */}
+            <Box
+              onClick={(e) => {
+                // 클릭 시 focus 강제 트리거
+                e.currentTarget.previousSibling.click();
+              }}
+              sx={{
+                width: 135,
+                height: 34,
+                borderRadius: '20px',
+                border: '1px solid black',
+                backgroundColor: 'white',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                gap: 1,
+                position: 'relative',
+                left: 100,
+                top: -50,
+              }}
+            >
+              <AccessTimeIcon sx={{ fontSize: 18 }} />
+              <Typography sx={{ fontSize: 13 }}>
+                {alarmTime ? alarmTime.format('A h:mm') : '시간 선택'}
+              </Typography>
+            </Box>
+          </TimePicker> 
 
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
             <Button onClick={alarmCreate} variant="contained" sx={{ backgroundColor: '#556B2F', borderRadius: '20px', px: 4, py: 1, fontSize: 14 }}>
@@ -575,7 +709,7 @@ const tabIndexToPath = [
 
       </Box>
     </Box> 
-
+     <Box sx={{ width: '100%', maxWidth: 400, mx: 'auto', mt: 2 }}>
       <Typography variant="h6" gutterBottom>
         알람 시간 목록:
       </Typography>
@@ -592,6 +726,7 @@ const tabIndexToPath = [
           <button onClick={() => alarmDelete(alarm.alarmId)}>삭제</button>
         </Typography>
       ))}
+      </Box>
   </LocalizationProvider>
   </>
 );
