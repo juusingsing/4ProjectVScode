@@ -74,7 +74,7 @@ const CalendarComponent = () => {
   const categoryToUrl = {
     병원진료: (id) => `/pet/petFormHospital.do?animalId=${id}`,
     훈련: (id) => `/pet/petFormTrainingAndAction.do?animalId=${id}`,
-    산책: (id) => `/pet/walk.do?id=${id}`,
+    산책: (id, walkId) => `/pet/walk.do?animalId=${id}&walkId=${walkId}`,
 
     물주기: (id) => `/PlantWatering.do?plantId=${id}`,
     병충해: (id) => `/PlantPest.do?plantId=${id}`,
@@ -86,7 +86,13 @@ const CalendarComponent = () => {
     const urlBuilder = categoryToUrl[log.category];
     if (!urlBuilder) return;
 
-    const url = urlBuilder(log.id);
+     let url;
+  if (log.category === '산책') {
+    url = urlBuilder(log.id, log.walkId);
+  } else {
+    url = urlBuilder(log.id);
+  }
+
     navigate(url);
     console.log('달력:', log)
 
