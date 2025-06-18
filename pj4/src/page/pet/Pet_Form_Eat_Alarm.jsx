@@ -421,7 +421,7 @@ const tabIndexToPath = [
 
 
   return (
-    <>
+    <Box sx={{ width:"100%", marginX:"auto" }}>
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ko">
     <Box>
       {/* 전체 폼 박스 */}
@@ -536,7 +536,7 @@ const tabIndexToPath = [
     
       {/* ✅ 탭은 폼 바깥에 위치 */}
       {/* 폼 컴포넌트 아래 탭 - 간격 좁히기 */}
-      <Box sx={{ width: '100%', maxWidth: 400, mx: 'auto', mt: -70 }}>
+      <Box sx={{ width: '100%', maxWidth: 400, mx: 'auto', mt: -70, display:'flex', justifyContent:'center' }}>
         <Tabs
           value={selectedTab}
           onChange={handleTabChange}
@@ -740,8 +740,7 @@ const tabIndexToPath = [
     </Box> 
     <Box
       sx={{
-        width: '100%',
-        maxWidth: 400,
+        width: '350px',
         mx: 'auto',
         mt: 2,
         border: '1px solid #ccc',
@@ -831,7 +830,7 @@ const tabIndexToPath = [
       ))}
     </Box>
   </LocalizationProvider>
-  </>
+  </Box>
 );
 };
 export default Pet_Form_Eat_Alarm; 

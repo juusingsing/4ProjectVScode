@@ -491,7 +491,7 @@ const Pet_Form_Hospital = () => {
 
       {/* ✅ 탭은 폼 바깥에 위치 */}
       {/* 폼 컴포넌트 아래 탭 - 간격 좁히기 */}
-      <Box sx={{ width: '100%', maxWidth: 400, mx: 'auto', mt: -70 }}>
+      <Box sx={{ width: '100%', maxWidth: 400, mx: 'auto', mt: -70, display:'flex', justifyContent:'center'  }}>
         <Tabs
           value={selectedTab}
           onChange={handleTabChange}
@@ -521,7 +521,7 @@ const Pet_Form_Hospital = () => {
         </Tabs>
       </Box>
       <Box sx={{ width: '100%', maxWidth: 400, mx: 'auto', mt: 2 }}>
-        <DateInputRow label="병원진료 날짜" value={animalVisitDate} onChange={setAnimalVisitDate} />
+        <DateInputRow label="날짜" value={animalVisitDate} onChange={setAnimalVisitDate} />
         <FormRow1 label="병원 이름" value={animalHospitalName} onChange={setAnimalHospitalName} inputRef={animalHospitalNameRef} />
         <FormRow1 label="처방약" value={animalMedication} onChange={setAnimalMedication} inputRef={animalMedicationRef} />
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, gap: 13 }}>

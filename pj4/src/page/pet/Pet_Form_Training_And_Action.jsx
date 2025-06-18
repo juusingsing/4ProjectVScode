@@ -426,7 +426,7 @@ const Pet_Form_Training_And_Action = () => {
    
     {/* ✅ 탭은 폼 바깥에 위치 */}
     {/* 폼 컴포넌트 아래 탭 - 간격 좁히기 */}
-    <Box sx={{ width: '100%', maxWidth: 400, mx: 'auto', mt: -70 }}>
+    <Box sx={{ width: '100%', maxWidth: 400, mx: 'auto', mt: -70,display:'flex', justifyContent:'center'  }}>
       <Tabs
         value={selectedTab}
         onChange={handleTabChange}
