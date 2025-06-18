@@ -70,7 +70,8 @@ const UserView = () => {
       // 실패해도 로그아웃 처리
     } finally {
       dispatch(clearUser());
-      navigate('/user/login.do');
+      dispatch(setAlertCheck(true));
+      navigate('/');
     }
   };
 
@@ -78,7 +79,8 @@ const UserView = () => {
     try {
       const response = await userDelete({ usersId: id }).unwrap();
       if (response.success) {
-        showAlert("회원탈퇴에 성공 하셨습니다. 로그인화면으로 이동합니다.", () => navigate('/user/login.do'));
+        dispatch(setAlertCheck(true));
+        showAlert("회원탈퇴에 성공 하셨습니다. 로그인화면으로 이동합니다.", () => navigate('/'));
       } else {
         showAlert(response.message || '회원탈퇴에 실패했습니다.');
       }
@@ -97,7 +99,6 @@ const UserView = () => {
         justifyContent: 'flex-start',
         alignItems: 'center',
         height: '640px',
-        maxWidth: '360px',
         width: '100%',
         margin: '0 auto'
       }}

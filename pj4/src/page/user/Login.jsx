@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useLoginMutation } from '../../features/user/userApi';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { setUser } from '../../features/user/userSlice';
 import { useNavigate, Link } from 'react-router-dom';
 import { TextField, Button, Box, Typography } from '@mui/material';
@@ -14,6 +14,7 @@ import UserTextField from '../design/UserTextField';
 
 
 const Login = () => {
+  const user = useSelector((state) => state.user.user);
   const [usersId, setUsersId] = useState('');
   const [usersPassword, setUsersPassword] = useState('');
   const usersIdRef = useRef();
@@ -24,8 +25,10 @@ const Login = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!user) {
     persistor.purge();
-    dispatch(clearUser());
+      dispatch(clearUser());
+    }
   }, [dispatch]);
   const handleLoginClick = async () => {
     if (CmUtil.isEmpty(usersId)) {
@@ -143,7 +146,7 @@ const Login = () => {
       <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, marginTop: 2, marginBottom: 5 }}>
         <Link to="/find/findId.do" style={{ textDecoration: 'none', color: '#555' }}>아이디 찾기</Link>
         <span>|</span>
-        <Link to="/find/findPw.do" style={{ textDecoration: 'none', color: '#555' }}>비밀번호 찾기</Link>
+        <Link to="/find/findPw.do" style={{ textDecoration: 'none', color: '#555' }}>비밀번호 재설정</Link>
         <span>|</span>
         <Link to="/user/join.do" style={{ textDecoration: 'none', color: '#555' }}>회원가입</Link>
       </Box>

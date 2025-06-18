@@ -33,7 +33,7 @@ const TestPetResult = () => {
     return (
         <>
         
-            <Box className="result-container" sx={{backgroundColor:backgroundColor, maxWidth: 360, width: "100%", mx: "auto"}}>
+            <Box className="result-container" sx={{backgroundColor:backgroundColor, height:'100%', width: "100%", mx: "auto"}}>
                 {result && (
                     <>
                         <Typography sx={{color:'#553211'}}>테스트 결과, 당신의 성향은!</Typography>

@@ -30,7 +30,7 @@ const handleStart = async () => {
   };
     return(
         <>
-        <Box sx={{ maxWidth: 360, width: "100%", maxHeight:'640px', mx: "auto" }}>
+        <Box sx={{ width: "100%", height:'100%', mx: "auto" }}>
         <div className='background-img'
           style={{backgroundImage:`url(${backgroundImage})`,
           height:'640px'

@@ -119,7 +119,7 @@ const WriteCreate = () => {
   };
 
   return (
-    <Box sx={{ maxWidth: 360, width: "100%", mx: "auto" }}>
+    <Box sx={{width: "100%", mx: "auto" }}>
       <Box
         sx={{
           display: "flex",

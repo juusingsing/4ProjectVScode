@@ -18,6 +18,7 @@ const FindPw = () => {
 
   const [emailCode, setEmailCode] = useState("");
   const [emailSent, setEmailSent] = useState(false);
+  const [emailTime, setEmailTime] = useState(false);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
 
   const [timer, setTimer] = useState(180); // 3분
@@ -95,6 +96,7 @@ const FindPw = () => {
         clearInterval(timerRef.current);
         setTimer(180);
         setEmailSent(true);
+        setEmailTime(true);
         setIsEmailVerified(false);
         setEmailCode("");
 
@@ -104,6 +106,7 @@ const FindPw = () => {
             if (prev <= 1) {
               clearInterval(timerRef.current);
               setEmailSent(false);
+              setEmailTime(false);
               showAlert(
                 "인증번호 입력 시간이 만료되었습니다. 다시 요청해주세요."
               );
@@ -132,6 +135,7 @@ const FindPw = () => {
       });
       const data = await res.json();
       if (data.success) {
+        setEmailTime(false);
         showAlert("사용자 인증이 완료되었습니다.");
       } else {
         showAlert(data.message || "인증번호를 다시 입력해주세요.");
@@ -264,12 +268,14 @@ const FindPw = () => {
                     <Typography sx={{ color: "black", marginBottom: "-10px" }}>
                       인증번호 확인
                     </Typography>
+                    {emailTime && (
                     <Typography
                       color="error"
                       sx={{ marginLeft: "10px", fontSize: "14px" }}
                     >
                       남은 시간: {formatTime(timer)}
                     </Typography>
+                    )}
                   </Box>
                   <UserTextField
                     fullWidth
