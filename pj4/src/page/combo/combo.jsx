@@ -28,6 +28,9 @@ const Combo = ({ groupId, onSelectionChange, defaultValue = "", sx }) => {
         setSelected(found.value);
         onSelectionChange?.(found.value);
       }
+    } else if (!defaultValue && items.length > 0) {
+        setSelected(""); 
+        onSelectionChange?.("");
     }
   }, [defaultValue, items]);
 

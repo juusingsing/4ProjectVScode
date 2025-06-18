@@ -6,11 +6,13 @@ function CmRouteChangeNotifier() {
   const user = useSelector((state) => state.user.user);
 
    useEffect(() => {
-    if (window.Android && window.Android.receiveMessage) {
-      window.Android.receiveMessage(JSON.stringify({
+    console.log(user);
+    // alert("user",user);
+    if (window.Android && window.Android.loginCheck) {
+      window.Android.loginCheck(JSON.stringify({
         type: "ROUTE_CHANGE",
         path: location.pathname,
-        userId: user?.userId
+        userId: user?.usersId
       }));
     }
   }, [location]);

@@ -94,149 +94,151 @@ const CalendarComponent = () => {
 
   return (
     <>
-      <Calendar
-        // 날짜 선택 시 실행
-        onChange={setValue}
-        // 현재 선택된 날짜
-        value={value}
-        // 사용자가 달(月)을 넘길 때 실행 (현재 보이는 달 저장)
-        onActiveStartDateChange={({ activeStartDate }) =>
-          setActiveStartDate(activeStartDate)
-        }
-        // 현재 보이는 달 외 날짜 비활성화
-        tileDisabled={tileDisabled}
-        // 일요일부터 시작하도록 설정
-        calendarType="gregory"
-        // 날짜 숫자만 표시 (ex. '1', '2', '3'...)
-        formatDay={(locale, date) => String(date.getDate())}
+      <Box sx={{ maxWidth: 360, width: "100%", mx: "auto" }}>
+        <Calendar
+          // 날짜 선택 시 실행
+          onChange={setValue}
+          // 현재 선택된 날짜
+          value={value}
+          // 사용자가 달(月)을 넘길 때 실행 (현재 보이는 달 저장)
+          onActiveStartDateChange={({ activeStartDate }) =>
+            setActiveStartDate(activeStartDate)
+          }
+          // 현재 보이는 달 외 날짜 비활성화
+          tileDisabled={tileDisabled}
+          // 일요일부터 시작하도록 설정
+          calendarType="gregory"
+          // 날짜 숫자만 표시 (ex. '1', '2', '3'...)
+          formatDay={(locale, date) => String(date.getDate())}
 
-        // 날짜별 활동 점 표시
-        tileContent={({ date, view }) => {
-          if (view !== 'month' || !data) return null;
+          // 날짜별 활동 점 표시
+          tileContent={({ date, view }) => {
+            if (view !== 'month' || !data) return null;
 
 
-          const key = date.toLocaleDateString('sv-SE');
-          const todayKey = new Date().toLocaleDateString('sv-SE');
-          const isToday = key === todayKey;
-          const filteredData = data?.filter(d => d.logDate === key) || [];
-          const animalCount = filteredData.find(d => d.type === 'animal')?.totalCount || 0;
-          const plantCount = filteredData.find(d => d.type === 'plant')?.totalCount || 0;
+            const key = date.toLocaleDateString('sv-SE');
+            const todayKey = new Date().toLocaleDateString('sv-SE');
+            const isToday = key === todayKey;
+            const filteredData = data?.filter(d => d.logDate === key) || [];
+            const animalCount = filteredData.find(d => d.type === 'animal')?.totalCount || 0;
+            const plantCount = filteredData.find(d => d.type === 'plant')?.totalCount || 0;
 
-          const renderDots = (count, colorClass) => {
-            const visible = Math.min(count, 3);
-            const remaining = count - visible;
+            const renderDots = (count, colorClass) => {
+              const visible = Math.min(count, 3);
+              const remaining = count - visible;
+
+              return (
+                <div className="dot-line">
+                  {Array.from({ length: visible }).map((_, i) => (
+                    <div className={`log-dot ${colorClass}`} key={i} />
+                  ))}
+                  {remaining > 0 && <span className="dot-count">+{remaining}</span>}
+                </div>
+              );
+            };
 
             return (
-              <div className="dot-line">
-                {Array.from({ length: visible }).map((_, i) => (
-                  <div className={`log-dot ${colorClass}`} key={i} />
-                ))}
-                {remaining > 0 && <span className="dot-count">+{remaining}</span>}
+              <div className="dot-wrapper-vertical">
+                {isToday && (
+                  <div style={{ marginBottom: '-4px', marginLeft: '30px', fontSize: '6px', color: 'gray', }}>오늘</div>
+                )}
+                {renderDots(animalCount, 'animal-dot')}
+                {renderDots(plantCount, 'plant-dot')}
+
               </div>
             );
-          };
+          }}
+        />
 
-          return (
-            <div className="dot-wrapper-vertical">
-              {isToday && (
-                <div style={{ marginBottom: '-4px', marginLeft: '30px', fontSize: '6px', color: 'gray', }}>오늘</div>
-              )}
-              {renderDots(animalCount, 'animal-dot')}
-              {renderDots(plantCount, 'plant-dot')}
+        <Box sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          width: '320px',
+          height: '30px',
+          justifyContent: 'space-between',
+          margin: '30px 20px 20px 20px'
+        }}>
+          <Typography
+            sx={{
+              display: 'flex',
+              fontWeight: '500',
+              flexDirection: 'column',
+              justifyContent: 'center'
+            }}>
+            {dayjs(value.toLocaleDateString('ko-KR')).format('YYYY.MM.DD')} 기록
+          </Typography>
 
-            </div>
-          );
-        }}
-      />
-
-      <Box sx={{
-        display: 'flex',
-        flexDirection: 'row',
-        width: '320px',
-        height: '30px',
-        justifyContent: 'space-between',
-        margin: '30px 20px 20px 20px'
-      }}>
-        <Typography
-          sx={{
-            display: 'flex',
-            fontWeight: '500',
-            flexDirection: 'column',
-            justifyContent: 'center'
-          }}>
-          {dayjs(value.toLocaleDateString('ko-KR')).format('YYYY.MM.DD')} 기록
-        </Typography>
-
-        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', gap: 1, height: '25px' }}>
-          <Box sx={{ display: "flex", height: '20px' }}>
-            <div>
-              {filterType !== 'all' && (
+          <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', gap: 1, height: '25px' }}>
+            <Box sx={{ display: "flex", height: '20px' }}>
+              <div>
+                {filterType !== 'all' && (
+                  <select
+                    name="정렬"
+                    value={filterName}
+                    style={{ padding: "3px", borderRadius: "5px", textAlign: "center" }}
+                    onChange={(e) => setFilterName(e.target.value)}
+                  >
+                    <option value="all">전체</option>
+                    {Array.from(new Set(
+                      (logs || [])
+                        .filter((log) => filterType === 'all' || log.type === filterType)
+                        .map((log) => log.name)
+                    )).map((name, i) => (
+                      <option key={i} value={name}>{name}</option>
+                    ))}
+                  </select>
+                )}
+              </div>
+            </Box>
+            <Box sx={{ display: "flex", height: '20px', }}>
+              <div>
                 <select
                   name="정렬"
-                  value={filterName}
-                  style={{ padding: "3px", borderRadius: "5px", textAlign:"center" }}
-                  onChange={(e) => setFilterName(e.target.value)}
+                  value={filterType}
+                  style={{ padding: "3px", borderRadius: "5px" }}
+                  onChange={(e) => setFilterType(e.target.value)}
                 >
                   <option value="all">전체</option>
-                  {Array.from(new Set(
-                    (logs || [])
-                      .filter((log) => filterType === 'all' || log.type === filterType)
-                      .map((log) => log.name)
-                  )).map((name, i) => (
-                    <option key={i} value={name}>{name}</option>
-                  ))}
+                  <option value="animal">동물</option>
+                  <option value="plant">식물</option>
                 </select>
-              )}
-            </div>
-          </Box>
-          <Box sx={{ display: "flex", height: '20px', }}>
-            <div>
-              <select
-                name="정렬"
-                value={filterType}
-                style={{ padding: "3px", borderRadius: "5px" }}
-                onChange={(e) => setFilterType(e.target.value)}
-              >
-                <option value="all">전체</option>
-                <option value="animal">동물</option>
-                <option value="plant">식물</option>
-              </select>
-            </div>
+              </div>
+            </Box>
           </Box>
         </Box>
-      </Box>
-      <Box>
-        {filteredLogs.length > 0 ? (
-          filteredLogs.map((log, i) => {
-            const isSameAsPrev = i > 0 && log.name === filteredLogs[i - 1].name;
-            const isSameAsNext = i < filteredLogs.length - 1 && log.name === filteredLogs[i + 1].name;
+        <Box>
+          {filteredLogs.length > 0 ? (
+            filteredLogs.map((log, i) => {
+              const isSameAsPrev = i > 0 && log.name === filteredLogs[i - 1].name;
+              const isSameAsNext = i < filteredLogs.length - 1 && log.name === filteredLogs[i + 1].name;
 
-            return (
-              <div key={i} className='log-list'>
+              return (
+                <div key={i} className='log-list'>
 
-                <img
-                  className='log-icon'
-                  src={log.type === 'animal' ? pet : plant}
-                  alt={log.type}
-                  style={{ width: '30px', height: '30px' }}
-                />
-                <div
-                  className={`log-icon-wrap ${isSameAsPrev ? 'top-line' : ''} ${isSameAsNext ? 'bottom-line' : ''}`}
-                >
+                  <img
+                    className='log-icon'
+                    src={log.type === 'animal' ? pet : plant}
+                    alt={log.type}
+                    style={{ width: '30px', height: '30px' }}
+                  />
+                  <div
+                    className={`log-icon-wrap ${isSameAsPrev ? 'top-line' : ''} ${isSameAsNext ? 'bottom-line' : ''}`}
+                  >
+                  </div>
+                  <div className='log-content' onClick={() => handleLogClick(log)}>
+                    <span>{log.name} {log.category}</span>
+                  </div>
                 </div>
-                <div className='log-content' onClick={() => handleLogClick(log)}>
-                  <span>{log.name} {log.category}</span>
-                </div>
-              </div>
-            );
-          })
-        ) : (
-          <li>
-            {filterName !== 'all'
-              ? `${filterName}에 해당하는 기록이 없습니다.`
-              : `기록이 없습니다.`}
-          </li>
-        )}
+              );
+            })
+          ) : (
+            <li>
+              {filterName !== 'all'
+                ? `${filterName}에 해당하는 기록이 없습니다.`
+                : `기록이 없습니다.`}
+            </li>
+          )}
+        </Box>
       </Box>
     </>
   );
