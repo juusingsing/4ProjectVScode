@@ -15,6 +15,7 @@ const TestMain = () => {
 
   const isAnimal = tab === "N01";
   const backgroundImage = isAnimal ? petImage : plantImage;
+  const backgroundColor = isAnimal ? "#FFD355" : "#FFCE49";
   
 
   const handleStart = async () => {
@@ -33,7 +34,7 @@ const TestMain = () => {
         width: "100%", 
         height: "100%", 
         mx: "auto" , 
-        backgroundColor: "#FFD355", 
+        backgroundColor: backgroundColor,
         paddingTop: "10px",
         paddingBottom: "50px",
         }}
