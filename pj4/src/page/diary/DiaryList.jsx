@@ -1,6 +1,7 @@
 import { useDiaryListQuery } from "../../features/diary/diaryApi";
 import { Box, Typography, Button, CardMedia } from '@mui/material';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import pet from '../../image/animalFootprintWhite.png';
 import plant from '../../image/plantWhite.png';
@@ -12,11 +13,14 @@ import plantthumbnail from '../../image/plantDiary.png';
 
 const DiaryList = () => {
     const [diaryType, setDiaryType] = useState({ diaryType: 'N01' })
+    const createId = useSelector((state) => state.user.usersId);
     const typeRef = useRef(null);
+    const user = useSelector((state) => state.user.user);
 
 
     const { data, isLoading, refetch } = useDiaryListQuery({
         diaryType: diaryType.diaryType,
+        createId:user.usersId
     });
 
     const navigate = useNavigate();
