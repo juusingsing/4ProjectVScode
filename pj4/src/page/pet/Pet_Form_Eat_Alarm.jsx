@@ -192,7 +192,7 @@ const Pet_Form_Eat_Alarm = () => {
           alamrCycleCode : alarm.alarmCycle,
           daysDate,
           daysTime,
-          type: "SET_ALARM",
+          types: "SET_ALARM",
           alarmId,
           petId,
           alarmName,
