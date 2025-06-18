@@ -484,7 +484,7 @@ const WalkTracker = () => {
       {/* 상단 헤더 */}
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
         <button
-        onClick={() => navigate("/pet/walk.do?animalId="+animalId+"")}
+        onClick={() => navigate("/pet/walk.do?animalId="+animalId)}
         style={{ background: 'none', border: 'none', fontSize: '20px' }}>{'←'}
         </button>
         <h2 style={{ flex: 1, textAlign: 'center', margin: 0 }}>산책 기록</h2>

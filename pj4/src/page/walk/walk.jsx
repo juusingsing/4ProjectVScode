@@ -61,6 +61,10 @@ const Main = () => {
     };
     fetchCurrentWalk();
   }, [walkId]);
+
+  useEffect(() => {
+    refetch2();
+  }, []);
   
 
   useEffect(() => {
@@ -192,7 +196,7 @@ const Main = () => {
             {images.map((image, idx) => (
               <div key={idx} style={{ flex: "0 0 23%", borderRadius: 8, overflow: "hidden" }}>
                 <img
-                  src={`http://192.168.0.32:8081${image.postFilePath.replace(/\\/g, "/")}`}
+                  src={`http://192.168.0.30:8081${image.postFilePath.replace(/\\/g, "/")}`}
                   alt={`img-${idx}`}
                   style={{
                     width: "100%",

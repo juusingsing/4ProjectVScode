@@ -110,7 +110,7 @@ const Register = () => {
     }
 
     try {
-      const BACKEND_URL = 'http://localhost:8081'; // 서버 주소
+      const BACKEND_URL = 'http://192.168.0.30:8081'; // 서버 주소
       const res = await fetch(`${BACKEND_URL}/api/user/checkUserId.do`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -141,7 +141,7 @@ const Register = () => {
     }
 
     try {
-      const BACKEND_URL = 'http://localhost:8081';
+      const BACKEND_URL = 'http://192.168.0.30:8081';
       const res = await fetch(`${BACKEND_URL}/api/email/send-code.do`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -185,7 +185,7 @@ const Register = () => {
 
   const handleVerifyEmailCode = async () => {
     try {
-      const BACKEND_URL = 'http://localhost:8081'; // 백엔드 포트 맞게 수정
+      const BACKEND_URL = 'http://192.168.0.30:8081'; // 백엔드 포트 맞게 수정
       const res = await fetch(`${BACKEND_URL}/api/email/verify-code.do`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
