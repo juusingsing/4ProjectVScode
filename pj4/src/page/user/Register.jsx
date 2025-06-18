@@ -22,6 +22,7 @@ const Register = () => {
   const usersNameRef = useRef();
   const [emailCode, setEmailCode] = useState('');
   const [emailSent, setEmailSent] = useState(false);
+  const [emailTime, setEmailTime] = useState(false);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [timer, setTimer] = useState(180); // 3분
   const timerRef = useRef();
@@ -65,6 +66,10 @@ const Register = () => {
       return;
     }
 
+    if (!CmUtil.isStrongPassword(usersPassword)) {
+      showAlert('비밀번호는 영문, 숫자, 특수문자 조합 8자 이상이어야 합니다.');
+      return;
+    }
 
     if (CmUtil.isEmpty(usersEmail)) {
       showAlert('이메일을 입력해주세요.');
@@ -110,7 +115,7 @@ const Register = () => {
     }
 
     try {
-      const BACKEND_URL = 'http://localhost:8081'; // 서버 주소
+      const BACKEND_URL = 'http://192.168.0.30:8081'; // 서버 주소
       const res = await fetch(`${BACKEND_URL}/api/user/checkUserId.do`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -141,7 +146,7 @@ const Register = () => {
     }
 
     try {
-      const BACKEND_URL = 'http://localhost:8081';
+      const BACKEND_URL = 'http://192.168.0.30:8081';
       const res = await fetch(`${BACKEND_URL}/api/email/send-code.do`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -156,6 +161,7 @@ const Register = () => {
         clearInterval(timerRef.current);
         setTimer(180);
         setEmailSent(true);
+        setEmailTime(true);
         setIsEmailVerified(false);
         setEmailCode('');
         console.log(data);
@@ -164,6 +170,7 @@ const Register = () => {
             if (prev <= 1) {
               clearInterval(timerRef.current);
               setEmailSent(false);
+              setEmailTime(false);
               showAlert("인증번호 입력 시간이 만료되었습니다. 다시 요청해주세요.");
               return 0;
             }
@@ -185,7 +192,7 @@ const Register = () => {
 
   const handleVerifyEmailCode = async () => {
     try {
-      const BACKEND_URL = 'http://localhost:8081'; // 백엔드 포트 맞게 수정
+      const BACKEND_URL = 'http://192.168.0.30:8081'; // 백엔드 포트 맞게 수정
       const res = await fetch(`${BACKEND_URL}/api/email/verify-code.do`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -194,6 +201,7 @@ const Register = () => {
       const data = await res.json();
       if (data.success) {
         setIsEmailVerified(true);
+        setEmailTime(false);
         showAlert('이메일 인증이 완료되었습니다.');
       } else {
         showAlert('인증번호가 일치하지 않습니다.');
@@ -352,9 +360,11 @@ const Register = () => {
           </Box>
           {emailSent && (
             <>
+            { emailTime && (
               <Typography variant="body2" color="error" sx={{ mt: 1 }}>
                 남은 시간: {formatTime(timer)}
               </Typography>
+            )}
               <Box sx={{ width: "90%" }}>
                 <Typography sx={{ color: "black", marginTop: '15px' }}>인증번호 확인*</Typography>
                 <Box sx={{

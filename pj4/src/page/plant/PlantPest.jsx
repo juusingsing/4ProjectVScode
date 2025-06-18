@@ -28,12 +28,6 @@ import {
 // import "../../css/plantPest.css";
 import dayjs from 'dayjs';
 
-import PlantWatering from "./PlantWatering"; // 물주기 탭
-import PlantSunlighting from "./PlantSunlighting"; // 일조량 탭
-import PlantRepotting from "./PlantRepotting"; // 분갈이 탭
-import DefaultImage from "../../image/default-plant.png";
-
-
 const PestContent = ({
   plantPestDate,
   setPlantPestDate,

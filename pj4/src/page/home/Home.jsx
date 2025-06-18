@@ -90,14 +90,13 @@ const Home = () => {
   const currentTestLink = `/test/main.do?tab=${activeTab}`;
 
   return (
-    <Box sx={{ maxWidth: 360, width: "100%", mx: "auto" }}>
+    <Box sx={{ width: "100%" ,marginTop:"0.5px"}}>
       {/* 테스트 이미지 및 버튼 섹션 */}
       <Box
         sx={{
           backgroundImage: `url(${currentTestImage})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          width: "360px",
           height: "215px",
         }}
       >

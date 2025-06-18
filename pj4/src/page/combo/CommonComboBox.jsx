@@ -17,7 +17,7 @@ const CommonComboBox = ({ options, value, onChange, placeholder = '선택하세�
         sx={sx} 
       >
         <MenuItem value="" disabled>
-         <em>{placeholder}</em>
+         {placeholder}
         </MenuItem>
         {options.map((opt) => (
           <MenuItem key={opt.value} value={opt.value}>

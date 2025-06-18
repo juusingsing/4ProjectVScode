@@ -187,7 +187,7 @@ const Pet_Form_Training_And_Action = () => {
   const handleDelete = async (id) => {
     try {
       // API 호출해서 서버에 del_yn='Y'로 변경 요청
-      const response = await fetch(`http://localhost:8081/api/petTrainingAndAction/delete.do`, {
+      const response = await fetch(`http://192.168.0.30:8081/api/petTrainingAndAction/delete.do`, {
         method: 'POST', // 혹은 DELETE (백엔드에 맞게)
         headers: {
           'Content-Type': 'application/json',
@@ -229,7 +229,7 @@ const Pet_Form_Training_And_Action = () => {
 
     const fetchRecords = async () => {
       try {
-        const res = await fetch('http://localhost:8081/api/petTrainingAndAction/list.do', {
+        const res = await fetch('http://192.168.0.30:8081/api/petTrainingAndAction/list.do', {
           method: 'GET',
           credentials: 'include', // 세션 쿠키 포함
         });
@@ -386,7 +386,7 @@ const Pet_Form_Training_And_Action = () => {
           <img
             src={
               fileUrl
-                ? 'http://localhost:8081'+fileUrl
+                ? 'http://192.168.0.30:8081'+fileUrl
                 : imageFile
             }
             style={{
@@ -476,6 +476,22 @@ const Pet_Form_Training_And_Action = () => {
           groupId="Exercise"
           value={animalTrainingType}
           onSelectionChange={(val) => setAnimalTrainingType(val)}
+          sx={{
+              width:'145px',
+              borderRadius: "20px",
+              backgroundColor: "#D9D9D9",
+              position: 'relative',
+              top:"-10px",
+              left: "-7px",
+              "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+              "&:hover .MuiOutlinedInput-notchedOutline": { border: "none" },
+              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                border: "none",
+              },
+              "& .MuiSelect-select": { padding: "3px 14px"},
+              "& .MuiSelect-icon": { color: "#888" },
+              flex: 1,
+            }}
         />
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', mb: 2 }}>

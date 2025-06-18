@@ -242,7 +242,7 @@ const Pet_Form_Hospital = () => {
   const handleDelete = async (id) => {
     try {
       // API 호출해서 서버에 del_yn='Y'로 변경 요청
-      const response = await fetch(`http://localhost:8081/api/petHospital/delete.do`, {
+      const response = await fetch(`http://192.168.0.30:8081/api/petHospital/delete.do`, {
         method: 'POST', // 혹은 DELETE (백엔드에 맞게)
         headers: {
           'Content-Type': 'application/json',
@@ -285,7 +285,7 @@ const Pet_Form_Hospital = () => {
 
     const fetchRecords = async () => {
       try {
-        const res = await fetch('http://localhost:8081/api/petHospital/list.do', {
+        const res = await fetch('http://192.168.0.30:8081/api/petHospital/list.do', {
           method: 'GET',
           credentials: 'include', // 세션 쿠키 포함
         });
@@ -450,7 +450,7 @@ const Pet_Form_Hospital = () => {
             <img
               src={
                 fileUrl
-                  ? 'http://localhost:8081'+fileUrl
+                  ? 'http://192.168.0.30:8081'+fileUrl
                   : imageFile
               }
               style={{
@@ -537,10 +537,26 @@ const Pet_Form_Hospital = () => {
             진료 내용
           </Typography>
           <Combo
-            key={animalTreatmentType || 'default'} // ← 이 줄이 중요합니다!
+            key={animalTreatmentType || 'default'}
             groupId="Medical"
             value={animalTreatmentType}
             onSelectionChange={(val) => setAnimalTreatmentType(val)}
+             sx={{
+              width:'145px',
+              borderRadius: "20px",
+              backgroundColor: "#D9D9D9",
+              position: 'relative',
+              top:"-10px",
+              left: "-7px",
+              "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+              "&:hover .MuiOutlinedInput-notchedOutline": { border: "none" },
+              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                border: "none",
+              },
+              "& .MuiSelect-select": { padding: "3px 14px"},
+              "& .MuiSelect-icon": { color: "#888" },
+              flex: 1,
+            }}
           />
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'column', mb: 2 }}>
@@ -577,7 +593,6 @@ const Pet_Form_Hospital = () => {
             onClick={handleSubmit}
             variant="contained"
             sx={{
-              left: -3,
               backgroundColor: '#556B2F',
               borderRadius: '20px',
               px: 4,

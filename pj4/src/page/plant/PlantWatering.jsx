@@ -7,8 +7,6 @@ import {
   Button,
   Switch,
   FormControlLabel,
-  MenuItem,
-  Select,
   Card,
   CardContent,
   IconButton,
@@ -25,9 +23,8 @@ import {
   TimePicker,
 } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { koKR } from "@mui/x-date-pickers/locales";
 
-import { FaTint } from "react-icons/fa";
+
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import "../../css/plantWatering.css"; // Make sure this CSS file exists
 import Combo from "../combo/combo"; // 이 경로가 정확한지 확인하세요.
@@ -46,7 +43,6 @@ import {
 } from "../../features/plant/plantApi";
 
 import { useSelector } from "react-redux";
-import Days from "react-calendar/dist/MonthView/Days";
 
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
@@ -57,7 +53,6 @@ const WateringContent = ({
   setAlarmTime,
   alarmDate,
   setAlarmDate,
-  alarmCycle,
   setAlarmCycle,
   alarmCreate,
   alarmAllUpdateSend,
@@ -600,7 +595,6 @@ const PlantWatering = () => {
           setAlarmTime={setAlarmTime}
           alarmDate={alarmDate}
           setAlarmDate={setAlarmDate}
-          alarmCycle={alarmCycle}
           setAlarmCycle={setAlarmCycle}
           alarmCreate={alarmCreate}
           alarmAllUpdateSend={alarmAllUpdateSend} 
