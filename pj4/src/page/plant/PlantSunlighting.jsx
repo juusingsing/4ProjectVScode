@@ -15,7 +15,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { FaSun, FaTint, FaCloud, FaSnowflake } from "react-icons/fa";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { useLocation, useNavigate, useSearchParams} from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 //훅
 import {
   useSaveSunlightInfoMutation,
@@ -66,9 +66,8 @@ const SunlightContent = ({
         {sunlightOptions.map((opt) => (
           <div
             key={opt.id}
-            className={`status-icon ${
-              selectedSunlight === opt.id ? opt.className : ""
-            }`}
+            className={`status-icon ${selectedSunlight === opt.id ? opt.className : ""
+              }`}
             onClick={() => setSelectedSunlight(opt.id)}
             style={{ cursor: "pointer" }}
             title={opt.label}
@@ -98,11 +97,11 @@ const SunlightContent = ({
       sx={
         editingLog !== null
           ? {
-              backgroundColor: "#88AE97 !important",
-              "&:hover": {
-                backgroundColor: "#6e927e !important",
-              },
-            }
+            backgroundColor: "#88AE97 !important",
+            "&:hover": {
+              backgroundColor: "#6e927e !important",
+            },
+          }
           : undefined
       }
     >
@@ -119,8 +118,6 @@ const SunlightContent = ({
           <ArrowDropDownIcon />
         </IconButton>
       </Box>
-
-      {sunlightLogs.length === 0 && <Typography>일지가 없습니다.</Typography>}
 
       {!sunlightLogs || sunlightLogs.length === 0 ? (
         <Typography>일지가 없습니다.</Typography>
@@ -189,22 +186,22 @@ const PlantSunlighting = () => {
 
 
   const pathToTabIndex = {
-      '/plant/PlantWatering.do': 0,
-      '/plant/PlantSunlighting.do': 1,
-      '/plant/PlantRepotting.do': 2,
-      '/plant/PlantPest.do': 3,
-    };
-  
-  
+    '/plant/PlantWatering.do': 0,
+    '/plant/PlantSunlighting.do': 1,
+    '/plant/PlantRepotting.do': 2,
+    '/plant/PlantPest.do': 3,
+  };
+
+
   const [currentTab, setCurrentTab] = useState();
-  
-  
+
+
   const tabIndexToPath = [
-      `/PlantWatering.do?plantId=${plantId}`,
-      `/PlantSunlighting.do?plantId=${plantId}`,
-      `/PlantRepotting.do?plantId=${plantId}`,
-      `/PlantPest.do?plantId=${plantId}`,
-    ];
+    `/PlantWatering.do?plantId=${plantId}`,
+    `/PlantSunlighting.do?plantId=${plantId}`,
+    `/PlantRepotting.do?plantId=${plantId}`,
+    `/PlantPest.do?plantId=${plantId}`,
+  ];
 
   const handleSelectLog = (log) => {
     setSelectedLog(log);
@@ -233,12 +230,12 @@ const PlantSunlighting = () => {
   }, [fetchedLogs, refetch]);
 
   // 페이지가 바뀌면 selectedTab도 바뀌도록 설정
-    useEffect(() => {
-      const currentPath = location.pathname;
-      if (pathToTabIndex.hasOwnProperty(currentPath)) {
-        setCurrentTab(pathToTabIndex[currentPath]);
-      }
-    }, [location.pathname]);
+  useEffect(() => {
+    const currentPath = location.pathname;
+    if (pathToTabIndex.hasOwnProperty(currentPath)) {
+      setCurrentTab(pathToTabIndex[currentPath]);
+    }
+  }, [location.pathname]);
 
 
   const handleSave = () => {
@@ -311,7 +308,13 @@ const PlantSunlighting = () => {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Box className="plant-care-container">
         {/*식물 정보 수정 버튼*/}
-        <Button variant="contained" className="edit-top-button">
+        <Button
+          variant="contained"
+          className="edit-top-button"
+          onClick={() => {
+            navigate(`/PlantUpdate.do?plantId=${plantId}`);
+          }}
+        >
           수정
         </Button>
 
@@ -341,13 +344,11 @@ const PlantSunlighting = () => {
             </Box>
           </Box>
           <Avatar
-            src={`${
-              process.env.REACT_APP_API_BASE_URL
-            }/file/imgDown.do?fileId=${
-              plantInfo?.data && plantInfo.data.length > 0
+            src={`${process.env.REACT_APP_API_BASE_URL
+              }/file/imgDown.do?fileId=${plantInfo?.data && plantInfo.data.length > 0
                 ? plantInfo.data[0].fileId
                 : ""
-            }`}
+              }`}
             className="plant-avatar"
           />
         </Box>
@@ -367,16 +368,16 @@ const PlantSunlighting = () => {
         </Box>
 
         <Box className="tab-content-display">
-            <SunlightContent
-              sunlightStatusText={sunlightStatusText}
-              setSunlightStatusText={setSunlightStatusText}
-              selectedSunlight={selectedSunlight}
-              setSelectedSunlight={setSelectedSunlight}
-              handleSave={handleSave}
-              sunlightLogs={sunlightLogs}
-              onDeleteLog={handleDeleteLog}
-              onEditLog={handleEditLog}
-            />
+          <SunlightContent
+            sunlightStatusText={sunlightStatusText}
+            setSunlightStatusText={setSunlightStatusText}
+            selectedSunlight={selectedSunlight}
+            setSelectedSunlight={setSelectedSunlight}
+            handleSave={handleSave}
+            sunlightLogs={sunlightLogs}
+            onDeleteLog={handleDeleteLog}
+            onEditLog={handleEditLog}
+          />
         </Box>
       </Box>
     </LocalizationProvider>

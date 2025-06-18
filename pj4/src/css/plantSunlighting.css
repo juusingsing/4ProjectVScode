@@ -101,7 +101,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   padding-bottom: 15px;
   border-bottom: 1px solid #f0f0f0;
 }
@@ -162,7 +162,6 @@
   font-size: 0.95rem !important;
   font-weight: 600 !important;
   color: #333 !important;
-  margin-bottom: 10px !important;
 }
 
 .sunlight-status-textfield {
@@ -170,7 +169,7 @@
 }
 
 .sunlight-status-textfield .MuiOutlinedInput-root {
-  background-color: #f8f8f8;
+  background-color: #D9D9D9;
   border-radius: 8px;
   padding: 0;
 }
@@ -179,7 +178,7 @@
   padding: 12px;
   font-size: 0.95rem;
   line-height: 1.5;
-  color: #424242;
+  color: #020202;
 }
 
 .save-button {
