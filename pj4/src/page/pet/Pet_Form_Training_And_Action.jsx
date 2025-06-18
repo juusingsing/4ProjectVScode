@@ -173,13 +173,11 @@ const Pet_Form_Training_And_Action = () => {
   
 
   const handleEdit = (record) => {
-    
-    console.log("수정할 훈련/행동 일지 값:", record.animalTrainingType);
+  
     
     setIsEditing(true);
     setEditId(record.animalTrainingAction);
     setAnimalRecordDate(dayjs(record.animalRecordDate)); // 날짜 상태 설정
-    setAnimalTrainingType(record.animalTrainingType);     // 콤보박스 값 설정
     setAnimalTrainingMemo(record.animalTrainingMemo);     // 메모 입력 필드 설정
     setExpanded(true);
   };
@@ -472,10 +470,8 @@ const Pet_Form_Training_And_Action = () => {
           훈련/행동 일지
         </Typography>
         <Combo
-          key={animalTrainingType || 'default'} // ← 이 줄이 중요합니다!
           groupId="Exercise"
-          value={animalTrainingType}
-          onSelectionChange={(val) => setAnimalTrainingType(val)}
+          onSelectionChange={setAnimalTrainingType}
           sx={{
               width:'145px',
               borderRadius: "20px",
@@ -568,7 +564,7 @@ const Pet_Form_Training_And_Action = () => {
                   훈련/행동 확인
                  </legend>
                   <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-                    {dayjs(record.animalRecordDate).format('YYYY.MM.DD')} | {trainingTypeMap[record.animalTrainingType] || '없음'}
+                    {dayjs(record.animalRecordDate).format('YYYY.MM.DD')} | {{animalTrainingType} ? {animalTrainingType} : '없음'}
                   </Typography>
                  
                   <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
