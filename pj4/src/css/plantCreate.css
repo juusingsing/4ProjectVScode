@@ -10,23 +10,6 @@
   text-align: center;
 }
 
-/* 뒤로가기 버튼 컨테이너 */
-.header-icon-container {
-  display: flex;
-  justify-content: flex-start; /* 왼쪽 정렬 */
-
-}
-
-/* 뒤로가기 버튼 스타일 */
-.back-button {
-  background-color: #e0e0e0 !important; /* 이미지 와 유사한 회색 배경 */
-  color: #333 !important; /* 글자색 */
-  min-width: 40px !important;
-  height: 40px !important;
-  border-radius: 50% !important; /* 원형 버튼 */
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* 그림자 */
-}
-
 /* 폼 스택 (입력 필드 그룹) */
 .plant-form-stack {
   margin-top: 20px;

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   TextField,
@@ -8,23 +8,24 @@ import {
   Stack,
   Avatar,
   IconButton,
-} from '@mui/material';
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import dayjs from 'dayjs';
-import { FaCamera } from 'react-icons/fa';
-import DefaultImage from '../../image/default-plant.png';
-import { useCreatePlantMutation } from '../../features/plant/plantApi';
-import Combo from '../combo/combo';
-import '../../css/plantCreate.css';
+} from "@mui/material";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs from "dayjs";
+import { FaCamera } from "react-icons/fa";
+import DefaultImage from "../../image/default-plant.png";
+import { useCreatePlantMutation } from "../../features/plant/plantApi";
+import Combo from "../combo/combo";
+import "../../css/plantCreate.css";
+import back from "../../image/back.png";
 
 const PlantCreate = () => {
-  const [plantName, setPlantName] = useState('');
-  const [plantType, setPlantType] = useState('');
+  const [plantName, setPlantName] = useState("");
+  const [plantType, setPlantType] = useState("");
   const [plantPurchaseDate, setPlantPurchaseDate] = useState(null);
-  const [sunlightPreference, setSunlightPreference] = useState('');
-  const [plantGrowthStatus, setPlantGrowthStatus] = useState('');
+  const [sunlightPreference, setSunlightPreference] = useState("");
+  const [plantGrowthStatus, setPlantGrowthStatus] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
   const [files, setFiles] = useState([]);
   const [createPlant] = useCreatePlantMutation();
@@ -40,31 +41,38 @@ const PlantCreate = () => {
     }
   };
 
+  const handleBack = () => {
+    navigate(-1); // 이전 페이지로 이동
+  };
+
   const handleSubmit = async () => {
     const formData = new FormData();
-    files.forEach(file => formData.append("files", file));
+    files.forEach((file) => formData.append("files", file));
 
-    formData.append('plantName', plantName);
-    formData.append('plantType', plantType);
+    formData.append("plantName", plantName);
+    formData.append("plantType", plantType);
     if (plantPurchaseDate) {
-      formData.append('plantPurchaseDate', dayjs(plantPurchaseDate).format('YYYY-MM-DD'));
+      formData.append(
+        "plantPurchaseDate",
+        dayjs(plantPurchaseDate).format("YYYY-MM-DD")
+      );
     }
-    formData.append('plantSunPreference', sunlightPreference);
-    formData.append('plantGrowStatus', plantGrowthStatus);
+    formData.append("plantSunPreference", sunlightPreference);
+    formData.append("plantGrowStatus", plantGrowthStatus);
 
     try {
       await createPlant(formData).unwrap();
-      alert('등록 성공');
-      setPlantName('');
-      setPlantType('');
+      alert("등록 성공");
+      setPlantName("");
+      setPlantType("");
       setPlantPurchaseDate(null);
-      setSunlightPreference('');
-      setPlantGrowthStatus('');
+      setSunlightPreference("");
+      setPlantGrowthStatus("");
       setImagePreview(null);
       setFiles([]);
-      navigate('/home.do');
+      navigate("/home.do");
     } catch (err) {
-      alert('등록 실패');
+      alert("등록 실패");
     }
   };
 
@@ -72,39 +80,58 @@ const PlantCreate = () => {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Box className="plant-create-container">
         <div className="header-icon-container">
-          <IconButton className="back-button" aria-label="back">
-            &lt;
-          </IconButton>
+          <Button
+            onClick={() => navigate(-1)}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              borderRadius: "10px",
+              height: "35px",
+              minWidth: "0",
+              width: "35px",
+              marginTop: "15px",
+              marginLeft: "15px",
+              marginBottom: "20px",
+              "&:hover": {
+                backgroundColor: "#363636",
+              },
+              backgroundColor: "rgba(54, 54, 54, 0.4)",
+            }}
+          >
+            <img src={back} alt="" sx={{ pl: "2px" }}></img>
+          </Button>
         </div>
 
         <Stack spacing={2} className="plant-form-stack">
-          <Box sx={{ textAlign: 'center', position: 'relative', marginBottom: 3 }}>
+          <Box
+            sx={{ textAlign: "center", position: "relative", marginBottom: 3 }}
+          >
             <Avatar
               src={imagePreview || DefaultImage}
-              sx={{ width: 100, height: 100, margin: 'auto' }}
+              sx={{ width: 100, height: 100, margin: "auto" }}
             />
             <input
               id="imageUpload"
               type="file"
               accept="image/*"
               onChange={handleFileChange}
-              style={{ display: 'none' }}
+              style={{ display: "none" }}
             />
             <label htmlFor="imageUpload">
               <IconButton
                 component="span"
                 sx={{
-                  position: 'absolute',
-                  top: '65px',
-                  left: 'calc(50% + 15px)',
-                  backgroundColor: 'white',
+                  position: "absolute",
+                  top: "65px",
+                  left: "calc(50% + 15px)",
+                  backgroundColor: "white",
                   boxShadow: 1,
                   width: 30,
                   height: 30,
-                  '&:hover': { backgroundColor: '#e0e0e0' },
+                  "&:hover": { backgroundColor: "#e0e0e0" },
                 }}
               >
-                <FaCamera style={{ fontSize: '1rem' }} />
+                <FaCamera style={{ fontSize: "1rem" }} />
               </IconButton>
             </label>
           </Box>
@@ -119,16 +146,10 @@ const PlantCreate = () => {
               className="input-field-wrapper"
               InputProps={{
                 sx: {
-                  borderRadius: '8px',
-                  backgroundColor: '#f0f0f0',
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'transparent',
-                  },
-                  '&:hover .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'transparent',
-                  },
-                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'transparent',
+                  borderRadius: "20px",
+                  backgroundColor: "#f0f0f0",
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "transparent",
                   },
                 },
               }}
@@ -137,9 +158,10 @@ const PlantCreate = () => {
 
           <Box className="form-row">
             <Typography className="label-text">식물 종류</Typography>
-            <Combo groupId="PlantType"
+            <Combo
+              groupId="PlantType"
               onSelectionChange={setPlantType}
-              sx={{ width: '200px' }}
+              sx={{ width: "200px" }}
             />
           </Box>
 
@@ -157,16 +179,16 @@ const PlantCreate = () => {
                   className="input-field-wrapper"
                   InputProps={{
                     sx: {
-                      borderRadius: '8px',
-                      backgroundColor: '#f0f0f0',
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'transparent',
+                      borderRadius: "8px",
+                      backgroundColor: "#f0f0f0",
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "transparent",
                       },
-                      '&:hover .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'transparent',
+                      "&:hover .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "transparent",
                       },
-                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'transparent',
+                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "transparent",
                       },
                     },
                   }}
@@ -180,7 +202,7 @@ const PlantCreate = () => {
             <Combo
               groupId="SunType"
               onSelectionChange={setSunlightPreference}
-              sx={{ width: '200px' }}
+              sx={{ width: "200px" }}
             />
           </Box>
 
@@ -196,16 +218,16 @@ const PlantCreate = () => {
               className="input-field-wrapper"
               InputProps={{
                 sx: {
-                  borderRadius: '8px',
-                  backgroundColor: '#f0f0f0',
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'transparent',
+                  borderRadius: "8px",
+                  backgroundColor: "#f0f0f0",
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "transparent",
                   },
-                  '&:hover .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'transparent',
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "transparent",
                   },
-                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'transparent',
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "transparent",
                   },
                 },
               }}
@@ -217,11 +239,11 @@ const PlantCreate = () => {
             onClick={handleSubmit}
             className="register-button"
             sx={{
-              backgroundColor: '#4B6044',
+              backgroundColor: "#4B6044",
               borderRadius: 20,
-              padding: '10px 24px',
-              fontSize: '1rem',
-              fontWeight: 'bold',
+              padding: "10px 24px",
+              fontSize: "1rem",
+              fontWeight: "bold",
             }}
           >
             식물 등록
