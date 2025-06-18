@@ -150,7 +150,7 @@ const DiaryUpdate = () => {
 
   return (
     <>
-      <Box sx={{ maxWidth: 800 }}>
+      <Box sx={{ maxWidth: 360, width: "100%", mx: "auto" }}>
         <Box mt={3} mb={3} className='diary-top-section'>
           <Button
             onClick={() => navigate(-1)}

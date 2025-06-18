@@ -125,6 +125,7 @@ const handleFileChange = (e) => {
 
   return (
     <>
+    <Box sx={{ maxWidth: 360, width: "100%", mx: "auto" }}>
       <Box sx={{ maxWidth: 800 }}>
         <Box mt={3} mb={3} className='diary-top-section'>
           <Button
@@ -331,6 +332,7 @@ const handleFileChange = (e) => {
 
           </Box>
         </Box>
+      </Box>
       </Box>
     </>
   );

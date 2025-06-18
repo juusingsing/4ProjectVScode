@@ -30,8 +30,10 @@ const handleStart = async () => {
   };
     return(
         <>
+        <Box sx={{ maxWidth: 360, width: "100%", maxHeight:'640px', mx: "auto" }}>
         <div className='background-img'
           style={{backgroundImage:`url(${backgroundImage})`,
+          height:'640px'
           }}> 
         
         <button
@@ -52,6 +54,7 @@ const handleStart = async () => {
                 </Typography>
                 </button>
                 </div>
+                </Box>
         </>
     )
 }

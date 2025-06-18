@@ -31,7 +31,7 @@ const DiaryView = () => {
     }, [isSuccess, data]);
     return (
 
-        <Box sx={{ maxWidth: '800px', mx: 'auto', display: 'flex', flexDirection: 'column' }}>
+        <Box sx={{ maxWidth: '360px', mx: 'auto', display: 'flex', flexDirection: 'column' }}>
             {isLoading ? (
                 <CircularProgress />
             ) : error ? (
@@ -144,7 +144,7 @@ const DiaryView = () => {
                         
 
 
-                        <Box sx={{ minHeight: '200px', maxHeight: '500px', overflow: 'auto', textAlign: 'center' }}>
+                        <Box sx={{ minHeight: '200px', maxHeight: '500px', overflow: 'auto', textAlign: 'center' , padding:'0px 30px 30px 30px'}}>
                             {diary.diaryContent}
                         </Box>
                     </Box>

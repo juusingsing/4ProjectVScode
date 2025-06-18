@@ -37,7 +37,7 @@ const TestPetPage = () => {
     };
     return (
         <>
-            <Box sx={{backgroundColor}} className='test-container'>
+            <Box sx={{backgroundColor,maxWidth: 360, width: "100%", mx: "auto"}} className='test-container'>
                 <Box sx={{ margin: '0px 30px 50px 30px' }}>
                     <Typography className="question"
                         sx={{

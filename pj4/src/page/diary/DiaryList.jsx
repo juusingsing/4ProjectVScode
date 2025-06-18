@@ -37,7 +37,8 @@ const DiaryList = () => {
 
     return (
         <>
-            <Box sx={{ maxWidth: 800 }}>
+        
+            <Box sx={{ maxWidth: 360, width: "100%", mx: "auto" }}>
                 <Box className="diary-top-section">
                     <Typography variant="h4" sx={{ml: '8px'}}>
                         일기
