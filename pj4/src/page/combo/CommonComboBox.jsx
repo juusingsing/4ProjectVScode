@@ -12,13 +12,13 @@ const CommonComboBox = ({ options, value, onChange, placeholder = '선택하세�
   return (
     
     <FormControl fullWidth disabled={disabled}>
-      {/* placeholder가 있을 경우 InputLabel로 사용 */}
-      {placeholder && <InputLabel id={id}>{placeholder}</InputLabel>}
+      {/* placeholder가 있을 경우 InputLabel로 사용
+      {placeholder && <InputLabel id={id}>{placeholder}</InputLabel>} */}
       <Select
         labelId={id}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        label={placeholder} // InputLabel과 연결
+        label={label} // InputLabel과 연결
         sx={sx} // 여기서 Combo 컴포넌트로부터 전달받은 sx prop을 Select에 적용
       >
         {/* '전체' 또는 플레이스홀더를 위한 빈 옵션 */}
