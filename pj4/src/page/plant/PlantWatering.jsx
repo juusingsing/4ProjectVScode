@@ -345,7 +345,7 @@ const PlantWatering = () => {
             alamrCycleCode: alarm.alarmCycle,
             daysDate,
             daysTime,
-            type: "SET_ALARM",
+            types: "SET_ALARM",
             alarmId,
             petId,
             year,
