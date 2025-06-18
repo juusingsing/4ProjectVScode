@@ -34,10 +34,7 @@ const PlantUpdate = ({ mode = "create" }) => {
 
   const {
     data: fetchedPlantData,
-    isLoading,
     isSuccess,
-    isError,
-    error,
   } = usePlantInfoQuery(plantId, {
     skip: !isEdit || !plantId,
   });
@@ -48,6 +45,7 @@ const PlantUpdate = ({ mode = "create" }) => {
   const [sunlightPreference, setSunlightPreference] = useState("");
   const [plantGrowthStatus, setPlantGrowthStatus] = useState("");
   const [imagePreview, setImagePreview] = useState(DefaultImage);
+  const [fileInput, setFileInput] = useState("");
 
   const { showAlert } = useCmDialog();
 
@@ -85,6 +83,7 @@ const PlantUpdate = ({ mode = "create" }) => {
     const file = event.target.files[0];
     if (file) {
       setImagePreview(URL.createObjectURL(file));
+      setFileInput(file);
     }
   };
 
@@ -102,9 +101,9 @@ const PlantUpdate = ({ mode = "create" }) => {
     formData.append("plantSunPreference", sunlightPreference);
     formData.append("plantGrowStatus", plantGrowthStatus);
 
-    const fileInput = document.getElementById("imageUpload");
-    if (fileInput?.files?.length > 0) {
-      formData.append("file", fileInput.files[0]);
+    // const fileInput = document.getElementById("imageUpload");
+    if (fileInput) {
+      formData.append("files", fileInput);
     }
 
     try {

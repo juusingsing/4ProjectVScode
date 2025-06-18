@@ -458,7 +458,7 @@ const tabIndexToPath = [
             <img
               src={
                 fileUrl
-                  ? 'http://localhost:8081'+fileUrl
+                  ? 'http://192.168.0.30:8081'+fileUrl
                   : imageFile
               }
               style={{

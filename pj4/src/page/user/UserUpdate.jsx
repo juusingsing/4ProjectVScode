@@ -209,6 +209,10 @@ const UserUpdate = () => {
       usersPasswordRef.current?.focus();
       return;
     }
+    if (!CmUtil.isStrongPassword(usersPassword)) {
+      showAlert('비밀번호는 영문, 숫자, 특수문자 조합 8자 이상이어야 합니다.');
+      return;
+    }
 
     const formData = new FormData();
     formData.append('usersId', usersId);
@@ -240,7 +244,6 @@ const UserUpdate = () => {
         justifyContent: 'flex-start',
         alignItems: 'center',
         height: '640px',
-        maxWidth: '360px',
         width: '100%',
         margin: '0 auto'
       }}
