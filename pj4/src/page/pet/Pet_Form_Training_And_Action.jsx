@@ -179,6 +179,7 @@ const Pet_Form_Training_And_Action = () => {
     setEditId(record.animalTrainingAction);
     setAnimalRecordDate(dayjs(record.animalRecordDate)); // 날짜 상태 설정
     setAnimalTrainingMemo(record.animalTrainingMemo);     // 메모 입력 필드 설정
+    setAnimalTrainingType(record.animalTrainingType);
     setExpanded(true);
   };
 
@@ -472,6 +473,7 @@ const Pet_Form_Training_And_Action = () => {
         <Combo
           groupId="Exercise"
           onSelectionChange={setAnimalTrainingType}
+          defaultValue={animalTrainingType}
           sx={{
               width:'145px',
               borderRadius: "20px",
@@ -564,7 +566,7 @@ const Pet_Form_Training_And_Action = () => {
                   훈련/행동 확인
                  </legend>
                   <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-                    {dayjs(record.animalRecordDate).format('YYYY.MM.DD')} | {{animalTrainingType} ? {animalTrainingType} : '없음'}
+                    {dayjs(record.animalRecordDate).format('YYYY.MM.DD')} | {record.animalTrainingType ? record.animalTrainingType : '없음'}
                   </Typography>
                  
                   <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>

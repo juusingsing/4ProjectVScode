@@ -166,8 +166,9 @@ const FindPw = () => {
           height: "35px",
           minWidth: "0",
           width: "35px",
-          marginTop: "15px",
-          marginLeft: "15px",
+          marginLeft: "0px",
+          marginTop: "25px",
+
           marginBottom: "20px",
           "&:hover": {
             backgroundColor: "#363636",
@@ -269,12 +270,12 @@ const FindPw = () => {
                       인증번호 확인
                     </Typography>
                     {emailTime && (
-                    <Typography
-                      color="error"
-                      sx={{ marginLeft: "10px", fontSize: "14px" }}
-                    >
-                      남은 시간: {formatTime(timer)}
-                    </Typography>
+                      <Typography
+                        color="error"
+                        sx={{ marginLeft: "10px", fontSize: "14px" }}
+                      >
+                        남은 시간: {formatTime(timer)}
+                      </Typography>
                     )}
                   </Box>
                   <UserTextField

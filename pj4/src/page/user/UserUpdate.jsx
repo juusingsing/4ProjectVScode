@@ -282,6 +282,7 @@ const UserUpdate = () => {
               height: "30px",
               minWidth: "0",
               width: "30px",
+              marginLeft: "10px",
               "&:hover": {
                 backgroundColor: "#363636",
               },
@@ -291,7 +292,7 @@ const UserUpdate = () => {
             <img src={back} alt="뒤로가기" style={{ height: "20px" }}></img>
           </Button>
           <Box sx={{ flexGrow: 1, textAlign: 'center' }}>
-            <Typography variant="h5" sx={{ mb: 0, color: "white" }}>
+            <Typography variant="h5" sx={{ mb: 0, color: "white" , marginLeft: '-10px'}}>
               마이페이지
             </Typography>
           </Box>
@@ -339,7 +340,7 @@ const UserUpdate = () => {
               }}
               onClick={handleRemoveProfileImage}
             >
-              <img alt="" src={Delete} style={{ width: '20px' }} />
+
             </IconButton>
           )}
         </Box>

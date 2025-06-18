@@ -29,6 +29,7 @@ import {
 import {InputAdornment} from '@mui/material';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import AlarmMinus from '../../image/alarmMinus.png'
+import { set } from 'react-hook-form';
 const FormRow1 = ({ label, value = '', onChange, multiline = false, inputRef, fieldKey = '' }) => {
   let backgroundColor = '#E0E0E0';
   let border = '1px solid #ccc';
@@ -331,6 +332,12 @@ const tabIndexToPath = [
     try {
       const response = await AlarmCreate(data).unwrap();
       console.log("응답 내용 >>", response); // 여기에 찍히는 걸 확인해야 해!
+      setEatType(''); // 먹이 종류 초기화
+      setAlarmName(''); // 먹이 이름 초기화
+      setAlarmCycle(''); // 주기 초기화
+      setAlarmTime(dayjs().hour(9).minute(0)); // 시간 초기화
+      setAlarmDate(dayjs()); // 날짜 초기화
+      
       alert("등록성공ㅎㅎㅎ");
 
       await alarmSet();
@@ -615,6 +622,7 @@ const tabIndexToPath = [
             }}
           groupId="EatType"
           onSelectionChange={setEatType}
+          defaultValue={eatType}
         />
         <FormRow1 label="먹이 이름:" value={alarmName} onChange={setAlarmName} inputRef={alarmNameRef}/>
             
@@ -671,6 +679,7 @@ const tabIndexToPath = [
               }}
               groupId="AlarmCycle"
               onSelectionChange={setAlarmCycle}
+              defaultValue={alarmCycle}
             >
             </Combo>
         <Typography sx={{ top: -110, position: 'relative', left: 210 }}>

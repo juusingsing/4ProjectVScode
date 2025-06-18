@@ -233,6 +233,7 @@ const Pet_Form_Hospital = () => {
     setAnimalHospitalName(record.animalHospitalName);
     setAnimalMedication(record.animalMedication);
     setAnimalTreatmentMemo(record.animalTreatmentMemo);
+    setAnimalTreatmentType(record.animalTreatmentType);
     setIsEditing(true);
     setEditId(record.animalHospitalTreatmentId);
     setExpanded(true);
@@ -538,6 +539,7 @@ const Pet_Form_Hospital = () => {
           <Combo
             groupId="Medical"
             onSelectionChange={setAnimalTreatmentType}
+            defaultValue={animalTreatmentType}
              sx={{
               width:'145px',
               borderRadius: "20px",
@@ -629,7 +631,7 @@ const Pet_Form_Hospital = () => {
                     병원 진료 확인
                   </legend>
                   <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-                    {dayjs(record.animalVisitDate).format('YYYY.MM.DD')} {record.animalHospitalName} | {{animalTreatmentType} ? {animalTreatmentType}  : '없음'} 
+                    {dayjs(record.animalVisitDate).format('YYYY.MM.DD')} {record.animalHospitalName} | {record.animalTreatmentType ? record.animalTreatmentType  : '없음'}
                   </Typography>
                   <Typography variant="body2" sx={{ fontWeight: 'normal', mb: 0.5 }}>
                     처방약 : {record.animalMedication}

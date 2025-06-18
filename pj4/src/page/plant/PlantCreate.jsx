@@ -78,30 +78,30 @@ const PlantCreate = () => {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Box className="plant-create-container">
-        <div className="header-icon-container">
-          <Button
-            onClick={() => navigate(-1)}
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              borderRadius: "10px",
-              height: "35px",
-              minWidth: "0",
-              width: "35px",
-              marginTop: "15px",
-              marginLeft: "15px",
-              marginBottom: "20px",
-              "&:hover": {
-                backgroundColor: "#363636",
-              },
-              backgroundColor: "rgba(54, 54, 54, 0.4)",
-            }}
-          >
-            <img src={back} alt="" sx={{ pl: "2px" }}></img>
-          </Button>
-        </div>
+      <div className="header-icon-container">
+        <Button
+          onClick={() => navigate("/home.do")}
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            borderRadius: "10px",
+            height: "35px",
+            minWidth: "0",
+            width: "35px",
+            marginLeft: "0px",
+            marginTop: "25px",
 
+            marginBottom: "20px",
+            "&:hover": {
+              backgroundColor: "#363636",
+            },
+            backgroundColor: "rgba(54, 54, 54, 0.4)",
+          }}
+        >
+          <img src={back} alt="" sx={{ pl: "2px" }}></img>
+        </Button>
+      </div>
+      <Box className="plant-create-container">
         <Stack spacing={2} className="plant-form-stack">
           <Box
             sx={{ textAlign: "center", position: "relative", marginBottom: 3 }}
