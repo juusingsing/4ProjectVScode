@@ -5,8 +5,10 @@ import {
   Typography,
   InputBase,
   TextField,
-  Switch
+  Switch,
+ 
 } from '@mui/material';
+import  IconButton from '@mui/material/IconButton';
 import { LocalizationProvider, DatePicker, TimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
@@ -26,6 +28,7 @@ import {
 } from "../../features/alarm/alarmApi";
 import {InputAdornment} from '@mui/material';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import AlarmMinus from '../../image/alarmMinus.png'
 const FormRow1 = ({ label, value = '', onChange, multiline = false, inputRef, fieldKey = '' }) => {
   let backgroundColor = '#E0E0E0';
   let border = '1px solid #ccc';
@@ -647,7 +650,7 @@ const tabIndexToPath = [
             >
             </Combo>
         <Typography sx={{ top: -110, position: 'relative', left: 210 }}>
-              주기
+              시각
           </Typography>
           <TimePicker
             value={alarmTime}
@@ -656,39 +659,21 @@ const tabIndexToPath = [
             closeOnSelect
             slotProps={{
               textField: {
-                InputProps: { readOnly: true },
-                sx: { display: 'none' }, // 숨기기
-              },
-            }}
-            renderInput={() => null}
+                InputProps: { readOnly: true,
+                  sx: {
+                      borderRadius: '11px', // !important 추가
+                      border: '1px solid black',
+                      width: '127px',
+                      height: '31px',
+                      fontSize: '13px',
+                      bottom: '103px',
+                      left: '210px'
+                    }
+                 }
+          }
+          }}
           >
-            {/* Custom Button UI */}
-            <Box
-              onClick={(e) => {
-                // 클릭 시 focus 강제 트리거
-                e.currentTarget.previousSibling.click();
-              }}
-              sx={{
-                width: 135,
-                height: 34,
-                borderRadius: '20px',
-                border: '1px solid black',
-                backgroundColor: 'white',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                gap: 1,
-                position: 'relative',
-                left: 100,
-                top: -50,
-              }}
-            >
-              <AccessTimeIcon sx={{ fontSize: 18 }} />
-              <Typography sx={{ fontSize: 13 }}>
-                {alarmTime ? alarmTime.format('A h:mm') : '시간 선택'}
-              </Typography>
-            </Box>
+            
           </TimePicker> 
 
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
@@ -697,16 +682,16 @@ const tabIndexToPath = [
             </Button>
         </Box>
 
-        <DatePicker
-          label="알림 날짜"
-          value={alarmDate}
-          onChange={(newValue) => {
-            setAlarmDate(newValue);
-          }}
-
-          renderInput={(params) => <TextField size="small" {...params} fullWidth />}
-        />
-
+     <DatePicker
+     
+        value={alarmDate}
+        onChange={(newValue) => setAlarmDate(newValue)}
+        componentsProps={{
+          textField: {
+            inputProps: { sx: { borderRadius: "12px", width: 100, border: '1px solid black' } } // 테두리 조절
+          }
+        }}
+      />
       </Box>
     </Box> 
      <Box sx={{ width: '100%', maxWidth: 400, mx: 'auto', mt: 2 }}>
@@ -723,7 +708,9 @@ const tabIndexToPath = [
             color="primary"
             inputProps={{ 'aria-label': 'toggle alarm' }}
           />
-          <button onClick={() => alarmDelete(alarm.alarmId)}>삭제</button>
+         <IconButton onClick={() => alarmDelete(alarm.alarmId)} sx={{ padding: 0 }}>
+            <img alt="알람사진" src={AlarmMinus} style={{ width: 30, height: 30 }} />
+         </IconButton>
         </Typography>
       ))}
       </Box>

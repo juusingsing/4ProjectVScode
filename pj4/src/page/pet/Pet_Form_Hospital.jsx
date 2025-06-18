@@ -537,10 +537,26 @@ const Pet_Form_Hospital = () => {
             진료 내용
           </Typography>
           <Combo
-            key={animalTreatmentType || 'default'} // ← 이 줄이 중요합니다!
+            key={animalTreatmentType || 'default'}
             groupId="Medical"
             value={animalTreatmentType}
             onSelectionChange={(val) => setAnimalTreatmentType(val)}
+             sx={{
+              width:'145px',
+              borderRadius: "20px",
+              backgroundColor: "#D9D9D9",
+              position: 'relative',
+              top:"-10px",
+              left: "-7px",
+              "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+              "&:hover .MuiOutlinedInput-notchedOutline": { border: "none" },
+              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                border: "none",
+              },
+              "& .MuiSelect-select": { padding: "3px 14px"},
+              "& .MuiSelect-icon": { color: "#888" },
+              flex: 1,
+            }}
           />
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'column', mb: 2 }}>
@@ -577,7 +593,6 @@ const Pet_Form_Hospital = () => {
             onClick={handleSubmit}
             variant="contained"
             sx={{
-              left: -3,
               backgroundColor: '#556B2F',
               borderRadius: '20px',
               px: 4,
