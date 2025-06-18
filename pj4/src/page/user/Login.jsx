@@ -45,7 +45,7 @@ const Login = () => {
         console.log(response);
         showAlert("로그인 성공 홈으로 이동합니다.", () => {
           dispatch(setUser(response.data));
-          navigate("/");
+          navigate("/home.do");
         });
       } else {
         showAlert('로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.');

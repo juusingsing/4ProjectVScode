@@ -11,6 +11,7 @@ import WriteList from './page/write/WriteList';
 import WriteUpdate from './page/write/WriteUpdate';
 import WriteView from './page/write/WriteView';
 import DiaryCreate from './page/diary/DiaryCreate';
+import First from './page/First'
 import Main from './page/main';
 import Position from './page/position/dnlcl';
 import Combo from './page/combo/combo'
@@ -69,8 +70,8 @@ const App = () => {
         {/* 각페이지로 이동하는 버튼구현 */}
         {/* 안드로이드에서 확인하려는데 기본페이지만떠서 */}
 
-
-        <Route path="/" element={<Main />} />
+        <Route path="/" element={<First />} />
+        {/* <Route path="/" element={<Main />} /> */}
 
         <Route path="/position" element={<Position />} />
         <Route path="/combo" element={<Combo />} />
