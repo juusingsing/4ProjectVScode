@@ -84,8 +84,8 @@ const WriteCreate = () => {
     }
 
     // 제목 길이 체크
-    if (!CmUtil.maxLength(contentText, 50)) {
-      showAlert("제목은 최대 50자까지 입력할 수 있습니다.", () =>
+    if (!CmUtil.maxLength(Title, 30)) {
+      showAlert("제목은 최대 30자까지 입력할 수 있습니다.", () =>
         writingTitleRef.current?.focus()
       );
       return;
