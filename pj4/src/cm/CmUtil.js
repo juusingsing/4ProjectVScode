@@ -31,6 +31,12 @@ export class CmUtil {
         return emailPattern.test(value);
     }
 
+    // 아이디 강도 체크 (영문 + 숫자 + 특수문자 포함, 최소 8자 이상)
+    static isStrongId(value) {
+        var idPattern = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+        return idPattern.test(value);
+    }
+
     // 비밀번호 강도 체크 (영문 + 숫자 + 특수문자 포함, 최소 8자 이상)
     static isStrongPassword(value) {
         var passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;

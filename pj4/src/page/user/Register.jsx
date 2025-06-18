@@ -55,6 +55,11 @@ const Register = () => {
       return;
     }
 
+    if (!CmUtil.isStrongId(usersId)) {
+      showAlert('아이디는 영어와 숫자만 입력가능합니다.');
+      return;
+    }
+
     if (CmUtil.isEmpty(usersPassword)) {
       showAlert('비밀번호를 입력해주세요.');
       usersPasswordRef.current?.focus();
