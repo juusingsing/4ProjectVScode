@@ -110,17 +110,26 @@ const WriteList = () => {
     {
       field: "writingTitle",
       headerName: "제목",
-      width: 150,
+      width: 210,
       dbName: "writing_title",
+      headerAlign: 'center'
     },
-    { field: "createId", headerName: "작성자", width: 80, dbName: "create_id" },
+    {
+      field: "createId",
+      headerName: "작성자",
+      width: 80,
+      dbName: "create_id",
+      headerAlign: 'center',
+      align: 'center'
+    },
     {
       field: "writingViewCount",
       headerName: "조회수",
-      width: 40,
+      width: 80,
       dbName: "writing_view_count",
-    },
-    { field: "createDt", headerName: "작성일", width: 80, dbName: "create_dt" },
+      headerAlign: 'center',
+      align: 'center'
+    }
   ];
 
   // ToggleCombo에서 값이 변경될 때 호출될 핸들러
@@ -139,7 +148,7 @@ const WriteList = () => {
   ];
 
   return (
-    <Box sx={{ maxWidth: 360, width: "100%", mx: "auto" }}>
+    <Box sx={{ width: "100%", mx: "auto" }}>
       <Box className="write-top-section">
         <Typography variant="h4">커뮤니티</Typography>
         <Box className="write-top-section-button">
@@ -333,8 +342,8 @@ const WriteList = () => {
           overflow: "hidden", // borderRadius 적용을 위해 overflow hidden 필수
           //헤더 섹션 (Header container) 스타일
           "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: "#e0e0e0", 
-            borderBottom: "1px solid #ccc", 
+            backgroundColor: "#e0e0e0",
+            borderBottom: "1px solid #ccc",
             borderTopLeftRadius: "16px",
             borderTopRightRadius: "16px",
           },
@@ -342,22 +351,26 @@ const WriteList = () => {
           "& .MuiDataGrid-row": {
             cursor: "pointer"
           },
+          // 컬럼 구분선 숨기기 (추가된 부분)
+          "& .MuiDataGrid-columnSeparator": {
+            display: "none",
+          },
 
           //셀 (각 칸) 스타일
           "& .MuiDataGrid-cell": {
-            paddingLeft: "10px",
+            paddingLeft: "13px",
             paddingRight: "10px",
           },
           '& ::-webkit-scrollbar': {
-              width: '8px',
-              height: '8px',
+            width: '8px',
+            height: '8px',
           },
           '& ::-webkit-scrollbar-thumb': {
-              backgroundColor: '#888',
-              borderRadius: '4px',
+            backgroundColor: '#888',
+            borderRadius: '4px',
           },
           '& ::-webkit-scrollbar-thumb:hover': {
-              backgroundColor: '#555',
+            backgroundColor: '#555',
           },
         }}
       />
@@ -375,34 +388,34 @@ const WriteList = () => {
           showLastButton
           onChange={(e, value) => setPage(value)}
           sx={{
-        '& .MuiPagination-ul': {
-        },
+            '& .MuiPagination-ul': {
+            },
 
-        '& .MuiPaginationItem-root': {
-            border: 'none', 
-            '&.Mui-selected': {
+            '& .MuiPaginationItem-root': {
+              border: 'none',
+              '&.Mui-selected': {
                 backgroundColor: '#526B5C',
                 color: 'white',
-                border: 'none', 
-            },
-            '&.MuiPaginationItem-outlined': {
                 border: 'none',
-            },
-            '&.MuiPaginationItem-outlinedPrimary': {
+              },
+              '&.MuiPaginationItem-outlined': {
                 border: 'none',
-            },
-            '&:hover': {
+              },
+              '&.MuiPaginationItem-outlinedPrimary': {
+                border: 'none',
+              },
+              '&:hover': {
                 backgroundColor: '#6a8c75',
                 color: 'white',
-            },
-            '&.MuiPaginationItem-firstLast': {
+              },
+              '&.MuiPaginationItem-firstLast': {
                 border: 'none',
-            },
-            '&.MuiPaginationItem-previousNext': {
+              },
+              '&.MuiPaginationItem-previousNext': {
                 border: 'none',
+              },
             },
-        },
-    }}
+          }}
         />
       </Box>
     </Box>
