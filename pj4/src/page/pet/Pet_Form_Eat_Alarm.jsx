@@ -669,29 +669,9 @@ const tabIndexToPath = [
                       bottom: '103px',
                       left: '210px'
                     }
-                 },
-                openPickerIcon: {
-                  sx: {
-                    position: 'absolute', // 절대 위치 지정
-                    marginLeft: '-30px', // 왼쪽으로 이동
-                    fontSize: '16px', // 아이콘 크기 조정
-                    color: 'gray', // 아이콘 색상 변경 (선택 사항)
-                  }
-                },
-                field: {
-                  sx: {
-                    width: '100px', // 필드 크기 조정
-                    overflow: 'hidden', // 넘치는 부분 숨기기
-                    display: 'flex',
-                    flexDirection: 'row', // 아이콘을 왼쪽으로 이동
-                    justifyContent: 'flex-start',
-                    alignItems: 'center'
-                  }
-                }
-               
+                 }
           }
           }}
-            
           >
             
           </TimePicker> 
@@ -702,18 +682,16 @@ const tabIndexToPath = [
             </Button>
         </Box>
 
-        <DatePicker
-          value={alarmDate}
-          onChange={(newValue) => {
-            setAlarmDate(newValue);
-          }}
-
-          renderInput={(params) => <TextField size="small" {...params} fullWidth
-          inputProps={}
-          />
-        }
-        />
-
+     <DatePicker
+     
+        value={alarmDate}
+        onChange={(newValue) => setAlarmDate(newValue)}
+        componentsProps={{
+          textField: {
+            inputProps: { sx: { borderRadius: "12px", width: 100, border: '1px solid black' } } // 테두리 조절
+          }
+        }}
+      />
       </Box>
     </Box> 
      <Box sx={{ width: '100%', maxWidth: 400, mx: 'auto', mt: 2 }}>
