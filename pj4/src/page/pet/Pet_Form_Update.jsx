@@ -161,7 +161,7 @@ const Pet_Form_Update = () => {
        <Avatar
           src={
             fileUrl
-              ? 'http://localhost:8081/'+ fileUrl
+              ? 'http://localhost:8081'+ fileUrl
               : imageFile
                 ? URL.createObjectURL(imageFile)
                 : existingImageUrl

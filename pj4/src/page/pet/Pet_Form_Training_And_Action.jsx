@@ -476,6 +476,22 @@ const Pet_Form_Training_And_Action = () => {
           groupId="Exercise"
           value={animalTrainingType}
           onSelectionChange={(val) => setAnimalTrainingType(val)}
+          sx={{
+              width:'145px',
+              borderRadius: "20px",
+              backgroundColor: "#D9D9D9",
+              position: 'relative',
+              top:"-10px",
+              left: "-7px",
+              "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+              "&:hover .MuiOutlinedInput-notchedOutline": { border: "none" },
+              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                border: "none",
+              },
+              "& .MuiSelect-select": { padding: "3px 14px"},
+              "& .MuiSelect-icon": { color: "#888" },
+              flex: 1,
+            }}
         />
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', mb: 2 }}>
