@@ -6,7 +6,7 @@ import {
   InputBase,
   TextField,
   Switch,
- 
+  Grid
 } from '@mui/material';
 import  IconButton from '@mui/material/IconButton';
 import { LocalizationProvider, DatePicker, TimePicker } from '@mui/x-date-pickers';
@@ -638,7 +638,7 @@ const tabIndexToPath = [
                   content: '""',
                   position: 'absolute',
                   right: 24, // 아이콘 왼쪽 여백
-                  top: '-2px', // 세로 길이 윗부분
+                  top: '-1px', // 세로 길이 윗부분
                   bottom: '0px', // 세로 길이 아랫부분
                   width: '2px', // 굵기 조절 
                   
@@ -666,7 +666,7 @@ const tabIndexToPath = [
                       width: '127px',
                       height: '31px',
                       fontSize: '13px',
-                      bottom: '103px',
+                      bottom: '104px',
                       left: '210px'
                     }
                  }
@@ -677,43 +677,126 @@ const tabIndexToPath = [
           </TimePicker> 
 
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
-            <Button onClick={alarmCreate} variant="contained" sx={{ backgroundColor: '#556B2F', borderRadius: '20px', px: 4, py: 1, fontSize: 14 }}>
+            <Button onClick={alarmCreate} variant="contained" sx={{ backgroundColor: '#88AE97', borderRadius: '20px', px: 4, py: 1, fontSize: 14, top: -70 }}>
                 알림 등록
             </Button>
         </Box>
-
+     <Typography sx={{ top: -150, position: 'relative', left: 15, fontSize:'14px' }}>
+              알림 날짜:
+      </Typography>
      <DatePicker
-     
         value={alarmDate}
         onChange={(newValue) => setAlarmDate(newValue)}
-        componentsProps={{
-          textField: {
-            inputProps: { sx: { borderRadius: "12px", width: 100, border: '1px solid black' } } // 테두리 조절
+        slotProps={{
+              textField: {
+                InputProps: { readOnly: true,
+                  sx: {
+                      borderRadius: '11px', // !important 추가
+                      border: '1px solid black',
+                      width: '243px',
+                      height: '31px',
+                      fontSize: '13px',
+                      bottom: '175px',
+                      left: '85px'
+                    }
+                 }
           }
-        }}
+          }}
       />
       </Box>
     </Box> 
-     <Box sx={{ width: '100%', maxWidth: 400, mx: 'auto', mt: 2 }}>
-      <Typography variant="h6" gutterBottom>
-        알람 시간 목록:
+    <Box
+      sx={{
+        width: '100%',
+        maxWidth: 400,
+        mx: 'auto',
+        mt: 2,
+        border: '1px solid #ccc',
+        borderRadius: '10px',
+        p: 2,
+        boxShadow: '0 0 4px rgba(0,0,0,0.1)',
+        position: 'relative',
+        top: -130
+      }}
+    >
+      <Typography
+        variant="h6"
+        gutterBottom
+        align="center"
+        sx={{ fontWeight: 'bold', borderBottom: '1px solid #ccc', pb: 1, top: -10, position:"relative" }}
+      >
+        알람 목록
       </Typography>
+
       {alarmList.map((alarm, idx) => (
-        <Typography key={idx} variant="body1" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          • {`알람이름: ${alarm.alarmName} / 먹이종류: ${alarm.type} /`} <br/>
-            {`(주기: ${alarm.alarmCycle}일) ${alarm.year}-${alarm.month}-${alarm.day} ${alarm.hour}:${alarm.min}`} 
-          <Switch
-            checked={alarm.enabled}
-            onChange={() => toggleAlarm(alarm.alarmId)}
-            color="primary"
-            inputProps={{ 'aria-label': 'toggle alarm' }}
-          />
-         <IconButton onClick={() => alarmDelete(alarm.alarmId)} sx={{ padding: 0 }}>
-            <img alt="알람사진" src={AlarmMinus} style={{ width: 30, height: 30 }} />
-         </IconButton>
-        </Typography>
+        <Grid
+          key={idx}
+          container
+          alignItems="center"
+          spacing={1}
+          sx={{ py: 1,  position:'relative', top: 0}}
+        >
+          {/* 알람 이름 + 종류 */}
+          <Grid item xs={5}>
+            <Typography sx={{width:100, fontSize: 14, left:-10, position: 'relative', textAlign:'center' }}>{alarm.alarmName}</Typography>
+            <Typography sx={{width:100, fontSize: 12, color: '#777', left: 60, position: 'relative', top:-18, textAlign:'center' }}>{alarm.type}</Typography>
+          </Grid>
+
+          {/* 주기 + 시간 */}
+          <Grid item xs={3}>
+            <Typography sx={{ width: 100, fontSize: 13, left: 16, position:'relative', top:3, textAlign:'center' }}>{alarm.alarmCycle}일</Typography>
+            <Typography sx={{ width: 100, fontSize: 13, left: 90, position: 'relative', top:-17, textAlign:'center' }}>
+              {`${alarm.hour}:${alarm.min.toString().padStart(2, '0')}`}
+            </Typography>
+          </Grid>
+
+          {/* 스위치 */}
+          <Grid item xs={2}>
+            <Switch
+              checked={alarm.enabled}
+              onChange={() => toggleAlarm(alarm.alarmId)}
+              color="default"
+              size="small"
+              sx={{
+                width: 50,
+                height: 30,
+                left: 70,
+                top: -6,
+                padding: 0,
+                '& .MuiSwitch-switchBase': {
+                  padding: '2px',
+                  '&.Mui-checked': {
+                    transform: 'translateX(16px)',
+                    color: '#fff',
+                    '& + .MuiSwitch-track': {
+                      backgroundColor: '#90caf9',
+                      opacity: 1,
+                    },
+                  },
+                },
+                '& .MuiSwitch-thumb': { //스위치 동그라미 크기 조절
+                  width: 25,
+                  height: 25,
+                  boxShadow: '0 0 2px rgba(0, 0, 0, 0.2)',
+                },
+                '& .MuiSwitch-track': {
+                  borderRadius: 10,
+                  backgroundColor: '#e0e0e0',
+                  opacity: 1,
+                },
+              }}
+            />
+          </Grid>
+
+          {/* 삭제 버튼 */}
+          <Grid item xs={2}>
+            <IconButton onClick={() => alarmDelete(alarm.alarmId)} size="small" sx={{ p: 0, left: 100, top:-7 }}>
+              <img src={AlarmMinus} alt="알람 삭제" style={{ width: 24, height: 24 }} />
+            </IconButton>
+          </Grid>
+        </Grid>
       ))}
-      </Box>
+    </Box>
   </LocalizationProvider>
   </>
 );
