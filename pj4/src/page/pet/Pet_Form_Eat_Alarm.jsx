@@ -119,8 +119,9 @@ const Pet_Form_Eat_Alarm = () => {
   const [existingImageUrl, setExistingImageUrl] = useState('');
   const [fileUrl, setFileUrl] = useState();
    
-
+  const alarmTimeRef = useRef();
   const alarmNameRef = useRef();
+  const alarmDateRef = useRef();
   const [eatType, setEatType] = useState('');   // 선택된 먹이
   const [alarmCycle, setAlarmCycle] = useState('');   // 선택된 주기
   const { data: dbAlarmList, error, isLoading, refetch } = useAlarmListQuery({
@@ -303,7 +304,30 @@ const tabIndexToPath = [
       type: eatType,
       category: "ANI",       // 식물물주기는 PLA    동물먹이는 ANI
     };
-     
+    if (CmUtil.isEmpty(alarmName)) {
+      showAlert("먹이 이름을 입력해주세요.");
+      alarmNameRef.current?.focus();
+      return;
+    } 
+    if (CmUtil.isEmpty(alarmTime)) {
+      showAlert("알람 시각을 입력해주세요.");
+      alarmTimeRef.current?.focus();
+      return;
+    } 
+    if (CmUtil.isEmpty(alarmDate)) {
+      showAlert("알람 시각을 입력해주세요.");
+      alarmDateRef.current?.focus();
+      return;
+    } 
+    if (CmUtil.isEmpty(eatType)) {
+      showAlert("먹이 종류를 선택해주세요.");
+      return;
+    }
+
+    if (CmUtil.isEmpty(alarmCycle)) {
+      showAlert("먹이 주기를 선택해주세요.");
+      return;
+    }
     try {
       const response = await AlarmCreate(data).unwrap();
       console.log("응답 내용 >>", response); // 여기에 찍히는 걸 확인해야 해!
