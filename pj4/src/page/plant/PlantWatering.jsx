@@ -61,6 +61,7 @@ const WateringContent = ({
   waterList,
   waterAdd,
   formatDate,
+  alarmToggle,
 
 }) => {
   return (
@@ -83,6 +84,7 @@ const WateringContent = ({
               onChange={(newValue) => {
                 setAlarmTime(newValue);
                 setAlarmList((prev) => {
+                  console.log("Array.isArray(prev)", Array.isArray(prev));
                   const safePrev = Array.isArray(prev) ? prev : [];
                   const updated = [...safePrev];
                   updated[0] = { ...updated[0], daysTime: newValue };
@@ -92,7 +94,7 @@ const WateringContent = ({
               ampm
             />
 
-        {user && ( alarmList?.[0]?.alarmId != null ? (
+        {user && alarmToggle == true ? (
             <FormControlLabel
               control={
                 <Switch
@@ -103,7 +105,7 @@ const WateringContent = ({
               }
               label=""
               className="alarm-toggle"
-            /> ) :(<></>))}
+            /> ) :(<></>)}
           </Box>
 
           <Box className="alarm-date-row">
@@ -213,12 +215,12 @@ const PlantWatering = () => {
   });
   const [alarmUpdate] = useAlarmUpdateMutation(); // 토글수정  활성화만 Y , N 수정
   const [alarmAllUpdate] = useAlarmAllUpdateMutation(); // 모든알람데이터수정
-  const [alarmList, setAlarmList] = useState();
+  const [alarmList, setAlarmList] = useState([]);
   const [alarmCycle, setAlarmCycle] = useState(""); // 선택된 물주기
   const [AlarmCreate] = useAlarmCreateMutation({});
   const [alarmDate, setAlarmDate] = useState(dayjs());
   const [alarmTime, setAlarmTime] = useState(dayjs().hour(9).minute(0));
-  const [alarmToggle, setAlarmToggle] = useState(true);
+  const [alarmToggle, setAlarmToggle] = useState(false);
   const newFormattedTimes = [];
 
   const [WaterCreate] = useWaterCreateMutation({});
@@ -253,10 +255,9 @@ const PlantWatering = () => {
     waterListLoad();
   }, []);
 
-  // 불러온데이터확인
   useEffect(() => {
-    console.log("plantInfo : ", plantInfo);
-  }, [plantInfo]);
+    console.log("alarmList 갱신돼서 리렌더링")
+  }, [alarmList]);
 
   useEffect(() => {
     console.log("waterData : ", waterData);
@@ -363,6 +364,7 @@ const PlantWatering = () => {
         });
 
         setAlarmList(alarms);
+        setAlarmToggle(true);
 
         // Android로 넘길 때는 enabled=true인 것만 필터해서 JSON 변환
         const activeData = alarms.filter((alarm) => alarm.enabled === true);
@@ -406,6 +408,7 @@ const PlantWatering = () => {
       console.log("응답 내용 >>", response); // 여기에 찍히는 걸 확인해야 해!
       alert("등록성공ㅎㅎㅎ");
       
+      alarmSet();  // alarmList 추가되면 리렌더링
 
     } catch (error) {
       console.error("요청 실패:", error);
@@ -429,6 +432,7 @@ const PlantWatering = () => {
       });
 
       console.log(`서버 알람 ${alarmList[0].alarmId} 상태 업데이트 완료`);
+      showAlert("수정성공ㅎㅎㅎ");
 
       // 프론트 상태 업데이트 (불필요한 필드는 생략 가능)
       setAlarmList([
@@ -605,6 +609,7 @@ const PlantWatering = () => {
           waterList={waterList} // 물주기 로그 데이터    
           waterAdd={waterAdd}
           formatDate={formatDate}
+          alarmToggle={alarmToggle}
           />
         </Box>
       </Box>
