@@ -133,9 +133,9 @@ const PestContent = ({
       className="save-button"
       onClick={handleSave}
       sx={
-        editingLog !== null
+        editingLog !== false
           ? {
-              backgroundColor: "#6e927e !important",
+              backgroundColor: "#6e927e !important",     // 저장버튼 색깔
               "&:hover": {
                 backgroundColor: "#88AE97 !important",
               },
@@ -143,7 +143,7 @@ const PestContent = ({
           : undefined
       }
     >
-      {editingLog !== null ? "저장" : "수정"}
+      {editingLog !== false ? "저장" : "수정"}
     </Button>
 
     <Box className="pest-log-section">
@@ -184,7 +184,7 @@ const PestContent = ({
             <Box sx={{display:'flex'}}>
               {log.fileId && (
                 <img
-                  src={`${process.env.REACT_APP_API_BASE_URL}/file/imgDown.do?fileId=${log.fileId}`}
+                  src={`${process.env.REACT_APP_API_BASE_URL}/file/imgDown.do?fileId=${log.fileId}&t=${Date.now()}`}
                   alt="Pest Log"
                   style={{
                     width: "70px",
@@ -222,6 +222,7 @@ const PlantPest = () => {
   // 중앙에서 탭 상태를 관리합니다.
   // const [currentTab, setCurrentTab] = useState(3); // 일조량 탭이 기본 선택
 
+  const [editPlantPestId, setEditPlantPestId] = useState();
   const [plantPestDate, setPlantPestDate] = useState(null);
   const [plantPestMemo, setPlantPestMemo] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
@@ -232,9 +233,10 @@ const PlantPest = () => {
   const { data: plantInfo } = usePlantInfoQuery(plantId);
 
 
-  const [editingLog, setSelectedLog] = useState(null);
+  const [editingLog, setEditingLog] = useState(true);  // true저장   false 수정
   const [editStatus, setStatus] = useState("");
   const [editMemo, setMemo] = useState("");
+  const [fileId, setFileId] = useState();
 
   const pathToTabIndex = {
     '/plant/PlantWatering.do': 0,
@@ -244,7 +246,7 @@ const PlantPest = () => {
   };
 
 
-const [currentTab, setCurrentTab] = useState();
+const [currentTab, setCurrentTab] = useState(3);
 
 
 const tabIndexToPath = [
@@ -253,14 +255,6 @@ const tabIndexToPath = [
     `/PlantRepotting.do?plantId=${plantId}`,
     `/PlantPest.do?plantId=${plantId}`,
   ];
-﻿
-
-
-  const handleSelectLog = (log) => {
-    setSelectedLog(log);
-    setStatus(log.soilCondition);
-    setMemo(log.repottingMemo);
-  };
 
   const id = searchParams.get("id");
   const { data: fetchedLogs, error, refetch } = usePestLogsQuery({ plantId });
@@ -297,8 +291,10 @@ const tabIndexToPath = [
         formData.append("files", selectedFile); 
     }
 
-    if (editingLog !== null) {
-        formData.append("plantPestId", editingLog.toString()); 
+    if (editingLog != true ) {
+      console.log("수정시작");
+        formData.append("plantPestId", editPlantPestId);
+        formData.append("fileId", fileId);
       
         updatePestLogs(formData)
             .unwrap()
@@ -306,7 +302,7 @@ const tabIndexToPath = [
                 showAlert(res.message);
                 setPlantPestDate(null);
                 setPlantPestMemo("");
-                setSelectedLog(null);
+                setEditingLog(true);
                 setSelectedFile(null); 
                 setSelectedFileName("");
 
@@ -317,13 +313,14 @@ const tabIndexToPath = [
                 showAlert("수정 실패");
             });
     } else {
+      console.log("저장 시작");
         savePestInfo(formData)
             .unwrap()
             .then((res) => {
                 showAlert(res.message);
                 setPlantPestDate(null);
                 setPlantPestMemo("");
-                setSelectedLog(null);
+                setEditingLog(true);
                 setSelectedFile(null); 
                 setSelectedFileName("");
 
@@ -351,9 +348,12 @@ const tabIndexToPath = [
   const handleEditLog = (id) => {
     const logToEdit = pestLogs.find((log) => log.plantPestId === id);
     if (logToEdit) {
+      console.log("logToEdit", logToEdit);
       setPlantPestDate(dayjs(logToEdit.plantPestDate));
       setPlantPestMemo(logToEdit.plantPestMemo);
-      setSelectedLog(id);
+      setEditingLog(false);
+      setEditPlantPestId(id);
+      setFileId(logToEdit.fileId);
       if (logToEdit.fileOriginName) {
         setSelectedFileName(logToEdit.fileOriginName);
         // 만약 기존 파일을 미리보기로 보여주고 싶다면 여기에서 URL을 설정해야 할 수 있습니다.
@@ -382,7 +382,13 @@ const tabIndexToPath = [
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Box className="plant-care-container">
         {/*식물 정보 수정 버튼*/}
-        <Button variant="contained" className="edit-top-button">
+        <Button
+          variant="contained"
+          className="edit-top-button"
+          onClick={() => {
+            navigate(`/PlantUpdate.do?plantId=${plantId}`);
+          }}
+        >
           수정
         </Button>
 
@@ -449,6 +455,7 @@ const tabIndexToPath = [
               onEditLog={handleEditLog}
               selectedFileName={selectedFileName}
               handleFileChange={handleFileChange}
+              editingLog={editingLog}
             />
         </Box>
       </Box>
