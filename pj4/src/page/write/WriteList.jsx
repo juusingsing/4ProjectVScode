@@ -148,7 +148,7 @@ const WriteList = () => {
   ];
 
   return (
-    <Box sx={{ width: "100%", mx: "auto" }}>
+    <Box sx={{ padding: "20px"}}>
       <Box className="write-top-section">
         <Typography variant="h4">커뮤니티</Typography>
         <Box className="write-top-section-button">

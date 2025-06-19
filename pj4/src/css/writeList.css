@@ -57,7 +57,8 @@
 .tab-wrapper {
     display: flex;
     flex-direction: row;
-    width: 100%;
+    width: 112%;
+    margin-left: -20px;
     overflow: hidden;
     margin-top: 10px;
     margin-bottom: 0px;

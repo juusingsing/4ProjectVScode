@@ -34,7 +34,7 @@ const WriteView = () => {
   }, [isSuccess, data]);
 
   return (
-    <Box sx={{width: "100%", mx: "auto" }}>
+    <Box sx={{padding: "20px"}}>
       {isLoading ? (
         <CircularProgress />
       ) : error ? (

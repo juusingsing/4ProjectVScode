@@ -119,7 +119,7 @@ const WriteCreate = () => {
   };
 
   return (
-    <Box sx={{width: "100%", mx: "auto" }}>
+    <Box sx={{padding: "20px"}}>
       <Box
         sx={{
           display: "flex",
@@ -174,7 +174,7 @@ const WriteCreate = () => {
           }}
         >
           {/*제목*/}
-          <Typography variant="h6" gutterBottom sx={{ mt: "15px" }}>
+          <Typography gutterBottom sx={{ mt: "20px", mr:"10px", fontWeight: "600", fontSize: "20px", whiteSpace: "nowrap" }}>
             제목
           </Typography>
           {/*제목 입력란*/}
@@ -190,7 +190,7 @@ const WriteCreate = () => {
               variant="standard"
               sx={{
                 mt: "15px",
-                width: "100%",
+                width: "96%",
                 "& .MuiInput-root": {
                   backgroundColor: "#f0f0f0",
                   borderRadius: "20px",

@@ -88,7 +88,7 @@ const PlantCreate = () => {
             height: "35px",
             minWidth: "0",
             width: "35px",
-            marginLeft: "0px",
+            marginLeft: "30px",
             marginTop: "25px",
 
             marginBottom: "20px",

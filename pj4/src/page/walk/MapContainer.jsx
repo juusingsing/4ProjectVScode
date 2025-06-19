@@ -1,8 +1,10 @@
 // MapContainer.jsx
 
 import React, { useRef, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { GoogleMap, Marker } from "@react-google-maps/api";
-
+import { Button } from "@mui/material";
+import back from "../../image/back.png";
 const mapOptions = {
   draggable: true,
   zoomControl: false,
@@ -11,8 +13,10 @@ const mapOptions = {
   gestureHandling: "greedy"
 };
 
+
 const MapContainer = React.memo(({ center, zoom, markerPosition, startLocation, endLocation, nearbyMarkers, onMapLoad }) => {
   const mapRef = useRef(null);
+  const navigate = useNavigate();
 
   // map instance 저장
   const handleLoad = (map) => {
@@ -30,8 +34,12 @@ const MapContainer = React.memo(({ center, zoom, markerPosition, startLocation, 
   }, [center]);
 
   return (
+    <>
+      
+
+
     <GoogleMap
-      mapContainerStyle={{ width: "100%", height: "300px" }}
+      mapContainerStyle={{ width: "100%", height: "400px" }}
       center={center} // 이건 초깃값, 실제 이동은 setCenter 사용
       zoom={zoom}
       options={mapOptions}
@@ -68,6 +76,7 @@ const MapContainer = React.memo(({ center, zoom, markerPosition, startLocation, 
         />
       ))}
     </GoogleMap>
+    </>
   );
 });
 

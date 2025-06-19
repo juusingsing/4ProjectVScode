@@ -24,6 +24,7 @@ import {
 } from "../../features/plant/plantApi";
 import Combo from "../combo/combo";
 import DefaultImage from "../../image/default-plant.png";
+import back from "../../image/back.png";
 
 const PlantUpdate = ({ mode = "create" }) => {
   const [searchParams] = useSearchParams();
@@ -32,10 +33,7 @@ const PlantUpdate = ({ mode = "create" }) => {
 
   const navigate = useNavigate();
 
-  const {
-    data: fetchedPlantData,
-    isSuccess,
-  } = usePlantInfoQuery(plantId, {
+  const { data: fetchedPlantData, isSuccess } = usePlantInfoQuery(plantId, {
     skip: !isEdit || !plantId,
   });
 
@@ -76,8 +74,6 @@ const PlantUpdate = ({ mode = "create" }) => {
       }
     }
   }, [isEdit, isSuccess, fetchedPlantData]);
-
-
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -140,13 +136,29 @@ const PlantUpdate = ({ mode = "create" }) => {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Box className="plant-create-container">
         <div className="header-icon-container">
-          <IconButton
+          <Button
             className="back-button"
             aria-label="back"
             onClick={() => navigate(-1)}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              borderRadius: "10px",
+              height: "35px",
+              minWidth: "0",
+              width: "35px",
+              marginLeft: "10px",
+              marginTop: "10px",
+
+              marginBottom: "20px",
+              "&:hover": {
+                backgroundColor: "#363636",
+              },
+              backgroundColor: "rgba(54, 54, 54, 0.4)",
+            }}
           >
-            &lt;
-          </IconButton>
+            <img src={back} alt="" sx={{ pl: "2px" }}></img>
+          </Button>
         </div>
 
         <Stack spacing={2} className="plant-form-stack">
@@ -199,7 +211,7 @@ const PlantUpdate = ({ mode = "create" }) => {
             <Combo
               groupId="PlantType"
               defaultValue={plantType} //기본값이 아니라 상태 변수 사용
-              onSelectionChange = {setPlantType}
+              onSelectionChange={setPlantType}
               sx={{ width: "200px" }}
             />
           </Box>

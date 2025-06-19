@@ -97,7 +97,7 @@ const Home = () => {
           backgroundImage: `url(${currentTestImage})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          height: "215px",
+          height: "235px"
         }}
       >
         <Link to={currentTestLink} style={{ textDecoration: "none" }}>
