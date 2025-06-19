@@ -39,6 +39,7 @@ import {
 import {
   usePlantInfoQuery,
   useWaterCreateMutation,
+  useWaterDeleteMutation,
   useWaterListQuery,
 } from "../../features/plant/plantApi";
 
@@ -60,6 +61,7 @@ const WateringContent = ({
   user,
   waterList,
   waterAdd,
+  waterDel,
   formatDate,
   alarmToggle,
 
@@ -182,14 +184,13 @@ const WateringContent = ({
           <Typography>일지가 없습니다.</Typography>
         ) : (
           waterList.map((log) => (
-            <Box key={log.plantWateringId} className="log-entry">
+            <Box key={log.waterId} className="log-entry">
               <Box className="log-details">
                 <Typography>
-                  {formatDate(log.waterDt)} || {log.soilCondition}
+                  {formatDate(log.waterDt)}
                 </Typography>
-                <Typography>{log.wateringMemo}</Typography>
               </Box>
-              <Box className="log-actions">{/* 버튼 or 메뉴 자리 */}</Box>
+              <Box className="log-actions" onClick={()=>waterDel(log.waterId)}>삭제</Box>
             </Box>
           ))
         )}
@@ -224,6 +225,7 @@ const PlantWatering = () => {
   const newFormattedTimes = [];
 
   const [WaterCreate] = useWaterCreateMutation({});
+  const [WaterDelete] = useWaterDeleteMutation({});
   const { data: waterData, error: waterError, isLoading:WaterLoading, refetch:waterListLoad } = useWaterListQuery({
     plantId: plantId, // plantId 아이디조회
   });
@@ -451,8 +453,6 @@ const PlantWatering = () => {
 
   const waterAdd = async () => {
     console.log("waterAdd 실행");
-    // const formData = new FormData();
-    // formData.append("plantId", plantId);
     const data = {
       plantId: plantId, // << 변수값 넣으면됨
     };
@@ -468,7 +468,27 @@ const PlantWatering = () => {
       console.error("요청 실패:", error);
       alert("등록실패!!!!!!!!!!");
     }
-  }
+  };
+
+  const waterDel = async (waterId) => {
+    console.log("waterDel 실행");
+    const data = {
+      waterId: waterId, // << 변수값 넣으면됨
+    };
+
+    try {
+      const response = await WaterDelete(data).unwrap();
+      console.log("응답 내용 >>", response); // 여기에 찍히는 걸 확인해야 해!
+      alert("삭제성공ㅎㅎㅎ");
+
+      waterListLoad();  // 페이지 다시렌더링유도
+
+    } catch (error) {
+      console.error("요청 실패:", error);
+      alert("삭제실패!!!!!!!!!!");
+    }
+  };
+
 
   const toggleAlarm = (alarmId) => {
     console.log("toggleAlarm 실행");
@@ -608,6 +628,7 @@ const PlantWatering = () => {
           user={user}    
           waterList={waterList} // 물주기 로그 데이터    
           waterAdd={waterAdd}
+          waterDel={waterDel}
           formatDate={formatDate}
           alarmToggle={alarmToggle}
           />

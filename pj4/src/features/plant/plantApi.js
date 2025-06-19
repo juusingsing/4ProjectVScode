@@ -230,6 +230,13 @@ export const plantApi = createApi({
         body: data,
       }),
     }),
+    WaterDelete: builder.mutation({
+      query: (data) => ({
+        url: '/plant/waterDelete.do',
+        method: 'POST',
+        body: data,
+      }),
+    }),
     WaterList: builder.query({
       query: (data) => ({
         url: '/plant/waterList.do',
@@ -264,6 +271,7 @@ export const {
   useGetPlantQuery, // 식물 단건 조회
   useGetPlantListQuery, // 식물 목록 조회
   useDeletePlantMutation, // 식물 삭제
-  useWaterCreateMutation, // 물주기
+  useWaterCreateMutation, // 물주기 생성
+  useWaterDeleteMutation, // 물주기 삭제
   useWaterListQuery,      //물주기 조회
 } = plantApi;
