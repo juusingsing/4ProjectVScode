@@ -83,7 +83,8 @@ const WateringContent = ({
               onChange={(newValue) => {
                 setAlarmTime(newValue);
                 setAlarmList((prev) => {
-                  const updated = [...prev];
+                  const safePrev = Array.isArray(prev) ? prev : [];
+                  const updated = [...safePrev];
                   updated[0] = { ...updated[0], daysTime: newValue };
                   return updated;
                 });
@@ -112,10 +113,11 @@ const WateringContent = ({
               onChange={(newValue) => {
                 setAlarmDate(newValue);
                 setAlarmList((prev) => {
-                  const updated = [...prev];
-                  updated[0] = { ...updated[0], daysDate: newValue };
-                  return updated;
-                });
+                const safePrev = Array.isArray(prev) ? prev : []; // ✅ 배열 체크
+                const updated = [...safePrev];
+                updated[0] = { ...(updated[0] ?? {}), daysDate: newValue }; // ✅ 첫 요소 없을 때 대비
+                return updated;
+              });
               }}
               renderInput={(params) => (
                 <TextField size="small" {...params} fullWidth />
