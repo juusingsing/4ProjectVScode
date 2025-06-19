@@ -285,7 +285,7 @@ const Pet_Form_Hospital = () => {
 
     const fetchRecords = async () => {
       try {
-        const res = await fetch('http://localhost:8081/api/petHospital/list.do', {
+        const res = await fetch('http://192.168.0.30:8081/api/petHospital/list.do', {
           method: 'GET',
           credentials: 'include', // 세션 쿠키 포함
         });
@@ -450,7 +450,7 @@ const Pet_Form_Hospital = () => {
             <img
               src={
                 fileUrl
-                  ? 'http://localhost:8081'+fileUrl
+                  ? 'http://192.168.0.30:8081'+fileUrl
                   : imageFile
               }
               style={{
