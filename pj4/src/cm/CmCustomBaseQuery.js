@@ -28,7 +28,8 @@ const baseQueryWithAuthHandler = async (args, api, extraOptions) => {
       if(!alertCheck) {
         dispatch(setAlertCheck(true));
         alert("인증이 만료 되었습니다. 로그인화면으로 이동합니다.");
-        navigateTo('/');
+        window.location.href = "/";
+        // navigateTo('/');
       }
     }, 1000); 
   }

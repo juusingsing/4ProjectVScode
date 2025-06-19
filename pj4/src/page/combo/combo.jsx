@@ -40,10 +40,10 @@ const Combo = ({ groupId, onSelectionChange, defaultValue = "", sx }) => {
   };
 
   const getPlaceholder = () => {
-    if (groupId === "AlarmCycle") return "";
+    if (groupId === "AlarmCycle") return "주기 선택";
     if (groupId === "Community") return "카테고리 선택";
     if (groupId === "WritingSortation") return "종류 선택";
-    if (groupId === "EatType") return "";
+    if (groupId === "EatType") return "먹이 선택";
     return "선택하세요";
   };
 

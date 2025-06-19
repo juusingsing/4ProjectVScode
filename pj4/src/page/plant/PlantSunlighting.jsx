@@ -15,7 +15,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { FaSun, FaTint, FaCloud, FaSnowflake } from "react-icons/fa";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 //훅
 import {
   useSaveSunlightInfoMutation,
@@ -66,8 +66,9 @@ const SunlightContent = ({
         {sunlightOptions.map((opt) => (
           <div
             key={opt.id}
-            className={`status-icon ${selectedSunlight === opt.id ? opt.className : ""
-              }`}
+            className={`status-icon ${
+              selectedSunlight === opt.id ? opt.className : ""
+            }`}
             onClick={() => setSelectedSunlight(opt.id)}
             style={{ cursor: "pointer" }}
             title={opt.label}
@@ -97,11 +98,11 @@ const SunlightContent = ({
       sx={
         editingLog !== null
           ? {
-            backgroundColor: "#88AE97 !important",
-            "&:hover": {
-              backgroundColor: "#6e927e !important",
-            },
-          }
+              backgroundColor: "#88AE97 !important",
+              "&:hover": {
+                backgroundColor: "#6e927e !important",
+              },
+            }
           : undefined
       }
     >
@@ -172,7 +173,6 @@ const PlantSunlighting = () => {
   const [purchaseDate] = useState("2023-01-15");
   // const [currentTab, setCurrentTab] = useState(1); // 분갈이 탭
 
-
   const [selectedSunlight, setSelectedSunlight] = useState(null);
   const [sunlightStatusText, setSunlightStatusText] = useState("");
 
@@ -184,17 +184,14 @@ const PlantSunlighting = () => {
   const [editStatus, setStatus] = useState(""); // 수정할 상태
   const [editMemo, setMemo] = useState(""); // 수정할 메모
 
-
   const pathToTabIndex = {
-    '/plant/PlantWatering.do': 0,
-    '/plant/PlantSunlighting.do': 1,
-    '/plant/PlantRepotting.do': 2,
-    '/plant/PlantPest.do': 3,
+    "/plant/PlantWatering.do": 0,
+    "/plant/PlantSunlighting.do": 1,
+    "/plant/PlantRepotting.do": 2,
+    "/plant/PlantPest.do": 3,
   };
 
-
   const [currentTab, setCurrentTab] = useState();
-
 
   const tabIndexToPath = [
     `/PlantWatering.do?plantId=${plantId}`,
@@ -221,7 +218,6 @@ const PlantSunlighting = () => {
     navigate(tabIndexToPath[newValue]);
   };
 
-
   // 처음 렌더링 시 데이터 가져오기
   useEffect(() => {
     if (fetchedLogs) {
@@ -236,7 +232,6 @@ const PlantSunlighting = () => {
       setCurrentTab(pathToTabIndex[currentPath]);
     }
   }, [location.pathname]);
-
 
   const handleSave = () => {
     const formData = {
@@ -310,6 +305,7 @@ const PlantSunlighting = () => {
         {/*식물 정보 수정 버튼*/}
         <Button
           variant="contained"
+          size="small"
           className="edit-top-button"
           onClick={() => {
             navigate(`/PlantUpdate.do?plantId=${plantId}`);
@@ -344,12 +340,26 @@ const PlantSunlighting = () => {
             </Box>
           </Box>
           <Avatar
-            src={`${process.env.REACT_APP_API_BASE_URL
-              }/file/imgDown.do?fileId=${plantInfo?.data && plantInfo.data.length > 0
+            src={`${
+              process.env.REACT_APP_API_BASE_URL
+            }/file/imgDown.do?fileId=${
+              plantInfo?.data && plantInfo.data.length > 0
                 ? plantInfo.data[0].fileId
                 : ""
-              }`}
+            }`}
             className="plant-avatar"
+            sx={{
+              width: 100,
+              height: 100,
+              borderRadius: "50%",
+              overflow: "hidden",
+              border: "3px solid white",
+              backgroundColor: "#A5B1AA",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              marginRight: "50",
+            }}
           />
         </Box>
 

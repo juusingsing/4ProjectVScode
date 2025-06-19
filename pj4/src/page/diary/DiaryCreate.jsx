@@ -191,20 +191,25 @@ const DiaryCreate = () => {
                 }}
               />
             </Box>
-            <Box mt={1} mr={1.5} gap={1} className="diary-date">
+            <Box mt={-4.5} mr={1.5} gap={1} className="diary-date">
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <Typography variant="h6" alignContent={"center"}>
-                날짜
-              </Typography>
-                <DatePicker                 
+                  날짜
+                </Typography>
+                <DatePicker
                   value={dayjs(date)}
-                  onChange={(newValue) =>
-                    setDate(newValue)
-                  }
+                  onChange={(newValue) => setDate(newValue)}
+                  format="YYYY.MM.DD"
                   slotProps={{
                     textField: {
                       size: "small",
-                      sx: { borderRadius: "15px", backgroundColor: "#F8F8F8" },
+                      InputProps: {
+                        sx: {
+                          borderRadius: "20px",
+                          backgroundColor: "#F8F8F8",
+                          width: "160px",
+                        },
+                      },
                     },
                   }}
                 />
@@ -310,7 +315,7 @@ const DiaryCreate = () => {
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 multiline
-                rows={3}
+                rows={8}
                 fullWidth
                 variant="outlined"
                 inputProps={{ maxLength: 1300, style: { textAlign: "center" } }}

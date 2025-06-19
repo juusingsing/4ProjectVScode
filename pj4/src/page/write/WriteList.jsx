@@ -7,7 +7,13 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search"; // 돋보기 아이콘 임포트
 import ClearIcon from "@mui/icons-material/Clear"; // X 아이콘 임포트
+
 import { CmUtil } from "../../cm/CmUtil";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
+
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useWriteListQuery } from "../../features/write/writeApi";
@@ -31,6 +37,8 @@ const WriteList = () => {
   const startDateRef = useRef(null);
   const endDateRef = useRef(null);
   const searchTextRef = useRef(null);
+
+  const [date, setDate] = useState(dayjs());
 
   // 게시글 분류(동식물))를 관리하는 상태. 초기값 동물
   const [writingSortation, setwritingSortation] = useState("N01");
@@ -110,26 +118,28 @@ const WriteList = () => {
     {
       field: "writingTitle",
       headerName: "제목",
-      width: 210,
+      width: 200,
       dbName: "writing_title",
-      headerAlign: 'center'
+      headerAlign: "center",
     },
     {
-      field: "createId",
-      headerName: "작성자",
-      width: 80,
-      dbName: "create_id",
-      headerAlign: 'center',
-      align: 'center'
+      field: "createDt",
+      headerName: "작성일",
+      width: 100,
+      renderCell: (params) => {
+        const dateStr = params.value;
+        const date = dayjs(dateStr);
+        return <span>{date.format("YY.MM.DD")}</span>;
+      },
     },
     {
       field: "writingViewCount",
       headerName: "조회수",
-      width: 80,
+      width: 65,
       dbName: "writing_view_count",
-      headerAlign: 'center',
-      align: 'center'
-    }
+      headerAlign: "center",
+      align: "center",
+    },
   ];
 
   // ToggleCombo에서 값이 변경될 때 호출될 핸들러
@@ -148,7 +158,7 @@ const WriteList = () => {
   ];
 
   return (
-    <Box sx={{ padding: "20px"}}>
+    <Box sx={{ padding: "0 20px" }}>
       <Box className="write-top-section">
         <Typography variant="h4">커뮤니티</Typography>
         <Box className="write-top-section-button">
@@ -249,82 +259,103 @@ const WriteList = () => {
 
       {/*시작일, 종료일 */}
       <Box sx={{ mb: 2, display: "flex", gap: 2, justifyContent: "center" }}>
-        <TextField
-          variant="standard"
-          sx={{
-            width: "40%",
-            mt: 2,
-            "& .MuiInput-root": {
-              backgroundColor: "#f0f0f0",
-              borderRadius: "20px",
-              height: "35px",
-              padding: "0 10px",
-              "&::before": {
-                borderBottom: "none !important",
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
+            value={dayjs(search.startDate)}
+            onChange={(newValue) => {
+              setSearch({
+                ...search,
+                startDate: newValue.format("YYYY-MM-DD"),
+              });
+            }}
+            format="YYYY-MM-DD"
+            slotProps={{
+              textField: {
+                variant: "standard",
+                inputRef: startDateRef,
+                sx: {
+                  width: "40%",
+                  mt: 2,
+                  "& .MuiInput-root": {
+                    backgroundColor: "#f0f0f0",
+                    borderRadius: "20px",
+                    height: "35px",
+                    padding: "0 10px",
+                    "&::before": {
+                      borderBottom: "none !important",
+                    },
+                    "&::after": {
+                      borderBottom: "none !important",
+                    },
+                    "&:hover:not(.Mui-disabled):before": {
+                      borderBottom: "none !important",
+                    },
+                    "& .MuiInputBase-input": {
+                      padding: "0px",
+                      height: "auto",
+                      flexGrow: 1,
+                    },
+                  },
+                  "& .MuiInputBase-input::placeholder": {
+                    color: "rgba(0, 0, 0, 0.5)",
+                    opacity: 1,
+                  },
+                },
               },
-              "&::after": {
-                borderBottom: "none !important",
+            }}
+          />
+        </LocalizationProvider>
+
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <Typography sx={{ mt: 3 }}>-</Typography>
+          <DatePicker
+            value={dayjs(search.endDate)}
+            onChange={(newValue) => {
+              setSearch({ ...search, endDate: newValue.format("YYYY.MM.DD") });
+            }}
+            format="YYYY-MM-DD"
+            slotProps={{
+              textField: {
+                variant: "standard",
+                inputRef: endDateRef,
+                sx: {
+                  width: "40%",
+                  mt: 2,
+                  "& .MuiInput-root": {
+                    backgroundColor: "#f0f0f0",
+                    borderRadius: "20px",
+                    height: "35px",
+                    padding: "0 10px",
+                    "&::before": {
+                      borderBottom: "none !important",
+                    },
+                    "&::after": {
+                      borderBottom: "none !important",
+                    },
+                    "&:hover:not(.Mui-disabled):before": {
+                      borderBottom: "none !important",
+                    },
+                    "& .MuiInputBase-input": {
+                      padding: "0px",
+                      height: "auto",
+                      flexGrow: 1,
+                    },
+                  },
+                  "& .MuiInputBase-input::placeholder": {
+                    color: "rgba(0, 0, 0, 0.5)",
+                    opacity: 1,
+                  },
+                },
               },
-              "&:hover:not(.Mui-disabled):before": {
-                borderBottom: "none !important",
-              },
-              "& .MuiInputBase-input": {
-                padding: "0px",
-                height: "auto",
-                flexGrow: 1,
-              },
-            },
-            "& .MuiInputBase-input::placeholder": {
-              color: "rgba(0, 0, 0, 0.5)",
-              opacity: 1,
-            },
-          }}
-          type="date"
-          value={search.startDate}
-          inputRef={startDateRef}
-          onChange={(e) => setSearch({ ...search, startDate: e.target.value })}
-        />
-        <Typography sx={{ mt: 3 }}>-</Typography>
-        <TextField
-          variant="standard"
-          sx={{
-            width: "40%",
-            mt: 2,
-            "& .MuiInput-root": {
-              backgroundColor: "#f0f0f0",
-              borderRadius: "20px",
-              height: "35px",
-              padding: "0 10px",
-              "&::before": {
-                borderBottom: "none !important",
-              },
-              "&::after": {
-                borderBottom: "none !important",
-              },
-              "&:hover:not(.Mui-disabled):before": {
-                borderBottom: "none !important",
-              },
-              "& .MuiInputBase-input": {
-                padding: "0px",
-                height: "auto",
-                flexGrow: 1,
-              },
-            },
-            "& .MuiInputBase-input::placeholder": {
-              color: "rgba(0, 0, 0, 0.5)",
-              opacity: 1,
-            },
-          }}
-          type="date"
-          value={search.endDate}
-          inputRef={endDateRef}
-          onChange={(e) => setSearch({ ...search, endDate: e.target.value })}
-        />
+            }}
+          />
+        </LocalizationProvider>
       </Box>
 
       {/*게시물 리스트*/}
       <DataGrid
         rows={rowsWithId}
+        rowHeight={42}
         columns={columns}
         disableColumnFilter={true}
         disableColumnMenu={true}
@@ -340,6 +371,7 @@ const WriteList = () => {
           // 전체 DataGrid 컨테이너의 테두리 둥글게 및 overflow 숨기기
           borderRadius: "16px", // 원하는 둥근 정도 (예: 16px)
           overflow: "hidden", // borderRadius 적용을 위해 overflow hidden 필수
+          height: "479px",
           //헤더 섹션 (Header container) 스타일
           "& .MuiDataGrid-columnHeaders": {
             backgroundColor: "#e0e0e0",
@@ -349,7 +381,7 @@ const WriteList = () => {
           },
           // 로우 (각 행) 스타일
           "& .MuiDataGrid-row": {
-            cursor: "pointer"
+            cursor: "pointer",
           },
           // 컬럼 구분선 숨기기 (추가된 부분)
           "& .MuiDataGrid-columnSeparator": {
@@ -360,17 +392,18 @@ const WriteList = () => {
           "& .MuiDataGrid-cell": {
             paddingLeft: "13px",
             paddingRight: "10px",
+            
           },
-          '& ::-webkit-scrollbar': {
-            width: '8px',
-            height: '8px',
+          "& ::-webkit-scrollbar": {
+            width: "8px",
+            height: "8px",
           },
-          '& ::-webkit-scrollbar-thumb': {
-            backgroundColor: '#888',
-            borderRadius: '4px',
+          "& ::-webkit-scrollbar-thumb": {
+            backgroundColor: "#888",
+            borderRadius: "4px",
           },
-          '& ::-webkit-scrollbar-thumb:hover': {
-            backgroundColor: '#555',
+          "& ::-webkit-scrollbar-thumb:hover": {
+            backgroundColor: "#555",
           },
         }}
       />
@@ -388,31 +421,30 @@ const WriteList = () => {
           showLastButton
           onChange={(e, value) => setPage(value)}
           sx={{
-            '& .MuiPagination-ul': {
-            },
+            "& .MuiPagination-ul": {},
 
-            '& .MuiPaginationItem-root': {
-              border: 'none',
-              '&.Mui-selected': {
-                backgroundColor: '#526B5C',
-                color: 'white',
-                border: 'none',
+            "& .MuiPaginationItem-root": {
+              border: "none",
+              "&.Mui-selected": {
+                backgroundColor: "#526B5C",
+                color: "white",
+                border: "none",
               },
-              '&.MuiPaginationItem-outlined': {
-                border: 'none',
+              "&.MuiPaginationItem-outlined": {
+                border: "none",
               },
-              '&.MuiPaginationItem-outlinedPrimary': {
-                border: 'none',
+              "&.MuiPaginationItem-outlinedPrimary": {
+                border: "none",
               },
-              '&:hover': {
-                backgroundColor: '#6a8c75',
-                color: 'white',
+              "&:hover": {
+                backgroundColor: "#6a8c75",
+                color: "white",
               },
-              '&.MuiPaginationItem-firstLast': {
-                border: 'none',
+              "&.MuiPaginationItem-firstLast": {
+                border: "none",
               },
-              '&.MuiPaginationItem-previousNext': {
-                border: 'none',
+              "&.MuiPaginationItem-previousNext": {
+                border: "none",
               },
             },
           }}

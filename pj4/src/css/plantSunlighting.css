@@ -1,26 +1,15 @@
 .plant-care-container {
-  max-width: 550px;
-  margin: 20px auto;
-  padding: 16px;
+  max-width: 500px;
+  margin: 20px;
+  padding: 15px;
   background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
-  position: relative;
+  position: absolute;
 }
 
 .edit-top-button {
-  position: relative;
-  background-color: #889F7F !important;
-  color: #f1efef;
-  font-size: 12px;
-  border-radius: 250px !important;
-  width: 36px;
-  height: 40px;
-  left: 270px;
-  top: -30px;
 }
-
-
 
 .plant-info-header {
   display: flex;
@@ -49,10 +38,10 @@
 }
 
 .plant-value-box {
-  background-color: #f0f0f0;
-  border-radius: 5px;
-  padding: 4px 12px;
-  display: inline-block;
+  background-color: #f4eeee;
+  width: 130;
+  border-radius: 20px;
+  text-align: center;
 }
 
 .plant-value {
@@ -62,8 +51,8 @@
 }
 
 .plant-avatar {
-  width: 90px !important;
-  height: 90px !important;
+  width: 100px !important;
+  height: 100px !important;
   border: 1px solid #e0e0e0;
 }
 
@@ -73,7 +62,7 @@
 }
 
 .plant-care-tabs .MuiTabs-indicator {
-  background-color: #4CAF50;
+  background-color: #4caf50;
 }
 
 .plant-care-tabs .MuiTab-root {
@@ -85,7 +74,7 @@
 }
 
 .plant-care-tabs .Mui-selected {
-  color: #4CAF50;
+  color: #4caf50;
   font-weight: 600;
 }
 
@@ -134,14 +123,12 @@
   font-weight: bold;
 }
 
-
-
 .status-label {
-  font-weight: 600 !important;
-  color: #333 !important;
+  font-weight: 600;
+  color: #333;
   margin-right: 20px;
   min-width: 80px;
-  font-size: 0.95rem !important;
+  font-size: 0.95rem;
 }
 
 .icon-group {
@@ -169,7 +156,7 @@
 }
 
 .sunlight-status-textfield .MuiOutlinedInput-root {
-  background-color: #D9D9D9;
+  background-color: #f4eeee;
   border-radius: 8px;
   padding: 0;
 }
@@ -182,10 +169,10 @@
 }
 
 .save-button {
-  background-color: #4B6044;
+  background-color: #4b6044;
   color: white;
   padding: 8px 20px;
-  font-size: 0.9rem ;
+  font-size: 0.9rem;
   border-radius: 8px;
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
   text-transform: none;
@@ -199,20 +186,18 @@
 
 .log-header {
   display: flex;
+  justify-content: space-between; /* Pushes title group to left and actions to right */
   align-items: center;
-  border-bottom: 1px solid #e0e0e0;
-  padding-bottom: 8px;
   margin-bottom: 15px;
 }
 
 .log-toggle-icon {
-  color: #757575 !important;
-  margin-right: 8px;
+  margin-right: 5px;
   padding: 0;
 }
 
 .log-title {
-  font-weight: 600 !important;
+  font-weight: bold !important;
   color: #333 !important;
   font-size: 1rem !important;
 }
@@ -233,7 +218,7 @@
 }
 
 .log-checkbox {
-  color: #4CAF50 !important;
+  color: #4caf50 !important;
   margin-right: 8px;
   padding: 0;
   align-self: center;

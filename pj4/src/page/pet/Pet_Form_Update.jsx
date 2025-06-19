@@ -158,7 +158,7 @@ const Pet_Form_Update = () => {
   return (
     <>
       <Button
-        onClick={() => navigate("/home.do")}
+        onClick={() => navigate(-1)}
         sx={{
           display: "flex",
           justifyContent: "center",
@@ -299,7 +299,7 @@ const Pet_Form_Update = () => {
               },
             }}
             sx={{
-              backgroundColor: "#D9D9D9",
+              backgroundColor: "#F4EEEE",
               borderRadius: "12px",
               px: 2,
               py: 1,
@@ -356,7 +356,7 @@ const FormRow = ({
   fieldKey = "",
 }) => {
   // 필드 조건별 스타일 정의
-  let backgroundColor = "#E0E0E0";
+  let backgroundColor = "#F4EEEE";
   let border = "1px solid #ccc";
   let borderRadius = "20px";
   let textDecoration = "none";
@@ -365,7 +365,7 @@ const FormRow = ({
   let minHeight = undefined;
 
   if (fieldKey === "notes") {
-    backgroundColor = "#D9D9D9";
+    backgroundColor = "#F4EEEE";
     fontWeight = "bold";
     color = "#000";
     minHeight = 80; // 3줄 정도 여유
@@ -434,7 +434,7 @@ const DateInputRow = ({ label, value, onChange }) => {
                 sx: {
                   width: 160,
                   height: 40,
-                  backgroundColor: "#D9D9D9",
+                  backgroundColor: "#F4EEEE",
                   borderRadius: "13px",
                   fontSize: "13px",
                   fontWeight: "normal", // ✅ 진하지 않게

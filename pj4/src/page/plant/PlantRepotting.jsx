@@ -11,11 +11,15 @@ import {
   IconButton,
 } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs from "dayjs";
+import "dayjs/locale/ko";
+
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import dayjs from "dayjs";
+
 //훅
 import {
   useRepottingLogsQuery,
@@ -47,34 +51,36 @@ const RepottingContent = ({
   <Box className="repotting-tab-content">
     <Box className="repotting-date">
       <Typography className="date-label">분갈이날짜</Typography>
-      <DatePicker
-        value={repottingDate}
-        onChange={(newValue) => setRepottingDate(newValue)}
-        format="YYYY.MM.DD"
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            variant="outlined"
-            size="small"
-            className="input-field-wrapper"
-            InputProps={{
-              sx: {
-                borderRadius: "8px",
-                backgroundColor: "#f0f0f0",
-                "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "transparent",
+      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocal="ko">
+        <DatePicker
+          value={dayjs(repottingDate)}
+          onChange={(newValue) => setRepottingDate(newValue)}
+          format="YYYY.MM.DD"
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              variant="outlined"
+              size="small"
+              className="input-field-wrapper"
+              InputProps={{
+                sx: {
+                  borderRadius: "8px",
+                  backgroundColor: "#f0f0f0",
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "transparent",
+                  },
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "transparent",
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "transparent",
+                  },
                 },
-                "&:hover .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "transparent",
-                },
-                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "transparent",
-                },
-              },
-            }}
-          />
-        )}
-      />
+              }}
+            />
+          )}
+        />
+      </LocalizationProvider>
     </Box>
 
     <Box className="soil-status-section">
@@ -231,12 +237,12 @@ const PlantRepotting = () => {
   }, [fetchedLogs, refetch]);
 
   // 페이지가 바뀌면 selectedTab도 바뀌도록 설정
-      useEffect(() => {
-        const currentPath = location.pathname;
-        if (pathToTabIndex.hasOwnProperty(currentPath)) {
-          setCurrentTab(pathToTabIndex[currentPath]);
-        }
-      }, [location.pathname]);
+  useEffect(() => {
+    const currentPath = location.pathname;
+    if (pathToTabIndex.hasOwnProperty(currentPath)) {
+      setCurrentTab(pathToTabIndex[currentPath]);
+    }
+  }, [location.pathname]);
 
   const handleSave = () => {
     const formData = {

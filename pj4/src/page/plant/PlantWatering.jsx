@@ -24,9 +24,7 @@ import {
 } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 
-
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
-import "../../css/plantWatering.css"; // Make sure this CSS file exists
 import Combo from "../combo/combo"; // 이 경로가 정확한지 확인하세요.
 //훅
 import {
@@ -64,25 +62,80 @@ const WateringContent = ({
   waterDel,
   formatDate,
   alarmToggle,
-
 }) => {
   return (
     <>
       {/* 알림 설정 영역 */}
-      <Card className="care-section-card">
-        <CardContent>
-          <Typography className="section-title">알림 설정 🔔</Typography>
 
-          <Box className="alarm-setting-row">
+      <CardContent>
+        <Box sx={{ display: "flex" }}>
+          <Typography 
+          sx={{fontWeight:"700"}}>알림 설정 🔔</Typography>
+          {user &&
+            (alarmList?.[0]?.alarmId != null ? (
+              <Button
+                sx={{
+                  backgroundColor: "#88AE97",
+                  width: "60px",
+                  fontSize: "14px",
+                  borderRadius: "25px",
+                  height: "35px",
+                  marginLeft: "10px",
+                }}
+                variant="contained"
+                onClick={alarmAllUpdateSend}
+              >
+                수정
+              </Button>
+            ) : (
+              <Button
+                sx={{
+                  backgroundColor: "#88AE97",
+                  width: "30px",
+                  padding: "12px",
+                  fontSize: "16px",
+                }}
+                variant="contained"
+                onClick={alarmCreate}
+              >
+                저장
+              </Button>
+            ))}
+        </Box>
+
+        <Box sx={{ display: "flex", marginTop: "10px" }}>
+          <Box>
+            <Typography
+              sx={{
+                marginBottom: "-10px",
+              }}
+            >
+              주기
+            </Typography>
             <Combo
               groupId="AlarmCycle"
               onSelectionChange={setAlarmCycle}
               defaultValue={alarmList?.[0]?.alamrCycleCode}
+              sx={{
+                width: "100px",
+              }}
             />
-
+          </Box>
+          <Box sx={{ marginLeft: "50px" }}>
+            <Typography
+              sx={{
+                marginBottom: "-10px",
+              }}
+            >
+              시각
+            </Typography>
             <TimePicker
-              label="알림 시간"
               value={alarmList?.[0]?.daysTime ?? alarmTime}
+              sx={{
+                marginBottom: "20px",
+                width: "150px",
+                marginTop: "15px",
+              }}
               onChange={(newValue) => {
                 setAlarmTime(newValue);
                 setAlarmList((prev) => {
@@ -95,75 +148,80 @@ const WateringContent = ({
               }}
               ampm
             />
-
-        {user && alarmToggle == true ? (
+          </Box>
+          {user && alarmToggle === true ? (
             <FormControlLabel
               control={
                 <Switch
                   checked={alarmList?.[0]?.enabled}
                   onChange={() => toggleAlarm(alarmList[0].alarmId)}
-                  color="primary"
+                  color="success" // 초록 계열
+                  sx={{
+                    "& .MuiSwitch-track": {
+                      backgroundColor: alarmList?.[0]?.enabled
+                        ? "#4B6044"
+                        : "#ccc",
+                      opacity: 1,
+                    },
+                    "& .MuiSwitch-thumb": {
+                      color: alarmList?.[0]?.enabled ? "#fff" : "#888",
+                    },
+                  }}
                 />
               }
               label=""
-              className="alarm-toggle"
-            /> ) :(<></>)}
-          </Box>
+              sx={{ ml: 0 }} // 왼쪽 여백 제거
+            />
+          ) : null}
+        </Box>
 
-          <Box className="alarm-date-row">
-            <DatePicker
-              label="알림 날짜"
-              value={alarmList?.[0]?.daysDate ?? alarmDate}
-              onChange={(newValue) => {
-                setAlarmDate(newValue);
-                setAlarmList((prev) => {
+        <Box className="alarm-date-row">
+          <DatePicker
+          sx={{
+            width: "300px",
+          }}
+            format="YYYY.MM.DD"
+            value={alarmList?.[0]?.daysDate ?? alarmDate}
+            onChange={(newValue) => {
+              setAlarmDate(newValue);
+              setAlarmList((prev) => {
                 const safePrev = Array.isArray(prev) ? prev : []; // ✅ 배열 체크
                 const updated = [...safePrev];
                 updated[0] = { ...(updated[0] ?? {}), daysDate: newValue }; // ✅ 첫 요소 없을 때 대비
                 return updated;
               });
-              }}
-              renderInput={(params) => (
-                <TextField size="small" {...params} fullWidth />
-              )}
-            />
-          </Box>
+            }}
+            renderInput={(params) => (
+              <TextField size="small" {...params} fullWidth />
+            )}
+          />
+        </Box>
 
-          {/* 알람 디버그 정보 */}
-          <Box sx={{ mt: 2 }}>
-            <Typography variant="body2">
-              알람번호 : {alarmList?.[0]?.alarmId} <br />
-              펫아이디 : {alarmList?.[0]?.petId}
-            </Typography>
-          </Box>
+        {/* 알람 디버그 정보 */}
+        <Box sx={{ mt: 2 }}>
+          <Typography variant="body2">
+            {/* 알람번호 : {alarmList?.[0]?.alarmId} <br />
+              펫아이디 : {alarmList?.[0]?.petId} */}
+          </Typography>
+        </Box>
+      </CardContent>
 
-          <Box className="save-and-allupdate-button-container">
-            {user &&
-              (alarmList?.[0]?.alarmId != null ? (
-                <Button
-                  variant="contained"
-                  className="saveAndAllUpdateBt"
-                  onClick={alarmAllUpdateSend}
-                >
-                  수정
-                </Button>
-              ) : (
-                <Button
-                  variant="contained"
-                  className="saveAndAllUpdateBt"
-                  onClick={alarmCreate}
-                >
-                  저장
-                </Button>
-              ))}
-          </Box>
-        </CardContent>
-      </Card>
-
-      <Typography className="section-title">💧 물주기 기록</Typography>
+      <Typography 
+      sx={{fontWeight:"700"}}>물주기 기록</Typography>
 
       <Box className="water-log-action">
-        <Button onClick={() => waterAdd()} variant="contained" className="watered-button">
+        <Button
+          sx={{
+            backgroundColor: "#75AAC0",
+            borderRadius: "20px",
+            marginLeft: "120px",
+            width: "150px",
+            height: "50px",
+          }}
+          onClick={() => waterAdd()}
+          variant="contained"
+          className="watered-button"
+        >
           물 줬어요!
         </Button>
       </Box>
@@ -184,13 +242,41 @@ const WateringContent = ({
           <Typography>일지가 없습니다.</Typography>
         ) : (
           waterList.map((log) => (
-            <Box key={log.waterId} className="log-entry">
-              <Box className="log-details">
-                <Typography>
-                  {formatDate(log.waterDt)}
-                </Typography>
+            <Box
+              key={log.waterId}
+              className="log-entry"
+              component="fieldset"
+              sx={{
+                mb: 2,
+                border: "1px solid #ccc",
+                p: 2,
+              }}
+            >
+              <legend
+                style={{
+                  fontWeight: "bold",
+                  padding: "0 8px",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <CheckBoxIcon sx={{ fontSize: 18, color: "#333", mr: 1 }} />
+                물주기 완료
+              </legend>
+              <Typography sx={{ width: "160px" }}>
+                {formatDate(log.waterDt)}
+              </Typography>
+              <Box
+                className="log-actions"
+                onClick={() => waterDel(log.waterId)}
+                sx={{
+                  marginLeft: "160px",
+                  marginTop: "-45px",
+                  fontSize: "12px",
+                }}
+              >
+                삭제
               </Box>
-              <Box className="log-actions" onClick={()=>waterDel(log.waterId)}>삭제</Box>
             </Box>
           ))
         )}
@@ -226,7 +312,12 @@ const PlantWatering = () => {
 
   const [WaterCreate] = useWaterCreateMutation({});
   const [WaterDelete] = useWaterDeleteMutation({});
-  const { data: waterData, error: waterError, isLoading:WaterLoading, refetch:waterListLoad } = useWaterListQuery({
+  const {
+    data: waterData,
+    error: waterError,
+    isLoading: WaterLoading,
+    refetch: waterListLoad,
+  } = useWaterListQuery({
     plantId: plantId, // plantId 아이디조회
   });
   const [waterList, setWaterList] = useState([]);
@@ -258,7 +349,7 @@ const PlantWatering = () => {
   }, []);
 
   useEffect(() => {
-    console.log("alarmList 갱신돼서 리렌더링")
+    console.log("alarmList 갱신돼서 리렌더링");
   }, [alarmList]);
 
   useEffect(() => {
@@ -278,14 +369,22 @@ const PlantWatering = () => {
     // 알람아이디없으면 catch 로감
     try {
       const response = await refetch();
-      if(response?.data?.data.length == 0) {
+      if (response?.data?.data.length == 0) {
         // alert("데이터없음");
         return;
-      };
+      }
       console.log("aaaaaaa", response);
       console.log("response.data:", response.data);
-      console.log("response.data.success:", response.data.success, typeof response.data.success);
-      console.log("response.data.data:", response.data.data, Array.isArray(response.data.data));
+      console.log(
+        "response.data.success:",
+        response.data.success,
+        typeof response.data.success
+      );
+      console.log(
+        "response.data.data:",
+        response.data.data,
+        Array.isArray(response.data.data)
+      );
 
       if (
         response.data &&
@@ -409,9 +508,8 @@ const PlantWatering = () => {
       const response = await AlarmCreate(data).unwrap();
       console.log("응답 내용 >>", response); // 여기에 찍히는 걸 확인해야 해!
       alert("등록성공ㅎㅎㅎ");
-      
-      alarmSet();  // alarmList 추가되면 리렌더링
 
+      alarmSet(); // alarmList 추가되면 리렌더링
     } catch (error) {
       console.error("요청 실패:", error);
       alert("등록실패!!!!!!!!!!");
@@ -462,8 +560,7 @@ const PlantWatering = () => {
       console.log("응답 내용 >>", response); // 여기에 찍히는 걸 확인해야 해!
       alert("등록성공ㅎㅎㅎ");
 
-      waterListLoad();  // 페이지 다시렌더링유도
-
+      waterListLoad(); // 페이지 다시렌더링유도
     } catch (error) {
       console.error("요청 실패:", error);
       alert("등록실패!!!!!!!!!!");
@@ -481,14 +578,12 @@ const PlantWatering = () => {
       console.log("응답 내용 >>", response); // 여기에 찍히는 걸 확인해야 해!
       alert("삭제성공ㅎㅎㅎ");
 
-      waterListLoad();  // 페이지 다시렌더링유도
-
+      waterListLoad(); // 페이지 다시렌더링유도
     } catch (error) {
       console.error("요청 실패:", error);
       alert("삭제실패!!!!!!!!!!");
     }
   };
-
 
   const toggleAlarm = (alarmId) => {
     console.log("toggleAlarm 실행");
@@ -534,7 +629,7 @@ const PlantWatering = () => {
   };
 
   const formatDate = (isoString) => {
-    if (!isoString) return '';
+    if (!isoString) return "";
 
     const date = new Date(isoString);
 
@@ -543,22 +638,33 @@ const PlantWatering = () => {
     const day = date.getDate();
 
     let hours = date.getHours();
-    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, "0");
 
-    const ampm = hours >= 12 ? 'PM' : 'AM';
+    const ampm = hours >= 12 ? "PM" : "AM";
 
     hours = hours % 12;
     if (hours === 0) hours = 12; // 12시 표시 처리
 
-    return `${year}.${month}.${day}  ${ampm} ${hours.toString().padStart(2, '0')}:${minutes}`;
+    return `${year}.${month}.${day}  ${ampm} ${hours
+      .toString()
+      .padStart(2, "0")}:${minutes}`;
   };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-
-      <Box className="plant-care-container">
+      <Box
+        sx={{
+          padding: "16px",
+          backgroundColor: "#f5f5f5",
+          minHeight: "100vh",
+        }}
+      >
         {/*식물 정보 수정 버튼*/}
-        <Button onClick={()=>navigate(`/PlantUpdate.do?plantId=${plantId}`)} variant="contained" className="edit-top-button">
+        <Button
+          onClick={() => navigate(`/PlantUpdate.do?plantId=${plantId}`)}
+          variant="contained"
+          className="edit-top-button"
+        >
           수정
         </Button>
 
@@ -615,22 +721,22 @@ const PlantWatering = () => {
 
         <Box className="tab-content-display">
           <WateringContent
-          alarmList={alarmList}
-          setAlarmList={setAlarmList}
-          alarmTime={alarmTime}
-          setAlarmTime={setAlarmTime}
-          alarmDate={alarmDate}
-          setAlarmDate={setAlarmDate}
-          setAlarmCycle={setAlarmCycle}
-          alarmCreate={alarmCreate}
-          alarmAllUpdateSend={alarmAllUpdateSend} 
-          toggleAlarm={toggleAlarm}
-          user={user}    
-          waterList={waterList} // 물주기 로그 데이터    
-          waterAdd={waterAdd}
-          waterDel={waterDel}
-          formatDate={formatDate}
-          alarmToggle={alarmToggle}
+            alarmList={alarmList}
+            setAlarmList={setAlarmList}
+            alarmTime={alarmTime}
+            setAlarmTime={setAlarmTime}
+            alarmDate={alarmDate}
+            setAlarmDate={setAlarmDate}
+            setAlarmCycle={setAlarmCycle}
+            alarmCreate={alarmCreate}
+            alarmAllUpdateSend={alarmAllUpdateSend}
+            toggleAlarm={toggleAlarm}
+            user={user}
+            waterList={waterList} // 물주기 로그 데이터
+            waterAdd={waterAdd}
+            waterDel={waterDel}
+            formatDate={formatDate}
+            alarmToggle={alarmToggle}
           />
         </Box>
       </Box>
