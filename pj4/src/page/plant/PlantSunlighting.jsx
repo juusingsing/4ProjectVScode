@@ -95,17 +95,17 @@ const SunlightContent = ({
       className="save-button"
       onClick={handleSave}
       sx={
-        editingLog !== null
+        editingLog !== false
           ? {
-            backgroundColor: "#88AE97 !important",
+            backgroundColor: "#6e927e !important",   // 저장
             "&:hover": {
-              backgroundColor: "#6e927e !important",
+              backgroundColor: "#88AE97 !important",
             },
           }
           : undefined
       }
     >
-      {editingLog !== null ? "수정" : "저장"}
+      {editingLog !== false ? "저장" : "수정"}
     </Button>
 
     <Box className="sunlight-log-section">
@@ -176,11 +176,12 @@ const PlantSunlighting = () => {
   const [selectedSunlight, setSelectedSunlight] = useState(null);
   const [sunlightStatusText, setSunlightStatusText] = useState("");
 
+  const [plantSunlightingId, setPlantSunlightingId] = useState();
   const [sunlightLogs, setSunlightLogs] = useState([]);
   const [deleteSunlightLogs] = useDeleteSunlightLogsMutation();
   const { data: plantInfo } = usePlantInfoQuery(plantId);
 
-  const [editingLog, setSelectedLog] = useState(null); // 현재 수정 중인 로그
+  const [editingLog, setEditingLog] = useState(true);  // true저장   false 수정
   const [editStatus, setStatus] = useState(""); // 수정할 상태
   const [editMemo, setMemo] = useState(""); // 수정할 메모
 
@@ -193,7 +194,7 @@ const PlantSunlighting = () => {
   };
 
 
-  const [currentTab, setCurrentTab] = useState();
+  const [currentTab, setCurrentTab] = useState(1);
 
 
   const tabIndexToPath = [
@@ -202,12 +203,6 @@ const PlantSunlighting = () => {
     `/PlantRepotting.do?plantId=${plantId}`,
     `/PlantPest.do?plantId=${plantId}`,
   ];
-
-  const handleSelectLog = (log) => {
-    setSelectedLog(log);
-    setStatus(log.sunlightStatus); // 일조량 상태 채우기
-    setMemo(log.sunlightMemo); // 메모 채우기
-  };
 
   // const { data, isLoading } = useSunlightAlistQuery({ plantSunlightingId: id });
   const {
@@ -245,16 +240,16 @@ const PlantSunlighting = () => {
       sunlightMemo: sunlightStatusText,
     };
 
-    if (editingLog !== null) {
+    if (editingLog !== true) {
       //수정
-      formData.plantSunlightingId = editingLog;
+      formData.plantSunlightingId = plantSunlightingId;
       updateSunlightLogs(formData)
         .unwrap()
         .then((res) => {
           showAlert(res.message);
           setSelectedSunlight(null);
           setSunlightStatusText("");
-          setSelectedLog(null);
+          setEditingLog(true);
           refetch();
         })
         .catch((err) => {
@@ -269,10 +264,8 @@ const PlantSunlighting = () => {
           showAlert(res.message);
           setSelectedSunlight(null);
           setSunlightStatusText("");
-          setSelectedLog(null);
+          setEditingLog(true);
 
-          const plantData = new FormData();
-          plantData.append("plantId", plantId);
           refetch();
         })
         .catch((err) => {
@@ -300,7 +293,8 @@ const PlantSunlighting = () => {
     if (logToEdit) {
       setSelectedSunlight(logToEdit.sunlightStatus); // ☀️ 선택된 아이콘 세팅
       setSunlightStatusText(logToEdit.sunlightMemo); // ✍️ 메모 세팅
-      setSelectedLog(id);
+      setPlantSunlightingId(id);
+      setEditingLog(false);
     }
   };
 
@@ -377,6 +371,7 @@ const PlantSunlighting = () => {
             sunlightLogs={sunlightLogs}
             onDeleteLog={handleDeleteLog}
             onEditLog={handleEditLog}
+            editingLog={editingLog}
           />
         </Box>
       </Box>

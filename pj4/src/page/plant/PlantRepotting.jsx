@@ -106,17 +106,17 @@ const RepottingContent = ({
       className="save-button"
       onClick={handleSave}
       sx={
-        editingLog !== null
+        editingLog !== false
           ? {
-              backgroundColor: "#88AE97 !important",
+              backgroundColor: "#6e927e !important",        // 저장
               "&:hover": {
-                backgroundColor: "#6e927e !important",
+                backgroundColor: "#88AE97 !important",
               },
             }
           : undefined
       }
     >
-      {editingLog !== null ? "수정" : "저장"}
+      {editingLog !== false ? "저장" : "수정"}
     </Button>
 
     <Box className="repotting-log-section">
@@ -182,11 +182,12 @@ const PlantRepotting = () => {
   const [soilConditionText, setSoilConditionText] = useState("");
   const [repottingMemoText, setRepottingMemoText] = useState("");
 
+  const [plantRepottingId, setPlantRepottingId] = useState();
   const [repottingLogs, setRepottingLogs] = useState([]);
   const [deleteRepottingLogs] = useDeleteRepottingLogsMutation();
   const { data: plantInfo } = usePlantInfoQuery(plantId);
 
-  const [editingLog, setSelectedLog] = useState(null);
+  const [editingLog, setEditingLog] = useState(true);  // true저장   false 수정
   const [editStatus, setStatus] = useState("");
   const [editMemo, setMemo] = useState("");
 
@@ -197,7 +198,7 @@ const PlantRepotting = () => {
     "/plant/PlantPest.do": 3,
   };
 
-  const [currentTab, setCurrentTab] = useState();
+  const [currentTab, setCurrentTab] = useState(2);
 
   const tabIndexToPath = [
     `/PlantWatering.do?plantId=${plantId}`,
@@ -205,12 +206,6 @@ const PlantRepotting = () => {
     `/PlantRepotting.do?plantId=${plantId}`,
     `/PlantPest.do?plantId=${plantId}`,
   ];
-
-  const handleSelectLog = (log) => {
-    setSelectedLog(log);
-    setStatus(log.soilCondition);
-    setMemo(log.repottingMemo);
-  };
 
   const {
     data: fetchedLogs,
@@ -246,9 +241,9 @@ const PlantRepotting = () => {
       repottingMemo: repottingMemoText,
     };
 
-    if (editingLog !== null) {
+    if (editingLog !== true) {
       //수정
-      formData.plantRepottingId = editingLog;
+      formData.plantRepottingId = plantRepottingId;
       repottingUpdateLogs(formData)
         .unwrap()
         .then((res) => {
@@ -256,7 +251,7 @@ const PlantRepotting = () => {
           setRepottingDate(null);
           setSoilConditionText("");
           setRepottingMemoText("");
-          setSelectedLog(null);
+          setEditingLog(true);
           refetch();
         })
         .catch((err) => {
@@ -272,10 +267,8 @@ const PlantRepotting = () => {
           setRepottingDate(null);
           setSoilConditionText("");
           setRepottingMemoText("");
-          setSelectedLog(null);
+          setEditingLog(true);
 
-          const plantData = new FormData();
-          plantData.append("plantId", plantId);
           refetch();
         })
         .catch((err) => {
@@ -303,7 +296,8 @@ const PlantRepotting = () => {
       setRepottingDate(dayjs(logToEdit.repottingDate));
       setSoilConditionText(logToEdit.soilCondition);
       setRepottingMemoText(logToEdit.repottingMemo);
-      setSelectedLog(id);
+      setPlantRepottingId(id);
+      setEditingLog(false);
     }
   };
 
@@ -311,7 +305,13 @@ const PlantRepotting = () => {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Box className="plant-care-container">
         {/*식물 정보 수정 버튼*/}
-        <Button variant="contained" className="edit-top-button">
+        <Button
+          variant="contained"
+          className="edit-top-button"
+          onClick={() => {
+            navigate(`/PlantUpdate.do?plantId=${plantId}`);
+          }}
+        >
           수정
         </Button>
 
@@ -378,6 +378,7 @@ const PlantRepotting = () => {
             repottingLogs={repottingLogs}
             onDeleteLog={handleDeleteLog}
             onEditLog={handleEditLog}
+            editingLog={editingLog}
           />
         </Box>
       </Box>
