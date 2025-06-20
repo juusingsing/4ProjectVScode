@@ -53,6 +53,20 @@ export const alarmApi = createApi({
         body: data,
       }),
     }),
+    PetDeleteAlarm: builder.mutation({
+      query: (data) => ({
+        url: '/alarm/petDelete.do',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+    PlantDeleteAlarm: builder.mutation({
+      query: (data) => ({
+        url: '/alarm/plantDelete.do',
+        method: 'POST',
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -63,4 +77,6 @@ export const {
     useAlarmUpdateMutation,
     useAlarmAllUpdateMutation,
     useAlarmDeleteMutation,
+    usePetDeleteAlarmMutation,
+    usePlantDeleteAlarmMutation,
 } = alarmApi;

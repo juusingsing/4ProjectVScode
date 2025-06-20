@@ -22,6 +22,7 @@ import {
   useCreatePlantMutation,
   usePlantInfoQuery,
 } from "../../features/plant/plantApi";
+import { usePlantDeleteAlarmMutation } from "../../features/alarm/alarmApi";
 import Combo from "../combo/combo";
 import DefaultImage from "../../image/default-plant.png";
 import back from "../../image/back.png";
@@ -50,6 +51,8 @@ const PlantUpdate = ({ mode = "create" }) => {
   const [updatePlant] = useUpdatePlantMutation();
   const [deletePlant] = useDeletePlantMutation();
   const [createPlant] = useCreatePlantMutation();
+
+  const [plantDeleteAlarm] = usePlantDeleteAlarmMutation();
 
   useEffect(() => {
     if (isEdit && isSuccess && fetchedPlantData?.data?.length > 0) {
@@ -123,6 +126,31 @@ const PlantUpdate = ({ mode = "create" }) => {
     console.log(plantId);
     if (window.confirm("정말 삭제하시겠습니까?")) {
       try {
+
+        plantDeleteAlarm({
+        petId: plantId,
+        category: "PLA",
+      })
+        .unwrap()
+        .then((response) => {
+          console.log(`동물아이디${plantId}의 모든알람 상태 업데이트 완료`);
+          console.log("전체 응답:", response);
+        
+          // 알람 끄기 - Android cancelAlarm 호출
+          if (window.Android && window.Android.cancelAlarm) {
+            console.log("response.data.length = " ,response.data.length);
+            for (let i = 0; i < response?.data?.length; i++) {
+              const alarmId = response.data[i].alarmId;
+              window.Android.cancelAlarm(String(alarmId));
+            }
+          }
+        })
+        .catch((err) => {
+          console.error("알람 업데이트 실패", err);
+          showAlert("알람 상태 업데이트 실패");
+        });
+
+
         await deletePlant({ plantId: plantId }).unwrap();
         showAlert("삭제 성공");
         navigate("/home.do?tab=N02");

@@ -10,6 +10,7 @@ import {
   Avatar,
   IconButton,
 } from "@mui/material";
+import { usePetDeleteAlarmMutation } from "../../features/alarm/alarmApi";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { usePet_Form_UpdateMutation } from "../../features/pet/petApi"; // RTK Query 훅 임포트
@@ -52,6 +53,8 @@ const Pet_Form_Update = () => {
   const { data, isLoading: isPetLoading } = useGetPetByIdQuery(animalId, {
     skip: !animalId,
   });
+
+  const [petDeleteAlarm] = usePetDeleteAlarmMutation();
 
   const handleImageChange = (e) => {
     console.log("선택한파일 : ", e.target.files?.[0]);
@@ -143,6 +146,31 @@ const Pet_Form_Update = () => {
     }
 
     try {
+
+      petDeleteAlarm({
+        petId: animalId,
+        category: "ANI",
+      })
+        .unwrap()
+        .then((response) => {
+          console.log(`동물아이디${animalId}의 모든알람 상태 업데이트 완료`);
+          console.log("전체 응답:", response);
+        
+          // 알람 끄기 - Android cancelAlarm 호출
+          if (window.Android && window.Android.cancelAlarm) {
+            console.log("response.data.length = " ,response.data.length);
+            for (let i = 0; i < response?.data?.length; i++) {
+              const alarmId = response.data[i].alarmId;
+              window.Android.cancelAlarm(String(alarmId));
+            }
+          }
+        })
+        .catch((err) => {
+          console.error("알람 업데이트 실패", err);
+          showAlert("알람 상태 업데이트 실패");
+        });
+
+
       const result = await deletePet({ animalId }).unwrap();
       if (result.success) {
         showAlert("삭제 성공!");
