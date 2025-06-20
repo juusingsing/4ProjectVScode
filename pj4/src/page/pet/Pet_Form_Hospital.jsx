@@ -139,7 +139,7 @@ const DateInputRow = ({ label, value, onChange }) => {
                   fontSize: "12px",
                   fontWeight: "normal",
                   pr: "12px",
-                  pl: "12px",
+                  pl: "29px",
                   "& input": {
                     textAlign: "center",
                     padding: 0,
@@ -149,6 +149,7 @@ const DateInputRow = ({ label, value, onChange }) => {
               inputProps: {
                 style: {
                   textAlign: "center",
+                  
                 },
               },
             },

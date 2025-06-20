@@ -191,6 +191,7 @@ const WriteCreate = () => {
               sx={{
                 mt: "15px",
                 width: "96%",
+                textAlign:'center',
                 "& .MuiInput-root": {
                   backgroundColor: "#f0f0f0",
                   borderRadius: "20px",
@@ -207,6 +208,7 @@ const WriteCreate = () => {
                   "& .MuiInputBase-input": {
                     padding: "0 10px",
                     flexGrow: 1,
+                    textAlign:'center'
                   },
                 },
                 "& .MuiInputBase-input::placeholder": {
