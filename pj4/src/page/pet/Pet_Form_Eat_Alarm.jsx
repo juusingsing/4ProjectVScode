@@ -284,15 +284,15 @@ const Pet_Form_Eat_Alarm = () => {
             console.warn("Android 인터페이스를 찾을 수 없습니다.");
           }
         } catch (e) {
-          console.error("Android Alarm 호출 중 오류:", e);
+          // console.error("Android Alarm 호출 중 오류:", e);
           alert("Android Alarm 호출 중 오류:");
         }
       } else {
-        showAlert("데이터조회실패1");
+        // showAlert("데이터조회실패1");
         console.log("응답 구조 이상:", response.data);
       }
     } catch (error) {
-      showAlert("데이터조회실패2");
+      // showAlert("데이터조회실패2");
       console.error(error);
     }
   };
@@ -495,12 +495,12 @@ const Pet_Form_Eat_Alarm = () => {
             {/* 왼쪽 입력 */}
             <Box sx={{ marginTop: "30px" }}>
               <Stack direction="row" spacing={2} alignItems="center" sx={{position:'absoulte', top:'48px',left:'48px'}}>
-                <Typography variant="subtitle1" sx={{position:'absolute', left:'38px',top:'48px', width:'100px'}}>동물 이름</Typography>
+                <Typography variant="subtitle1" sx={{position:'absolute', left:'30px',top:'46px', width:'100px'}}>동물 이름</Typography>
                 <div
                   style={{
                     position: "absolute",
-                    left: "110px",
-                    top:'50px',
+                    left: "94px",
+                    top:'48px',
                     backgroundColor: "#F4EEEE",
                     width: 130,
                     borderRadius: "20px",
@@ -512,12 +512,12 @@ const Pet_Form_Eat_Alarm = () => {
               </Stack>
 
               <Stack direction="row" spacing={2} alignItems="center" sx={{position:'absolute', top:'80px',left:'20px'}}>
-                <Typography variant="subtitle1" sx={{position:'absolute', left:'18px',top:'2px', width:'100px'}}>입양일</Typography>
+                <Typography variant="subtitle1" sx={{position:'absolute', left:'10px',top:'-6px', width:'100px'}}>입양일</Typography>
                 <div
                   style={{
                     position: "absolute",
-                    left: "90px",
-                    top:'2px',
+                    left: "74px",
+                    top:'-4px',
                     backgroundColor: "#F4EEEE",
                     width: 130,
                     borderRadius: "20px",
@@ -535,7 +535,7 @@ const Pet_Form_Eat_Alarm = () => {
                   onClick={() => navigate(`/pet/walk.do?animalId=${animalId}`)}
                   sx={{
                     position: "absolute",
-                    left: "44px",
+                    left: "30px",
                     top:'120px',
                     backgroundColor: "#88AE97",
                     borderRadius: "30px",
@@ -613,7 +613,7 @@ const Pet_Form_Eat_Alarm = () => {
             sx={{
               position: "absolute",
                     left: "0px",
-                    top:'180px',
+                    top:'192px',
               width: "100%",
               maxWidth: 400,
               mx: "auto",
@@ -976,7 +976,7 @@ const Pet_Form_Eat_Alarm = () => {
                 <IconButton
                   onClick={() => alarmDelete(alarm.alarmId)}
                   size="small"
-                  sx={{ p: 0, left: 100, top: -7 }}
+                  sx={{ p: 0, left: 60, top: -7 }}
                 >
                   <img
                     src={AlarmMinus}

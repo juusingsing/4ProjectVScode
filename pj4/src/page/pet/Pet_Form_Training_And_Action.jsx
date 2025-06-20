@@ -385,8 +385,8 @@ const Pet_Form_Training_And_Action = () => {
               variant="contained"
               onClick={() => navigate(`/pet/walk.do?animalId=${animalId}`)}
               sx={{
-                bottom: 3,
-                left: 25,
+                left: -5,
+                top:2,
                 backgroundColor: "#88AE97",
                 borderRadius: "30px",
                 width: 200,
