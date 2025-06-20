@@ -286,8 +286,14 @@ const WalkTracker = () => {
         console.error("getNearbyPlaces 호출 실패:", e);
       }
     }
-    setStartLocation(null);
-    setEndLocation(null);
+    //산책 시작누르고 종료는 안눌렀을때 시작위치삭제 안함
+    if(startLocation !=null && endLocation == null){
+      setEndLocation(null);
+    } else {  // 시작중이아닐때는 시작위치, 종료위치 마커 삭제
+      setStartLocation(null);
+      setEndLocation(null);
+    }
+    
     mapRef.current.panTo(markerPosition); // 내위치 정중앙이동
   };
 
@@ -557,7 +563,7 @@ const WalkTracker = () => {
                 textAlign: "center",
               }}
             >
-              📍내위치
+              내 위치
             </button>
 
             <div style={{ position: "relative" }}>
@@ -607,7 +613,7 @@ const WalkTracker = () => {
                 <LoadScript googleMapsApiKey="AIzaSyBkqvUbxVClcx6PG5TGNx035c9_SZWt_-w">
                   <MapContainer
                     center={center}
-                    zoom={17}
+                    zoom={zoom}
                     markerPosition={center}
                     startLocation={startLocation}
                     endLocation={endLocation}
@@ -617,7 +623,7 @@ const WalkTracker = () => {
                 </LoadScript>
               ) : (
                 <div style={{ textAlign: "center", padding: "20px" }}>
-                  📍 내 위치를 찾는 중...
+                  위치 찾는 중
                 </div>
               )}
             </div>
