@@ -65,12 +65,10 @@ const UserView = () => {
   }, [isSuccess, data]);
 
   const handleLogout = async () => {
+    
     try {
 
-      logoutDeleteAlarm({
-      })
-        .unwrap()
-        .then((response) => {
+      const response = await logoutDeleteAlarm({}).unwrap();
         
           // 알람 끄기 - Android cancelAlarm 호출
           if (window.Android && window.Android.cancelAlarm) {
@@ -79,8 +77,6 @@ const UserView = () => {
               window.Android.cancelAlarm(String(alarmId));
             }
           }
-        })
-
 
       await logout({}).unwrap();
       await persistor.purge(); //지속된(persisted) 모든 Redux 상태를 스토리지에서 완전히 삭제

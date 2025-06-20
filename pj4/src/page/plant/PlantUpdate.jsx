@@ -134,11 +134,9 @@ const PlantUpdate = ({ mode = "create" }) => {
         .unwrap()
         .then((response) => {
           console.log(`동물아이디${plantId}의 모든알람 상태 업데이트 완료`);
-          console.log("전체 응답:", response);
         
           // 알람 끄기 - Android cancelAlarm 호출
           if (window.Android && window.Android.cancelAlarm) {
-            console.log("response.data.length = " ,response.data.length);
             for (let i = 0; i < response?.data?.length; i++) {
               const alarmId = response.data[i].alarmId;
               window.Android.cancelAlarm(String(alarmId));
