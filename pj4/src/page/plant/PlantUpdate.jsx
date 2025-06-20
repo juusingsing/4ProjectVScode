@@ -285,7 +285,10 @@ const PlantUpdate = ({ mode = "create" }) => {
             justifyContent="center"
             sx={{ mt: 3 }}
           >
-            {isEdit && <Button onClick={handleDelete}>삭제</Button>}
+            {isEdit && <Button
+            sx={{
+              
+            }} onClick={handleDelete}>삭제</Button>}
             <Button onClick={handleSubmit}>수정</Button>
           </Stack>
         </Stack>

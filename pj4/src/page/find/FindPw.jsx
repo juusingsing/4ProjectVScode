@@ -192,7 +192,7 @@ const FindPw = () => {
         }}
       >
         <Typography variant="h4" gutterBottom sx={{ color: "black" }}>
-          비밀번호 찾기
+          비밀번호 재설정
         </Typography>
         {/* ✅ 성공 시 메시지 표시 */}
         {findSuccess ? (
@@ -267,7 +267,7 @@ const FindPw = () => {
                     }}
                   >
                     <Typography sx={{ color: "black", marginBottom: "-10px" }}>
-                      인증번호 확인
+                      인증번호 입력
                     </Typography>
                     {emailTime && (
                       <Typography

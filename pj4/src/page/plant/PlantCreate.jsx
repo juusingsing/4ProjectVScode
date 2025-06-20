@@ -23,7 +23,7 @@ import back from "../../image/back.png";
 const PlantCreate = () => {
   const [plantName, setPlantName] = useState("");
   const [plantType, setPlantType] = useState("");
-  const [plantPurchaseDate, setPlantPurchaseDate] = useState(null);
+  const [plantPurchaseDate, setPlantPurchaseDate] = useState(dayjs());
   const [sunlightPreference, setSunlightPreference] = useState("");
   const [plantGrowthStatus, setPlantGrowthStatus] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
@@ -168,7 +168,7 @@ const PlantCreate = () => {
           <Box className="form-row">
             <Typography className="label-text">식물 입수일</Typography>
             <DatePicker
-              value={plantPurchaseDate}
+              value={dayjs(plantPurchaseDate)}
               onChange={(newValue) => setPlantPurchaseDate(newValue)}
               inputFormat="YYYY-MM-DD"
               renderInput={(params) => (
@@ -244,6 +244,10 @@ const PlantCreate = () => {
               padding: "10px 24px",
               fontSize: "1rem",
               fontWeight: "bold",
+              width: "200px",
+              marginleft: "500px",
+              marginTop: "30px",
+              height: "50px",
             }}
           >
             식물 등록

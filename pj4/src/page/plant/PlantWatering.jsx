@@ -15,6 +15,7 @@ import {
   Avatar,
 } from "@mui/material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import DefaultImage from "../../image/default-plant.png";
 
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import {
@@ -62,6 +63,8 @@ const WateringContent = ({
   waterDel,
   formatDate,
   alarmToggle,
+  showWaterLogs,
+  setShowWaterLogs,
 }) => {
   return (
     <>
@@ -69,18 +72,20 @@ const WateringContent = ({
 
       <CardContent>
         <Box sx={{ display: "flex" }}>
-          <Typography 
-          sx={{fontWeight:"700"}}>알림 설정 🔔</Typography>
+          <Typography sx={{ fontWeight: "700", marginTop: -3 }}>
+            알림 설정 🔔
+          </Typography>
           {user &&
             (alarmList?.[0]?.alarmId != null ? (
               <Button
                 sx={{
                   backgroundColor: "#88AE97",
-                  width: "60px",
-                  fontSize: "14px",
+                  width: "40px",
+                  fontSize: "13px",
                   borderRadius: "25px",
-                  height: "35px",
+                  height: "30px",
                   marginLeft: "10px",
+                  marginTop: -3,
                 }}
                 variant="contained"
                 onClick={alarmAllUpdateSend}
@@ -117,11 +122,11 @@ const WateringContent = ({
               onSelectionChange={setAlarmCycle}
               defaultValue={alarmList?.[0]?.alamrCycleCode}
               sx={{
-                width: "100px",
+                width: "80px",
               }}
             />
           </Box>
-          <Box sx={{ marginLeft: "50px" }}>
+          <Box sx={{ marginLeft: "20px" }}>
             <Typography
               sx={{
                 marginBottom: "-10px",
@@ -177,9 +182,10 @@ const WateringContent = ({
 
         <Box className="alarm-date-row">
           <DatePicker
-          sx={{
-            width: "300px",
-          }}
+            sx={{
+              width: "250px",
+              marginLeft: 0,
+            }}
             format="YYYY.MM.DD"
             value={alarmList?.[0]?.daysDate ?? alarmDate}
             onChange={(newValue) => {
@@ -206,14 +212,15 @@ const WateringContent = ({
         </Box>
       </CardContent>
 
-      <Typography 
-      sx={{fontWeight:"700"}}>물주기 기록</Typography>
+      <Typography sx={{ fontWeight: "700", marginLeft: 3, marginTop: -3 }}>
+        물주기 기록
+      </Typography>
 
       <Box className="water-log-action">
         <Button
           sx={{
-            backgroundColor: "#75AAC0",
-            borderRadius: "20px",
+            backgroundColor: "#A6D0E2",
+            borderRadius: "30px",
             marginLeft: "120px",
             width: "150px",
             height: "50px",
@@ -227,59 +234,56 @@ const WateringContent = ({
       </Box>
 
       {/* 물주기 로그 리스트 영역 */}
-      <Box className="watering-log-section">
-        <Box className="log-header">
-          <IconButton className="log-toggle-icon">
-            <CheckBoxIcon sx={{ fontSize: 20 }} />
-          </IconButton>
-          <Typography className="log-title">기록 리스트</Typography>
-          <IconButton className="log-dropdown-arrow">
+      <Box>
+        <Box sx={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <IconButton onClick={() => setShowWaterLogs(!showWaterLogs)}>
             <ArrowDropDownIcon />
           </IconButton>
+          <Typography>기록 리스트</Typography>
         </Box>
-
-        {!waterList || waterList.length === 0 ? (
-          <Typography>일지가 없습니다.</Typography>
-        ) : (
-          waterList.map((log) => (
-            <Box
-              key={log.waterId}
-              className="log-entry"
-              component="fieldset"
-              sx={{
-                mb: 2,
-                border: "1px solid #ccc",
-                p: 2,
-              }}
-            >
-              <legend
-                style={{
-                  fontWeight: "bold",
-                  padding: "0 8px",
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <CheckBoxIcon sx={{ fontSize: 18, color: "#333", mr: 1 }} />
-                물주기 완료
-              </legend>
-              <Typography sx={{ width: "160px" }}>
-                {formatDate(log.waterDt)}
-              </Typography>
+        {showWaterLogs &&
+          (!waterList || waterList.length === 0 ? (
+            <Typography>일지가 없습니다.</Typography>
+          ) : (
+            waterList.map((log) => (
               <Box
-                className="log-actions"
-                onClick={() => waterDel(log.waterId)}
+                key={log.waterId}
+                className="log-entry"
+                component="fieldset"
                 sx={{
-                  marginLeft: "160px",
-                  marginTop: "-45px",
-                  fontSize: "12px",
+                  mb: 2,
+                  border: "1px solid #ccc",
+                  p: 2,
                 }}
               >
-                삭제
+                <legend
+                  style={{
+                    fontWeight: "bold",
+                    padding: "0 8px",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <CheckBoxIcon sx={{ fontSize: 18, color: "#333", mr: 1 }} />
+                  물주기 완료
+                </legend>
+                <Typography sx={{ width: "160px" }}>
+                  {formatDate(log.waterDt)}
+                </Typography>
+                <Box
+                  className="log-actions"
+                  onClick={() => waterDel(log.waterId)}
+                  sx={{
+                    marginLeft: "160px",
+                    marginTop: "-45px",
+                    fontSize: "12px",
+                  }}
+                >
+                  삭제
+                </Box>
               </Box>
-            </Box>
-          ))
-        )}
+            ))
+          ))}
       </Box>
     </>
   );
@@ -321,6 +325,7 @@ const PlantWatering = () => {
     plantId: plantId, // plantId 아이디조회
   });
   const [waterList, setWaterList] = useState([]);
+  const [showWaterLogs, setShowWaterLogs] = useState({});
 
   const pathToTabIndex = {
     "/plant/PlantWatering.do": 0,
@@ -532,7 +537,7 @@ const PlantWatering = () => {
       });
 
       console.log(`서버 알람 ${alarmList[0].alarmId} 상태 업데이트 완료`);
-      showAlert("수정성공ㅎㅎㅎ");
+      showAlert("수정 성공");
 
       // 프론트 상태 업데이트 (불필요한 필드는 생략 가능)
       setAlarmList([
@@ -661,15 +666,35 @@ const PlantWatering = () => {
       >
         {/*식물 정보 수정 버튼*/}
         <Button
+          sx={{
+            marginTop: "10",
+            marginLeft: 40,
+            backgroundColor: "#889F7F",
+            width: 40,
+            height: 30,
+            minWidth: "unset",
+            padding: 0,
+            fontSize: "12px",
+            borderRadius: "55%",
+            color: "#fff",
+          }}
           onClick={() => navigate(`/PlantUpdate.do?plantId=${plantId}`)}
-          variant="contained"
-          className="edit-top-button"
         >
           수정
         </Button>
 
-        <Box className="plant-info-header">
-          <Box className="plant-details">
+        <Box
+          className="plant-info-header"
+          sx={{
+            marginLeft: 3,
+          }}
+        >
+          <Box
+            className="plant-details"
+            sx={{
+              marginTop: 3,
+            }}
+          >
             <Box className="plant-detail-row">
               <Typography className="plant-label">식물 이름</Typography>
               <Box className="plant-value-box">
@@ -694,13 +719,11 @@ const PlantWatering = () => {
             </Box>
           </Box>
           <Avatar
-            src={`${
-              process.env.REACT_APP_API_BASE_URL
-            }/file/imgDown.do?fileId=${
-              plantInfo?.data && plantInfo.data.length > 0
-                ? plantInfo.data[0].fileId
-                : ""
-            }`}
+            src={
+              plantInfo?.data[0]?.fileId && plantInfo.data.length > 0
+                ? `${process.env.REACT_APP_API_BASE_URL}/file/imgDown.do?fileId=${plantInfo.data[0].fileId}`
+                : DefaultImage
+            }
             className="plant-avatar"
           />
         </Box>
@@ -709,8 +732,20 @@ const PlantWatering = () => {
           <Tabs
             value={currentTab}
             onChange={handleTabChange}
-            className="plant-care-tabs"
             TabIndicatorProps={{ style: { backgroundColor: "black" } }}
+            sx={{
+              "& .MuiTab-root": {
+                color: "#aaa", // 기본 글자 색
+              },
+
+              "& .Mui-selected": {
+                color: "#303030",
+                fontWeight: 600,
+              },
+              "& .MuiTabs-indicator": {
+                backgroundColor: "#000",
+              },
+            }}
           >
             <Tab label="물주기" />
             <Tab label="일조량" />
@@ -737,6 +772,8 @@ const PlantWatering = () => {
             waterDel={waterDel}
             formatDate={formatDate}
             alarmToggle={alarmToggle}
+            showWaterLogs={showWaterLogs}
+            setShowWaterLogs={setShowWaterLogs}
           />
         </Box>
       </Box>

@@ -74,7 +74,6 @@ const LabeledTextFieldRow = ({ label, value, onChange, inputRef, disabled = fals
             value={value}
             onChange={onChange}
             type={type}
-            placeholder={label === "비밀번호" ? "영문, 숫자, 특수문자 조합 8자 이상" : ""}
             sx={{
               flexGrow: 1,
               border: 'none',
@@ -373,13 +372,20 @@ const UserUpdate = () => {
           disabled
           value={usersEmail}
         />
-
+        <Typography
+        sx={{
+          position:"absolute",
+          marginTop:24,
+          marginRight:-20,
+          fontSize:13,
+        }}>영문,숫자,특수문자 조합 8자 이상</Typography>
         <LabeledTextFieldRow
           label="비밀번호"
           type="password"
           value={usersPassword}
           inputRef={usersPasswordRef}
           onChange={(e) => setUsersPassword(e.target.value)}
+
 
         />
 

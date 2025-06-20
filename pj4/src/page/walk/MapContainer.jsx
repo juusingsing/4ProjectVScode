@@ -70,9 +70,14 @@ const MapContainer = React.memo(({ center, zoom, markerPosition, startLocation, 
           key={idx}
           position={{ lat: place.lat, lng: place.lng }}
           label={place.name.length > 5 ? place.name.slice(0, 5) + "…" : place.name}
-        //   icon={{
-        //     url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
-        //   }}
+          icon={{
+            path: window.google.maps.SymbolPath.CIRCLE,
+            fillColor: "red",
+            fillOpacity: 1,
+            strokeColor: "red",
+            strokeWeight: 1,
+            scale: 8
+          }}
         />
       ))}
     </GoogleMap>

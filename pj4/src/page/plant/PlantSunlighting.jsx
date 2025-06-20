@@ -15,6 +15,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { FaSun, FaTint, FaCloud, FaSnowflake } from "react-icons/fa";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import DefaultImage from "../../image/default-plant.png";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 //훅
 import {
@@ -58,11 +59,42 @@ const SunlightContent = ({
   onDeleteLog,
   onEditLog,
   editingLog,
+  showWaterLogs,
+  setShowWaterLogs,
 }) => (
   <Box className="sunlight-tab-content">
-    <Box className="daily-status-section">
-      <Typography className="status-label">일조상태</Typography>
-      <div className="icon-group">
+    <Box
+      className="daily-status-section"
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "flex-start",
+        marginBottom: "10px",
+        paddingBottom: "15px",
+        borderBottom: "1px solid #f0f0f0",
+      }}
+    >
+      <Typography
+        className="status-label"
+        sx={{
+          marginLeft: "10px",
+          marginRight: "20px",
+          fontWeitht: "600",
+          color: "#333",
+          minWidth: "80px",
+          fontSize: "0.95rem",
+        }}
+      >
+        일조상태
+      </Typography>
+      <div
+        className="icon-group"
+        style={{ marginLeft: "30px" }}
+        sx={{
+          disPlay: "flex",
+          gap: "25px",
+        }}
+      >
         {sunlightOptions.map((opt) => (
           <div
             key={opt.id}
@@ -80,7 +112,12 @@ const SunlightContent = ({
     </Box>
 
     <Box className="light-status-section">
-      <Typography className="light-status-title">빛의 상태</Typography>
+      <Typography
+        className="light-status-title"
+        sx={{ marginBottom: "20px", marginLeft: "10px" }}
+      >
+        빛의 상태
+      </Typography>
       <TextField
         className="sunlight-status-textfield"
         multiline
@@ -88,6 +125,7 @@ const SunlightContent = ({
         value={sunlightStatusText}
         onChange={(e) => setSunlightStatusText(e.target.value)}
         variant="outlined"
+        sx={{ marginLeft: "10px", width: "330px" }}
       />
     </Box>
 
@@ -98,9 +136,13 @@ const SunlightContent = ({
       sx={
         editingLog !== false
           ? {
-              backgroundColor: "#6e927e !important",
+              width: "200px",
+              marginTop: "20px",
+              marginInline: "22%",
+              borderRadius: "20px",
+              backgroundColor: "#4B6044 !important",
               "&:hover": {
-                backgroundColor: "#88AE97 !important",
+                backgroundColor: "#6e927e !important",
               },
             }
           : undefined
@@ -109,52 +151,71 @@ const SunlightContent = ({
       {editingLog !== false ? "저장" : "수정"}
     </Button>
 
-    <Box className="sunlight-log-section">
-      <Box className="log-header">
-        <IconButton className="log-toggle-icon">
-          <CheckBoxIcon sx={{ fontSize: 20 }} />
-        </IconButton>
-        <Typography className="log-title">일조량 일지</Typography>
-        <IconButton className="log-dropdown-arrow">
+    <Box>
+      <Box sx={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        <IconButton onClick={() => setShowWaterLogs(!showWaterLogs)}>
           <ArrowDropDownIcon />
         </IconButton>
+        <Typography>기록 리스트</Typography>
       </Box>
 
-      {!sunlightLogs || sunlightLogs.length === 0 ? (
-        <Typography>일지가 없습니다.</Typography>
-      ) : (
-        sunlightLogs.map((log) => (
-          <Box key={log.plantSunlightingId} className="log-entry">
-            <Box className="log-details">
-              <Typography>
-                {
-                  sunlightOptions.find((opt) => opt.id === log.sunlightStatus)
-                    ?.icon
-                }
-                {log.createDt}
-              </Typography>
+      {showWaterLogs &&
+        (!sunlightLogs || sunlightLogs.length === 0 ? (
+          <Typography>일지가 없습니다.</Typography>
+        ) : (
+          sunlightLogs.map((log) => (
+            <Box
+              key={log.plantSunlightingId}
+              className="log-entry"
+              component="fieldset"
+              sx={{
+                mb: 2,
+                border: "1px solid #ccc",
+                p: 2,
+              }}
+            >
+              <legend
+                style={{
+                  fontWeight: "bold",
+                  padding: "0 8px",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <CheckBoxIcon sx={{ fontSize: 18, color: "#333", mr: 1 }} />
+                일조량 확인
+              </legend>
+              <Box className="log-details">
+                <Typography>
+                  {
+                    sunlightOptions.find((opt) => opt.id === log.sunlightStatus)
+                      ?.icon
+                  }
+                  {log.createDt}
+                </Typography>
 
-              <Typography> {log.sunlightMemo}</Typography>
+                <Typography> {log.sunlightMemo}</Typography>
+              </Box>
+
+              <Box className="log-actions" sx={{ marginTop: "-60px" }}>
+                <Button
+                  variant="text"
+                  className="log-action-button"
+                  onClick={() => onDeleteLog(log.plantSunlightingId)}
+                >
+                  삭제
+                </Button>
+                <Button
+                  variant="text"
+                  className="log-action-button"
+                  onClick={() => onEditLog(log.plantSunlightingId)}
+                >
+                  수정
+                </Button>
+              </Box>
             </Box>
-            <Box className="log-actions">
-              <Button
-                variant="text"
-                className="log-action-button"
-                onClick={() => onDeleteLog(log.plantSunlightingId)}
-              >
-                삭제
-              </Button>
-              <Button
-                variant="text"
-                className="log-action-button"
-                onClick={() => onEditLog(log.plantSunlightingId)}
-              >
-                수정
-              </Button>
-            </Box>
-          </Box>
-        ))
-      )}
+          ))
+        ))}
     </Box>
   </Box>
 );
@@ -181,9 +242,12 @@ const PlantSunlighting = () => {
   const [deleteSunlightLogs] = useDeleteSunlightLogsMutation();
   const { data: plantInfo } = usePlantInfoQuery(plantId);
 
-  const [editingLog, setEditingLog] = useState(true);  // true저장   false 수정
+  const [editingLog, setEditingLog] = useState(true); // true저장   false 수정
   const [editStatus, setStatus] = useState(""); // 수정할 상태
   const [editMemo, setMemo] = useState(""); // 수정할 메모
+
+  const [waterList, setWaterList] = useState([]);
+  const [showWaterLogs, setShowWaterLogs] = useState({});
 
   const pathToTabIndex = {
     "/plant/PlantWatering.do": 0,
@@ -191,7 +255,6 @@ const PlantSunlighting = () => {
     "/plant/PlantRepotting.do": 2,
     "/plant/PlantPest.do": 3,
   };
-
 
   const [currentTab, setCurrentTab] = useState(1);
 
@@ -296,12 +359,27 @@ const PlantSunlighting = () => {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Box className="plant-care-container">
+      <Box
+        sx={{
+          padding: "16px",
+          backgroundColor: "#f5f5f5",
+          minHeight: "100vh",
+        }}
+      >
         {/*식물 정보 수정 버튼*/}
         <Button
-          variant="contained"
-          size="small"
-          className="edit-top-button"
+          sx={{
+            marginTop: "10",
+            marginLeft: 40,
+            backgroundColor: "#889F7F",
+            width: 40,
+            height: 30,
+            minWidth: "unset",
+            padding: 0,
+            fontSize: "12px",
+            borderRadius: "55%",
+            color: "#fff",
+          }}
           onClick={() => {
             navigate(`/PlantUpdate.do?plantId=${plantId}`);
           }}
@@ -309,8 +387,18 @@ const PlantSunlighting = () => {
           수정
         </Button>
 
-        <Box className="plant-info-header">
-          <Box className="plant-details">
+        <Box
+          className="plant-info-header"
+          sx={{
+            marginLeft: 3,
+          }}
+        >
+          <Box
+            className="plant-details"
+            sx={{
+              marginTop: 3,
+            }}
+          >
             <Box className="plant-detail-row">
               <Typography className="plant-label">식물 이름</Typography>
               <Box className="plant-value-box">
@@ -335,26 +423,12 @@ const PlantSunlighting = () => {
             </Box>
           </Box>
           <Avatar
-            src={`${
-              process.env.REACT_APP_API_BASE_URL
-            }/file/imgDown.do?fileId=${
-              plantInfo?.data && plantInfo.data.length > 0
-                ? plantInfo.data[0].fileId
-                : ""
-            }`}
+            src={
+              plantInfo?.data[0]?.fileId && plantInfo.data.length > 0
+                ? `${process.env.REACT_APP_API_BASE_URL}/file/imgDown.do?fileId=${plantInfo.data[0].fileId}`
+                : DefaultImage
+            }
             className="plant-avatar"
-            sx={{
-              width: 100,
-              height: 100,
-              borderRadius: "50%",
-              overflow: "hidden",
-              border: "3px solid white",
-              backgroundColor: "#A5B1AA",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              marginRight: "50",
-            }}
           />
         </Box>
 
@@ -364,6 +438,18 @@ const PlantSunlighting = () => {
             onChange={handleTabChange}
             className="plant-care-tabs"
             TabIndicatorProps={{ style: { backgroundColor: "black" } }}
+            sx={{
+              "& .MuiTab-root": {
+                color: "#aaa", // 기본 글자 색
+              },
+              "& .Mui-selected": {
+                color: "#303030",
+                fontWeight: 600,
+              },
+              "& .MuiTabs-indicator": {
+                backgroundColor: "#000",
+              },
+            }}
           >
             <Tab label="물주기" />
             <Tab label="일조량" />
@@ -383,6 +469,8 @@ const PlantSunlighting = () => {
             onDeleteLog={handleDeleteLog}
             onEditLog={handleEditLog}
             editingLog={editingLog}
+            showWaterLogs={showWaterLogs}
+            setShowWaterLogs={setShowWaterLogs}
           />
         </Box>
       </Box>

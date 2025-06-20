@@ -635,12 +635,12 @@ const WalkTracker = () => {
           <div
             style={{
               textAlign: "center",
-              marginBottom: "10px",
+              marginBottom: "13px",
               fontSize: "14px",
               color: "#555",
             }}
           >
-            위치 정확도: {accuracy !== null ? `${accuracy} m` : "-"}
+            {/* 위치 정확도: {accuracy !== null ? `${accuracy} m` : "-"} */}
           </div>
 
           {/* 시작/종료 버튼 */}

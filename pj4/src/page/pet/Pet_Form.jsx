@@ -30,8 +30,8 @@ const Pet_Form = () => {
   const animalSpecieRef = useRef();
   const [animalMemo, setAnimalMemo] = useState("");
   const animalMemoRef = useRef();
-  const [animalAdoptionDate, setAnimalAdoptionDate] = useState(null);
-  const [birthDate, setBirthDate] = useState(null);
+  const [animalAdoptionDate, setAnimalAdoptionDate] = useState(dayjs());
+  const [birthDate, setBirthDate] = useState(dayjs());
   const [gender, setGender] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const { showAlert } = useCmDialog();

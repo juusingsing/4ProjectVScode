@@ -13,10 +13,15 @@ import {
   IconButton,
 } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs from "dayjs";
+
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import DefaultImage from "../../image/default-plant.png";
+
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 //훅
 import {
   useSavePestInfoMutation,
@@ -26,7 +31,6 @@ import {
   usePlantInfoQuery,
 } from "../../features/plant/plantApi";
 // import "../../css/plantPest.css";
-import dayjs from 'dayjs';
 
 const PestContent = ({
   plantPestDate,
@@ -40,52 +44,70 @@ const PestContent = ({
   onEditLog,
   selectedFileName,
   handleFileChange,
+  showWaterLogs,
+  setShowWaterLogs,
 }) => (
   <Box className="pest-tab-content">
     <Box className="pest-date">
-      <Box sx={{display:'flex'}}>
-      <Typography className="date-label">병충해날짜</Typography>
-      <DatePicker
-        value={plantPestDate}
-        onChange={(newValue) => setPlantPestDate(newValue)}
-        format="YYYY.MM.DD"
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            variant="outlined"
-            size="small"
-            className="input-field-wrapper"
-            InputProps={{
-              sx: {
-                borderRadius: "8px",
-                backgroundColor: "#f0f0f0",
-                "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "transparent",
+      <Box sx={{ display: "flex" }}>
+        <Typography
+          className="date-label"
+          sx={{
+            marginBottom: 500,
+          }}
+        >
+          병충해 날짜
+        </Typography>
+        <LocalizationProvider
+          dateAdapter={AdapterDayjs}
+          adapterLocal="ko"
+        ></LocalizationProvider>
+        <DatePicker
+          value={dayjs(plantPestDate)}
+          onChange={(newValue) => setPlantPestDate(newValue)}
+          format="YYYY.MM.DD"
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              variant="outlined"
+              size="small"
+              className="input-field-wrapper"
+              InputProps={{
+                sx: {
+                  borderRadius: "8px",
+                  backgroundColor: "#f0f0f0",
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "transparent",
+                  },
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "transparent",
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "transparent",
+                  },
                 },
-                "&:hover .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "transparent",
-                },
-                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "transparent",
-                },
-              },
-            }}
-          />
-        )}
-      />
+              }}
+            />
+          )}
+        />
       </Box>
     </Box>
 
     {/* 파일 업로드*/}
-    <Box sx={{ textAlign: "center", position: "relative", marginBottom: 3, display:'flex' }}>
+    <Box
+      sx={{
+        textAlign: "center",
+        position: "relative",
+        marginBottom: 3,
+        display: "flex",
+      }}
+    >
       {selectedFileName && (
-        <Typography
-         sx={{ marginTop: 1, display:'block'}}>
+        <Typography sx={{ marginTop: 1, display: "block" }}>
           선택된 파일: {selectedFileName}
         </Typography>
       )}
-      
-      
+
       <input
         id="file"
         type="file"
@@ -98,9 +120,9 @@ const PestContent = ({
         <IconButton
           component="span"
           sx={{
-            position: "relative", 
-            top: "0px", 
-            left: "0px", 
+            position: "relative",
+            top: "0px",
+            left: "0px",
             backgroundColor: "white",
             boxShadow: 1,
             width: 30,
@@ -111,17 +133,18 @@ const PestContent = ({
           <FaCamera style={{ fontSize: "1rem" }} />
         </IconButton>
       </label>
-
-      
     </Box>
-    
 
-    <Box className="pest-memo">
-      <Typography className="pest-memo-label">메모</Typography>
+    <Box>
+      <Typography>메모</Typography>
       <TextField
-        className="pest-memo-textfield"
+        sx={{
+          width: 270,
+          marginLeft: 8,
+          marginTop: -3,
+        }}
         multiline
-        rows={3}
+        rows={5}
         value={plantPestMemo}
         onChange={(e) => setPlantPestMemo(e.target.value)}
         variant="outlined"
@@ -130,14 +153,17 @@ const PestContent = ({
 
     <Button
       variant="contained"
-      className="save-button"
       onClick={handleSave}
       sx={
         editingLog !== false
           ? {
-              backgroundColor: "#6e927e !important",     // 저장버튼 색깔
+              width: "200px",
+              marginTop: "20px",
+              marginInline: "22%",
+              borderRadius: "20px",
+              backgroundColor: "#4B6044 !important",
               "&:hover": {
-                backgroundColor: "#88AE97 !important",
+                backgroundColor: "#6e927e !important",
               },
             }
           : undefined
@@ -146,64 +172,87 @@ const PestContent = ({
       {editingLog !== false ? "저장" : "수정"}
     </Button>
 
-    <Box className="pest-log-section">
-      <Box className="log-header">
-        <IconButton className="log-toggle-icon">
-          <CheckBoxIcon sx={{ fontSize: 20 }} />
-        </IconButton>
-        <Typography className="log-title">기록 리스트</Typography>
-        <IconButton className="log-dropdown-arrow">
+    <Box>
+      <Box sx={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        <IconButton onClick={() => setShowWaterLogs(!showWaterLogs)}>
           <ArrowDropDownIcon />
         </IconButton>
+        <Typography>기록 리스트</Typography>
       </Box>
-      {!pestLogs || pestLogs.length === 0 ? (
-        <Typography>일지가 없습니다.</Typography>
-      ) : (
-        pestLogs.map((log) => (
-          <Box key={log.plantPestId} className="log-entry" sx={{marginTop:'30px'}}>
-            <Box className="log-details">
-              <Box sx={{display:'flex', justifyContent:'space-between'}}>
-              <Typography>{dayjs(log.plantPestDate).format('YYYY.MM.DD')}</Typography>
-              <Box className="log-actions" sx={{marginTop:'-70px'}}>
-              <Button
-                variant="text"
-                className="log-action-button"
-                onClick={() => onDeleteLog(log.plantPestId)}
+
+      {showWaterLogs &&
+        (!pestLogs || pestLogs.length === 0 ? (
+          <Typography>일지가 없습니다.</Typography>
+        ) : (
+          pestLogs.map((log) => (
+            <Box
+              key={log.plantPestId}
+              className="log-entry"
+              component="fieldset"
+              sx={{
+                mb: 2,
+                border: "1px solid #ccc",
+                p: 2,
+              }}
+            >
+              <legend
+                style={{
+                  fontWeight: "bold",
+                  padding: "0 8px",
+                  display: "flex",
+                  alignItems: "center",
+                }}
               >
-                삭제
-              </Button>
-              <Button
-                variant="text"
-                className="log-action-button"
-                onClick={() => onEditLog(log.plantPestId)}
-              >
-                수정
-              </Button>
+                <CheckBoxIcon sx={{ fontSize: 18, color: "#333", mr: 1 }} />
+                일조량 확인
+              </legend>
+
+              <Box className="log-details">
+                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                  <Typography>
+                    {dayjs(log.plantPestDate).format("YYYY.MM.DD")}
+                  </Typography>
+                  <Box className="log-actions" sx={{ marginTop: "-40px" }}>
+                    <Button
+                      variant="text"
+                      className="log-action-button"
+                      onClick={() => onDeleteLog(log.plantPestId)}
+                    >
+                      삭제
+                    </Button>
+                    <Button
+                      variant="text"
+                      className="log-action-button"
+                      onClick={() => onEditLog(log.plantPestId)}
+                    >
+                      수정
+                    </Button>
+                  </Box>
+                </Box>
+                <Box sx={{ display: "flex" }}>
+                  {log.fileId && (
+                    <img
+                      src={`${
+                        process.env.REACT_APP_API_BASE_URL
+                      }/file/imgDown.do?fileId=${log.fileId}&t=${Date.now()}`}
+                      alt="Pest Log"
+                      style={{
+                        width: "70px",
+                        height: "70px",
+                        borderRadius: "4px",
+                        marginRight: "8px",
+                        marginBlock: "auto",
+                      }}
+                    />
+                  )}
+                  <Box>
+                    <Typography>{log.plantPestMemo}</Typography>
+                  </Box>
+                </Box>
               </Box>
             </Box>
-            <Box sx={{display:'flex'}}>
-              {log.fileId && (
-                <img
-                  src={`${process.env.REACT_APP_API_BASE_URL}/file/imgDown.do?fileId=${log.fileId}&t=${Date.now()}`}
-                  alt="Pest Log"
-                  style={{
-                    width: "70px",
-                    height: "70px",
-                    borderRadius: "4px",
-                    marginRight: "8px",
-                    marginBlock:'auto'
-                  }}
-                />
-              )}
-              <Box>
-              <Typography>{log.plantPestMemo}</Typography>
-              </Box>
-              </Box>
-            </Box>
-            
-          </Box>
-        ))
-      )}
+          ))
+        ))}
     </Box>
   </Box>
 );
@@ -223,7 +272,7 @@ const PlantPest = () => {
   // const [currentTab, setCurrentTab] = useState(3); // 일조량 탭이 기본 선택
 
   const [editPlantPestId, setEditPlantPestId] = useState();
-  const [plantPestDate, setPlantPestDate] = useState(null);
+  const [plantPestDate, setPlantPestDate] = useState(dayjs());
   const [plantPestMemo, setPlantPestMemo] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedFileName, setSelectedFileName] = useState("");
@@ -232,24 +281,22 @@ const PlantPest = () => {
   const [deletePestLogs] = useDeletePestLogsMutation(); // 로그 삭제용
   const { data: plantInfo } = usePlantInfoQuery(plantId);
 
-
-  const [editingLog, setEditingLog] = useState(true);  // true저장   false 수정
+  const [editingLog, setEditingLog] = useState(true); // true저장   false 수정
   const [editStatus, setStatus] = useState("");
   const [editMemo, setMemo] = useState("");
   const [fileId, setFileId] = useState();
 
   const pathToTabIndex = {
-    '/plant/PlantWatering.do': 0,
-    '/plant/PlantSunlighting.do': 1,
-    '/plant/PlantRepotting.do': 2,
-    '/plant/PlantPest.do': 3,
+    "/plant/PlantWatering.do": 0,
+    "/plant/PlantSunlighting.do": 1,
+    "/plant/PlantRepotting.do": 2,
+    "/plant/PlantPest.do": 3,
   };
+  const [showWaterLogs, setShowWaterLogs] = useState({});
 
+  const [currentTab, setCurrentTab] = useState(3);
 
-const [currentTab, setCurrentTab] = useState(3);
-
-
-const tabIndexToPath = [
+  const tabIndexToPath = [
     `/PlantWatering.do?plantId=${plantId}`,
     `/PlantSunlighting.do?plantId=${plantId}`,
     `/PlantRepotting.do?plantId=${plantId}`,
@@ -262,7 +309,6 @@ const tabIndexToPath = [
   const handleTabChange = (event, newValue) => {
     setCurrentTab(newValue);
     navigate(tabIndexToPath[newValue]);
-
   };
 
   // 처음 렌더링 시 데이터 가져오기
@@ -271,7 +317,7 @@ const tabIndexToPath = [
       setPestLogs(fetchedLogs.data);
     }
   }, [fetchedLogs]);
-  
+
   // 페이지가 바뀌면 selectedTab도 바뀌도록 설정
   useEffect(() => {
     const currentPath = location.pathname;
@@ -281,57 +327,60 @@ const tabIndexToPath = [
   }, [location.pathname]);
 
   const handleSave = () => {
-    const formData = new FormData(); 
+    const formData = new FormData();
 
-    formData.append("plantId", plantId); 
-    formData.append("plantPestDate", plantPestDate ? plantPestDate.format("YYYY-MM-DD") : ""); 
+    formData.append("plantId", plantId);
+    formData.append(
+      "plantPestDate",
+      plantPestDate ? plantPestDate.format("YYYY-MM-DD") : ""
+    );
     formData.append("plantPestMemo", plantPestMemo);
 
     if (selectedFile) {
-        formData.append("files", selectedFile); 
+      formData.append("files", selectedFile);
     }
 
-    if (editingLog != true ) {
+    if (editingLog != true) {
       console.log("수정시작");
-        formData.append("plantPestId", editPlantPestId);
-        formData.append("fileId", fileId);
-      
-        updatePestLogs(formData)
-            .unwrap()
-            .then((res) => {
-                showAlert(res.message);
-                setPlantPestDate(null);
-                setPlantPestMemo("");
-                setEditingLog(true);
-                setSelectedFile(null); 
-                setSelectedFileName("");
+      formData.append("plantPestId", editPlantPestId);
+      formData.append("fileId", fileId);
 
-                refetch();
-            })
-            .catch((err) => {
-                console.error("수정 실패:", err);
-                showAlert("수정 실패");
-            });
+      updatePestLogs(formData)
+        .unwrap()
+        .then((res) => {
+          showAlert(res.message);
+          setPlantPestDate(null);
+          setPlantPestMemo("");
+          setEditingLog(true);
+          setSelectedFile(null);
+          setSelectedFileName("");
+
+          refetch();
+        })
+        .catch((err) => {
+          console.error("수정 실패:", err);
+          showAlert("수정 실패");
+        });
     } else {
       console.log("저장 시작");
-        savePestInfo(formData)
-            .unwrap()
-            .then((res) => {
-                showAlert(res.message);
-                setPlantPestDate(null);
-                setPlantPestMemo("");
-                setEditingLog(true);
-                setSelectedFile(null); 
-                setSelectedFileName("");
+      savePestInfo(formData)
+        .unwrap()
+        .then((res) => {
+          showAlert(res.message);
+          setPlantPestDate(null);
+          setPlantPestMemo("");
+          setEditingLog(true);
+          setSelectedFile(null);
+          setSelectedFileName("");
 
-                refetch();
-            })
-            .catch((err) => {
-                console.error("저장 실패:", err);
-                showAlert("저장 실패");
-            });
+          refetch();
+        })
+        .catch((err) => {
+          console.error("저장 실패:", err);
+          showAlert("저장 실패");
+        });
     }
-};
+  };
 
   const handleDeleteLog = async (id) => {
     try {
@@ -366,9 +415,8 @@ const tabIndexToPath = [
   };
 
   const handleFileChange = (e) => {
-    
     const file = e.target.files[0];
-    console.log("file : " , file);
+    console.log("file : ", file);
     if (file) {
       setSelectedFile(file);
       setSelectedFileName(file.name);
@@ -380,11 +428,27 @@ const tabIndexToPath = [
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Box className="plant-care-container">
+      <Box
+        sx={{
+          padding: "16px",
+          backgroundColor: "#f5f5f5",
+          minHeight: "100vh",
+        }}
+      >
         {/*식물 정보 수정 버튼*/}
         <Button
-          variant="contained"
-          className="edit-top-button"
+          sx={{
+            marginTop: "10",
+            marginLeft: 40,
+            backgroundColor: "#889F7F",
+            width: 40,
+            height: 30,
+            minWidth: "unset",
+            padding: 0,
+            fontSize: "12px",
+            borderRadius: "55%",
+            color: "#fff",
+          }}
           onClick={() => {
             navigate(`/PlantUpdate.do?plantId=${plantId}`);
           }}
@@ -392,8 +456,18 @@ const tabIndexToPath = [
           수정
         </Button>
 
-        <Box className="plant-info-header">
-          <Box className="plant-details">
+        <Box
+          className="plant-info-header"
+          sx={{
+            marginLeft: 3,
+          }}
+        >
+          <Box
+            className="plant-details"
+            sx={{
+              marginTop: 3,
+            }}
+          >
             <Box className="plant-detail-row">
               <Typography className="plant-label">식물 이름</Typography>
               <Box className="plant-value-box">
@@ -418,13 +492,11 @@ const tabIndexToPath = [
             </Box>
           </Box>
           <Avatar
-            src={`${
-              process.env.REACT_APP_API_BASE_URL
-            }/file/imgDown.do?fileId=${
-              plantInfo?.data && plantInfo.data.length > 0
-                ? plantInfo.data[0].fileId
-                : ""
-            }`}
+            src={
+              plantInfo?.data[0]?.fileId && plantInfo.data.length > 0
+                ? `${process.env.REACT_APP_API_BASE_URL}/file/imgDown.do?fileId=${plantInfo.data[0].fileId}`
+                : DefaultImage
+            }
             className="plant-avatar"
           />
         </Box>
@@ -435,6 +507,18 @@ const tabIndexToPath = [
             onChange={handleTabChange}
             className="plant-care-tabs"
             TabIndicatorProps={{ style: { backgroundColor: "black" } }}
+            sx={{
+              "& .MuiTab-root": {
+                color: "#aaa", // 기본 글자 색
+              },
+              "& .Mui-selected": {
+                color: "#303030",
+                fontWeight: 600,
+              },
+              "& .MuiTabs-indicator": {
+                backgroundColor: "#000",
+              },
+            }}
           >
             <Tab label="물주기" />
             <Tab label="일조량" />
@@ -444,19 +528,21 @@ const tabIndexToPath = [
         </Box>
 
         <Box className="tab-content-display">
-            <PestContent
-              plantPestDate={plantPestDate}
-              setPlantPestDate={setPlantPestDate}
-              plantPestMemo={plantPestMemo}
-              setPlantPestMemo={setPlantPestMemo}
-              handleSave={handleSave}
-              pestLogs={pestLogs}
-              onDeleteLog={handleDeleteLog}
-              onEditLog={handleEditLog}
-              selectedFileName={selectedFileName}
-              handleFileChange={handleFileChange}
-              editingLog={editingLog}
-            />
+          <PestContent
+            plantPestDate={plantPestDate}
+            setPlantPestDate={setPlantPestDate}
+            plantPestMemo={plantPestMemo}
+            setPlantPestMemo={setPlantPestMemo}
+            handleSave={handleSave}
+            pestLogs={pestLogs}
+            onDeleteLog={handleDeleteLog}
+            onEditLog={handleEditLog}
+            selectedFileName={selectedFileName}
+            handleFileChange={handleFileChange}
+            editingLog={editingLog}
+            showWaterLogs={showWaterLogs}
+            setShowWaterLogs={setShowWaterLogs}
+          />
         </Box>
       </Box>
     </LocalizationProvider>

@@ -241,7 +241,7 @@ const FindId = () => {
                     }}
                   >
                     <Typography sx={{ color: "black" }}>
-                      인증번호 확인{" "}
+                      인증번호 입력{" "}
                     </Typography>
                     {emailTime && (
                       <Typography

@@ -14,10 +14,11 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
-import "dayjs/locale/ko";
 
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import DefaultImage from "../../image/default-plant.png";
+
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 //훅
@@ -47,9 +48,18 @@ const RepottingContent = ({
   repottingLogs,
   onDeleteLog,
   onEditLog,
+  showWaterLogs,
+  setShowWaterLogs,
 }) => (
   <Box className="repotting-tab-content">
-    <Box className="repotting-date">
+    <Box
+      className="repotting-date"
+      sx={{
+        display: "flex",
+        alignItems: "center", // 수직 가운데 정렬
+        gap: 1, // 요소 사이 간격
+      }}
+    >
       <Typography className="date-label">분갈이날짜</Typography>
       <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocal="ko">
         <DatePicker
@@ -64,6 +74,7 @@ const RepottingContent = ({
               className="input-field-wrapper"
               InputProps={{
                 sx: {
+                  width: 200,
                   borderRadius: "8px",
                   backgroundColor: "#f0f0f0",
                   "& .MuiOutlinedInput-notchedOutline": {
@@ -83,7 +94,14 @@ const RepottingContent = ({
       </LocalizationProvider>
     </Box>
 
-    <Box className="soil-status-section">
+    <Box
+      className="soil-status-section"
+      sx={{
+        display: "flex",
+        alignItems: "center", // 수직 가운데 정렬
+        gap: 1, // 요소 사이 간격
+      }}
+    >
       <Typography className="soil-status-label">흙종류</Typography>
       <TextField
         className="soil-status-textfield"
@@ -92,6 +110,10 @@ const RepottingContent = ({
         value={soilConditionText}
         onChange={(e) => setSoilConditionText(e.target.value)}
         variant="outlined"
+        sx={{
+          width: 200,
+          marginLeft: 10,
+        }}
       />
     </Box>
 
@@ -114,9 +136,13 @@ const RepottingContent = ({
       sx={
         editingLog !== false
           ? {
-              backgroundColor: "#6e927e !important",        // 저장
+              width: "200px",
+              marginTop: "20px",
+              marginInline: "22%",
+              borderRadius: "20px",
+              backgroundColor: "#4B6044 !important",
               "&:hover": {
-                backgroundColor: "#88AE97 !important",
+                backgroundColor: "#6e927e !important",
               },
             }
           : undefined
@@ -125,47 +151,66 @@ const RepottingContent = ({
       {editingLog !== false ? "저장" : "수정"}
     </Button>
 
-    <Box className="repotting-log-section">
-      <Box className="log-header">
-        <IconButton className="log-toggle-icon">
-          <CheckBoxIcon sx={{ fontSize: 20 }} />
-        </IconButton>
-        <Typography className="log-title">기록 리스트</Typography>
-        <IconButton className="log-dropdown-arrow">
+    <Box>
+      <Box sx={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        <IconButton onClick={() => setShowWaterLogs(!showWaterLogs)}>
           <ArrowDropDownIcon />
         </IconButton>
+        <Typography>기록 리스트</Typography>
       </Box>
 
-      {!repottingLogs || repottingLogs.length === 0 ? (
-        <Typography>일지가 없습니다.</Typography>
-      ) : (
-        repottingLogs.map((log) => (
-          <Box key={log.plantRepottingId} className="log-entry">
-            <Box className="log-details">
-              <Typography>
-                {log.repottingDate} | {log.soilCondition}
-              </Typography>
-              <Typography>{log.repottingMemo}</Typography>
-            </Box>
-            <Box className="log-actions">
-              <Button
-                variant="text"
-                className="log-action-button"
-                onClick={() => onDeleteLog(log.plantRepottingId)}
+      {showWaterLogs &&
+        (!repottingLogs || repottingLogs.length === 0 ? (
+          <Typography>일지가 없습니다.</Typography>
+        ) : (
+          repottingLogs.map((log) => (
+            <Box
+              key={log.plantRepottingId}
+              className="log-entry"
+              component="fieldset"
+              sx={{
+                mb: 2,
+                border: "1px solid #ccc",
+                p: 2,
+              }}
+            >
+              <legend
+                style={{
+                  fontWeight: "bold",
+                  padding: "0 8px",
+                  display: "flex",
+                  alignItems: "center",
+                }}
               >
-                삭제
-              </Button>
-              <Button
-                variant="text"
-                className="log-action-button"
-                onClick={() => onEditLog(log.plantRepottingId)}
-              >
-                수정
-              </Button>
+                <CheckBoxIcon sx={{ fontSize: 18, color: "#333", mr: 1 }} />
+                분갈이 확인
+              </legend>
+
+              <Box className="log-details">
+                <Typography>
+                  {log.repottingDate} | {log.soilCondition}
+                </Typography>
+                <Typography>{log.repottingMemo}</Typography>
+              </Box>
+              <Box className="log-actions">
+                <Button
+                  variant="text"
+                  className="log-action-button"
+                  onClick={() => onDeleteLog(log.plantRepottingId)}
+                >
+                  삭제
+                </Button>
+                <Button
+                  variant="text"
+                  className="log-action-button"
+                  onClick={() => onEditLog(log.plantRepottingId)}
+                >
+                  수정
+                </Button>
+              </Box>
             </Box>
-          </Box>
-        ))
-      )}
+          ))
+        ))}
     </Box>
   </Box>
 );
@@ -184,7 +229,7 @@ const PlantRepotting = () => {
   const [purchaseDate] = useState(null);
   // const [currentTab, setCurrentTab] = useState(2); // 일조량 탭이 기본 선택
 
-  const [repottingDate, setRepottingDate] = useState(null);
+  const [repottingDate, setRepottingDate] = useState(dayjs());
   const [soilConditionText, setSoilConditionText] = useState("");
   const [repottingMemoText, setRepottingMemoText] = useState("");
 
@@ -193,7 +238,7 @@ const PlantRepotting = () => {
   const [deleteRepottingLogs] = useDeleteRepottingLogsMutation();
   const { data: plantInfo } = usePlantInfoQuery(plantId);
 
-  const [editingLog, setEditingLog] = useState(true);  // true저장   false 수정
+  const [editingLog, setEditingLog] = useState(true); // true저장   false 수정
   const [editStatus, setStatus] = useState("");
   const [editMemo, setMemo] = useState("");
 
@@ -213,6 +258,7 @@ const PlantRepotting = () => {
     `/PlantPest.do?plantId=${plantId}`,
   ];
 
+  const [showWaterLogs, setShowWaterLogs] = useState({});
   const {
     data: fetchedLogs,
     error,
@@ -309,11 +355,27 @@ const PlantRepotting = () => {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Box className="plant-care-container">
+      <Box
+        sx={{
+          padding: "16px",
+          backgroundColor: "#f5f5f5",
+          minHeight: "100vh",
+        }}
+      >
         {/*식물 정보 수정 버튼*/}
         <Button
-          variant="contained"
-          className="edit-top-button"
+          sx={{
+            marginTop: "10",
+            marginLeft: 40,
+            backgroundColor: "#889F7F",
+            width: 40,
+            height: 30,
+            minWidth: "unset",
+            padding: 0,
+            fontSize: "12px",
+            borderRadius: "55%",
+            color: "#fff",
+          }}
           onClick={() => {
             navigate(`/PlantUpdate.do?plantId=${plantId}`);
           }}
@@ -321,8 +383,18 @@ const PlantRepotting = () => {
           수정
         </Button>
 
-        <Box className="plant-info-header">
-          <Box className="plant-details">
+        <Box
+          className="plant-info-header"
+          sx={{
+            marginLeft: 3,
+          }}
+        >
+          <Box
+            className="plant-details"
+            sx={{
+              marginTop: 3,
+            }}
+          >
             <Box className="plant-detail-row">
               <Typography className="plant-label">식물 이름</Typography>
               <Box className="plant-value-box">
@@ -347,13 +419,11 @@ const PlantRepotting = () => {
             </Box>
           </Box>
           <Avatar
-            src={`${
-              process.env.REACT_APP_API_BASE_URL
-            }/file/imgDown.do?fileId=${
-              plantInfo?.data && plantInfo.data.length > 0
-                ? plantInfo.data[0].fileId
-                : ""
-            }`}
+            src={
+              plantInfo?.data[0]?.fileId && plantInfo.data.length > 0
+                ? `${process.env.REACT_APP_API_BASE_URL}/file/imgDown.do?fileId=${plantInfo.data[0].fileId}`
+                : DefaultImage
+            }
             className="plant-avatar"
           />
         </Box>
@@ -364,6 +434,18 @@ const PlantRepotting = () => {
             onChange={handleTabChange}
             className="plant-care-tabs"
             TabIndicatorProps={{ style: { backgroundColor: "black" } }}
+            sx={{
+              "& .MuiTab-root": {
+                color: "#aaa", // 기본 글자 색
+              },
+              "& .Mui-selected": {
+                color: "#303030",
+                fontWeight: 600,
+              },
+              "& .MuiTabs-indicator": {
+                backgroundColor: "#000",
+              },
+            }}
           >
             <Tab label="물주기" />
             <Tab label="일조량" />
@@ -385,6 +467,8 @@ const PlantRepotting = () => {
             onDeleteLog={handleDeleteLog}
             onEditLog={handleEditLog}
             editingLog={editingLog}
+            showWaterLogs={showWaterLogs}
+            setShowWaterLogs={setShowWaterLogs}
           />
         </Box>
       </Box>
