@@ -12,6 +12,7 @@ import {
 } from "../../features/pet/petWalkApi";
 
 import back from "../../image/back.png";
+import camera from "../../image/camera.png";
 
 const WalkTracker = () => {
   const navigate = useNavigate();
@@ -63,17 +64,17 @@ const WalkTracker = () => {
 
   // 공통 버튼 스타일
   const buttonBaseStyle = {
-    backgroundColor: "#6a8f6b",
+    backgroundColor: "#889F7F",
     color: "white",
-    padding: "8px 16px",
+    padding: "0px 2px",
     border: "none",
-    borderRadius: "8px",
+    borderRadius: "15px",
     cursor: "pointer",
     fontSize: "13px",
     whiteSpace: "nowrap",
     height: "32px",
     width: "120px",
-    textAlign: "left",
+    textAlign: "",
   };
 
   // 초기 로딩 시 map 인스턴스를 설정한다.
@@ -534,7 +535,8 @@ const WalkTracker = () => {
               onClick={openCamera}
               style={{ background: "none", border: "none", fontSize: "20px" }}
             >
-              📷
+              <img src={camera} slt=""
+              style={{width:'30px', height:'30px'}}/>
             </button>
           </div>
 
@@ -550,16 +552,16 @@ const WalkTracker = () => {
             <button
               onClick={onClickCurrentLocation}
               style={{
-                backgroundColor: "#6a8f6b",
+                backgroundColor: "#889F7F",
                 color: "white",
                 padding: "1px 5px",
                 border: "none",
-                borderRadius: "8px",
+                borderRadius: "15px",
                 cursor: "pointer",
                 fontSize: "13px",
                 whiteSpace: "nowrap",
                 height: "32px",
-                width: "60px",
+                width: "80px",
                 textAlign: "center",
               }}
             >
@@ -572,7 +574,7 @@ const WalkTracker = () => {
                 onClick={() => setMenuOpen(!menuOpen)}
                 style={buttonBaseStyle}
               >
-                {selectedItem}
+                {selectedItem}<span style={{position:'relative',fontSize:'10px',top:'-1px', }}> ▼</span>
               </button>
 
               {/* 드롭다운 메뉴 */}
@@ -586,7 +588,7 @@ const WalkTracker = () => {
                   opacity: menuOpen ? 1 : 0,
                   overflow: "hidden",
                   transition: "all 0.3s ease",
-                  backgroundColor: "#6a8f6b",
+                  backgroundColor: "#889F7F",
                   borderRadius: "8px",
                   padding: menuOpen ? "4px 0" : "0",
                   boxShadow: menuOpen ? "0px 2px 5px rgba(0,0,0,0.1)" : "none",
@@ -608,7 +610,7 @@ const WalkTracker = () => {
 
           {/* 지도 영역 */}
           <div>
-            <div style={{ width: "100%", height: "400px" }}>
+            <div style={{ width: "100%", height: "400px"}}>
               {center ? (
                 <LoadScript googleMapsApiKey="AIzaSyBkqvUbxVClcx6PG5TGNx035c9_SZWt_-w">
                   <MapContainer
@@ -650,12 +652,12 @@ const WalkTracker = () => {
                 handleWalkAction(action); // 예: 백엔드 전송 등
               }}
               style={{
-                backgroundColor: "#6a8f6b",
+                backgroundColor: "#889F7F",
                 color: "white",
                 padding: "10px 40px",
                 fontSize: "18px",
                 border: "none",
-                borderRadius: "12px",
+                borderRadius: "20px",
                 cursor: "pointer",
               }}
             >
@@ -669,6 +671,7 @@ const WalkTracker = () => {
               textAlign: "center",
               fontSize: "28px",
               fontFamily: "monospace",
+              fontWeight:'700',
             }}
           >
             {formattedTime}
