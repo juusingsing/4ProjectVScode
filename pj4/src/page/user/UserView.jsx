@@ -7,7 +7,10 @@ import { clearUser, setAlertCheck } from '../../features/user/userSlice';
 import { persistor } from '../../app/store';
 import { useCmDialog } from '../../cm/CmDialogUtil';
 import back from '../../image/backWhite.png';
-import { useLogoutAlarmMutation } from "../../features/alarm/alarmApi";
+import {
+  useLogoutAlarmMutation,
+  useDropAlarmMutation,
+} from "../../features/alarm/alarmApi";
 
  const InfoDisplayRow = ({ label, value }) => {
     return (
@@ -46,6 +49,7 @@ const UserView = () => {
   const dispatch = useDispatch();
   const { showAlert } = useCmDialog();
   const [logoutDeleteAlarm] = useLogoutAlarmMutation();
+  const [dropDeleteAlarm] = useDropAlarmMutation();
 
   useEffect(() => {
     if (isSuccess && data?.data) {
@@ -65,7 +69,7 @@ const UserView = () => {
   }, [isSuccess, data]);
 
   const handleLogout = async () => {
-    
+
     try {
 
       const response = await logoutDeleteAlarm({}).unwrap();
@@ -91,6 +95,19 @@ const UserView = () => {
 
   const handleDeleteClick = async () => {
     try {
+
+      const response2 = await dropDeleteAlarm({}).unwrap();
+      console.log("response2 : ", response2);
+        
+          // 알람 끄기 - Android cancelAlarm 호출
+          if (window.Android && window.Android.cancelAlarm) {
+            for (let i = 0; i < response2?.data?.length; i++) {
+              const alarmId = response2.data[i].alarmId;
+              window.Android.cancelAlarm(String(alarmId));
+            }
+          }
+
+
       const response = await userDelete({ usersId: id }).unwrap();
       if (response.success) {
         dispatch(setAlertCheck(true));
