@@ -7,6 +7,7 @@ import { clearUser, setAlertCheck } from '../../features/user/userSlice';
 import { persistor } from '../../app/store';
 import { useCmDialog } from '../../cm/CmDialogUtil';
 import back from '../../image/backWhite.png';
+import { useLogoutAlarmMutation } from "../../features/alarm/alarmApi";
 
  const InfoDisplayRow = ({ label, value }) => {
     return (
@@ -44,6 +45,7 @@ const UserView = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { showAlert } = useCmDialog();
+  const [logoutDeleteAlarm] = useLogoutAlarmMutation();
 
   useEffect(() => {
     if (isSuccess && data?.data) {
@@ -64,6 +66,23 @@ const UserView = () => {
 
   const handleLogout = async () => {
     try {
+
+      logoutDeleteAlarm({
+      })
+        .unwrap()
+        .then((response) => {
+        
+          // 알람 끄기 - Android cancelAlarm 호출
+          if (window.Android && window.Android.cancelAlarm) {
+            console.log("response.data.length = " ,response.data.length);
+            for (let i = 0; i < response?.data?.length; i++) {
+              const alarmId = response.data[i].alarmId;
+              window.Android.cancelAlarm(String(alarmId));
+            }
+          }
+        })
+
+
       await logout({}).unwrap();
       await persistor.purge(); //지속된(persisted) 모든 Redux 상태를 스토리지에서 완전히 삭제
     } catch (e) {

@@ -67,6 +67,20 @@ export const alarmApi = createApi({
         body: data,
       }),
     }),
+    LogoutAlarm: builder.mutation({
+      query: (data) => ({
+        url: '/alarm/logoutDelete.do',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+    DropAlarm: builder.mutation({
+      query: (data) => ({
+        url: '/alarm/dropDelete.do',
+        method: 'POST',
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -79,4 +93,6 @@ export const {
     useAlarmDeleteMutation,
     usePetDeleteAlarmMutation,
     usePlantDeleteAlarmMutation,
+    useLogoutAlarmMutation,
+    useDropAlarmMutation,
 } = alarmApi;
