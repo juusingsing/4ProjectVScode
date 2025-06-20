@@ -87,7 +87,7 @@ const FormRow1 = ({
         }}
         sx={{
 position:'absolute',
-top:'270px',
+top:'285px',
 left:'100px',
           width: "270px",
           height: "35px",
@@ -612,12 +612,11 @@ const Pet_Form_Eat_Alarm = () => {
           <Box
             sx={{
               position: "absolute",
-                    left: "0px",
+                    left: "10px",
                     top:'192px',
               width: "100%",
               maxWidth: 400,
               mx: "auto",
-              
               display: "flex",
               justifyContent: "center",
             }}
@@ -639,7 +638,7 @@ const Pet_Form_Eat_Alarm = () => {
                   borderBottom: "2px solid transparent",
                 },
                 "& .Mui-selected": {
-                  color: "#000",
+                  color: "#0174C5",
                   fontWeight: 600,
                 },
                 "& .MuiTabs-indicator": {
@@ -653,10 +652,10 @@ const Pet_Form_Eat_Alarm = () => {
             </Tabs>
           </Box>
 
-          <Box sx={{ width: "100%"}}>
+          <Box sx={{ width: "100%", marginTop:'30px'}}>
             <Box sx={{ position: "absolute",
                     left: "30px",
-                    top:'240px',}}>
+                    top:'255px',}}>
               <Typography fontWeight="bold" fontSize="14px">
                 먹이 알림 설정🔔
               </Typography>
@@ -712,16 +711,16 @@ const Pet_Form_Eat_Alarm = () => {
               inputRef={alarmNameRef}
             />
 
-            <Typography sx={{ position:'absolute', left:'100px', top:'320px' }}>
+            <Typography sx={{ position:'absolute', left:'100px', top:'330px' }}>
               주기
             </Typography>
             <Combo
               sx={{
-                width: 80,
+                width: 90,
                 height: 30,
                 position: "absolute",
                 left:'100px',
-                top: '195px',
+                top: '190px',
                 borderRadius: "8px",
                 border: "1px solid black",
                 fontSize: "13px",
@@ -757,7 +756,7 @@ const Pet_Form_Eat_Alarm = () => {
               onSelectionChange={setAlarmCycle}
               defaultValue={alarmCycle}
             ></Combo>
-            <Typography sx={{ position:'absolute',top:'320px', left:'220px'}}>
+            <Typography sx={{ position:'absolute',top:'330px', left:'230px'}}>
               시각
             </Typography>
             <TimePicker
@@ -772,13 +771,13 @@ const Pet_Form_Eat_Alarm = () => {
                     sx: {
                       borderRadius: "11px", // !important 추가
                       border: "1px solid black",
-                      width: "127px",
+                      width: "130px",
                       height: "31px",
                       fontSize: "13px",
                       bottom: "104px",
                       position:'absolute',
-                      top:'170px',
-                      left: "220px",
+                      top:'165px',
+                      left: "230px",
                     },
                   },
                 },
@@ -805,7 +804,7 @@ const Pet_Form_Eat_Alarm = () => {
 
             <Typography
               sx={{
-                top: '392px',
+                top: '397px',
                 position: "absolute",
                 left: '28px',
                 fontSize: "14px",
@@ -825,13 +824,13 @@ const Pet_Form_Eat_Alarm = () => {
                       sx: {
                         borderRadius: "11px", // !important 추가
                         border: "1px solid black",
-                        width: "243px",
+                        width: "260px",
                         height: "31px",
                         fontSize: "13px",
                         bottom: "175px",
                         position:'absolute',
                         left:'100px',
-                        top:'210px'
+                        top:'200px'
                       },
                     },
                   },
@@ -865,7 +864,7 @@ const Pet_Form_Eat_Alarm = () => {
               position: "relative",
             }}
           >
-            알람 목록
+            알림 목록
           </Typography>
 
           {alarmList.map((alarm, idx) => (
@@ -969,14 +968,12 @@ const Pet_Form_Eat_Alarm = () => {
                     },
                   }}
                 />
-              </Grid>
-
-              {/* 삭제 버튼 */}
+                {/* 삭제 버튼 */}
               <Grid item xs={2}>
                 <IconButton
                   onClick={() => alarmDelete(alarm.alarmId)}
                   size="small"
-                  sx={{ p: 0, left: 60, top: -7 }}
+                  sx={{ p: 0, left: 30, top: -7 }}
                 >
                   <img
                     src={AlarmMinus}
@@ -985,6 +982,9 @@ const Pet_Form_Eat_Alarm = () => {
                   />
                 </IconButton>
               </Grid>
+              </Grid>
+
+              
             </Grid>
           ))}
         </Box>
