@@ -258,7 +258,7 @@ const Main = () => {
 
         {/* 이미지 갤러리 */}
         <div style={{ width: "100%", textAlign: "center" }}>
-          <p style={{ color: "#4b5563" }}>마지막 산책풍경</p>
+          <p style={{ color: "#4b5563", marginRight: "270px"}}>최근 산책 풍경</p>
           <div style={{ width: "100%", maxWidth: "448px", padding: "1rem" }}>
             {isLoading ? (
               <div>이미지 로딩 중...</div>
