@@ -18,13 +18,40 @@
   margin-bottom: 10px !important;
 }
 
-.soil-status-textfield {
-  width: 100%;
+
+.soil-status-textfield .MuiOutlinedInput-root {
+  background-color: #F8F8F8;
+  border-radius: 8px;
+  padding: 0;
+}
+
+.soil-status-textfield .MuiInputBase-input {
+  padding: 10px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #020202;
 }
 
 .repotting-memo-textfield {
   width: 100%;
 }
+
+.repotting-memo-textfield .MuiOutlinedInput-root {
+  background-color: #F8F8F8;
+  border-radius: 8px;
+  padding: 0;
+}
+
+.repotting-memo-textfield .MuiInputBase-input {
+  padding: 12px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #020202;
+}
+
+
+
+
 .save-button {
   background-color: #4b6044;
   color: white;

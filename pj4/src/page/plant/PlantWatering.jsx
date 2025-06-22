@@ -162,20 +162,35 @@ const WateringContent = ({
                   onChange={() => toggleAlarm(alarmList[0].alarmId)}
                   color="success" // 초록 계열
                   sx={{
-                    "& .MuiSwitch-track": {
-                      backgroundColor: alarmList?.[0]?.enabled
-                        ? "#4B6044"
-                        : "#ccc",
-                      opacity: 1,
+                    width: 50,
+                    height: 30,
+                    padding: 0,
+                    "& .MuiSwitch-switchBase": {
+                      padding: "2px",
+                      "&.Mui-checked": {
+                        transform: "translateX(25px)",
+                        color: "#fff",
+                        "& + .MuiSwitch-track": {
+                          backgroundColor: "#90caf9",
+                          opacity: 1,
+                        },
+                      },
                     },
                     "& .MuiSwitch-thumb": {
-                      color: alarmList?.[0]?.enabled ? "#fff" : "#888",
+                      width: 25,
+                      height: 25,
+                      boxShadow: "0 0 2px rgba(0, 0, 0, 0.2)",
+                    },
+                    "& .MuiSwitch-track": {
+                      borderRadius: 10,
+                      backgroundColor: "#e0e0e0",
+                      opacity: 1,
                     },
                   }}
                 />
               }
               label=""
-              sx={{ ml: 0 }} // 왼쪽 여백 제거
+              sx={{ ml: 0, ml: 3,}} // 왼쪽 여백 제거
             />
           ) : null}
         </Box>
@@ -660,7 +675,7 @@ const PlantWatering = () => {
       <Box
         sx={{
           padding: "16px",
-          backgroundColor: "#f5f5f5",
+          backgroundColor: "#ffffff",
           minHeight: "100vh",
         }}
       >

@@ -8,7 +8,7 @@
 
 .tab-menu-container {
   margin-top: 24px;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #ffffff;
 }
 
 .tab-content-display {
@@ -20,5 +20,29 @@
   width: 100%;
   box-sizing: border-box;
   padding: 16px;
-  background-color: #fff;
+  background-color: #ffffff;
+}
+
+.pest-memo-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.pest-memo-textfield {
+  width: 100%;
+}
+
+.pest-memo-textfield .MuiOutlinedInput-root {
+  background-color: #F8F8F8;
+  border-radius: 8px;
+  padding: 0;
+}
+
+.pest-memo-textfield .MuiInputBase-input {
+  padding: 12px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #020202;
 }

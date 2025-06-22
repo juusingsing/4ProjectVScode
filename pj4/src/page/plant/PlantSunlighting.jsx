@@ -362,7 +362,7 @@ const PlantSunlighting = () => {
       <Box
         sx={{
           padding: "16px",
-          backgroundColor: "#f5f5f5",
+          backgroundColor: "#ffffff",
           minHeight: "100vh",
         }}
       >

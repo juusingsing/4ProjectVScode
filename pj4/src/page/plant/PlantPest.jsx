@@ -20,6 +20,7 @@ import dayjs from "dayjs";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import DefaultImage from "../../image/default-plant.png";
+import image from "../../image/imageAdd.png";
 
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 //훅
@@ -48,66 +49,74 @@ const PestContent = ({
   setShowWaterLogs,
 }) => (
   <Box className="pest-tab-content">
-    <Box className="pest-date">
-      <Box sx={{ display: "flex" }}>
-        <Typography
-          className="date-label"
-          sx={{
-            marginBottom: 500,
-          }}
-        >
-          병충해 날짜
-        </Typography>
-        <LocalizationProvider
-          dateAdapter={AdapterDayjs}
-          adapterLocal="ko"
-        ></LocalizationProvider>
-        <DatePicker
-          value={dayjs(plantPestDate)}
-          onChange={(newValue) => setPlantPestDate(newValue)}
-          format="YYYY.MM.DD"
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              variant="outlined"
-              size="small"
-              className="input-field-wrapper"
-              InputProps={{
-                sx: {
-                  borderRadius: "8px",
-                  backgroundColor: "#f0f0f0",
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "transparent",
-                  },
-                  "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "transparent",
-                  },
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "transparent",
-                  },
-                },
-              }}
-            />
-          )}
-        />
+    <Box
+      className="pest-date"
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        gap: 1,
+      }}
+    >
+      <Typography className="date-label">병충해 날짜</Typography>
+      <Box sx={{ marginTop: "10px" }}>
+        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ko">
+          <DatePicker
+            value={dayjs(plantPestDate)}
+            onChange={(newValue) => setPlantPestDate(newValue)}
+            format="YYYY.MM.DD"
+            sx={{
+              width: 250,
+              backgroundColor: "#F8F8F8",
+              borderRadius: "8px",
+              marginBottom: "10px",
+              marginLeft: 1,
+            }}
+            slotProps={{
+              textField: {
+                variant: "outlined",
+                size: "small",
+              },
+            }}
+          />
+        </LocalizationProvider>
       </Box>
     </Box>
 
-    {/* 파일 업로드*/}
-    <Box
-      sx={{
-        textAlign: "center",
-        position: "relative",
-        marginBottom: 3,
-        display: "flex",
-      }}
-    >
+    {/* 파일 업로드 */}
+    <Box sx={{ marginTop: 2 }}>
+      {/* 텍스트와 아이콘을 수평 배치 */}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center", // 수직 가운데 정렬
+          justifyContent: "space-between", // 좌우 정렬 옵션
+          marginBottom: 1,
+        }}
+      >
+        <Typography sx={{ marginLeft: "1px", marginTop:-1, fontWeight:600, }}>사진</Typography>
+
+        <label htmlFor="file">
+          <img
+            src={image}
+            alt="카메라 아이콘"
+            style={{
+              width: 20,
+              height: 20,
+              cursor: "pointer",
+              marginRight: "33px",
+            }}
+          />
+        </label>
+      </Box>
+
+      {/* 파일명 표시 */}
       {selectedFileName && (
         <Typography sx={{ marginTop: 1, display: "block" }}>
           선택된 파일: {selectedFileName}
         </Typography>
       )}
 
+      {/* 실제 input (숨김 처리) */}
       <input
         id="file"
         type="file"
@@ -115,33 +124,14 @@ const PestContent = ({
         onChange={handleFileChange}
         style={{ display: "none" }}
       />
-
-      <label htmlFor="file">
-        <IconButton
-          component="span"
-          sx={{
-            position: "relative",
-            top: "0px",
-            left: "0px",
-            backgroundColor: "white",
-            boxShadow: 1,
-            width: 30,
-            height: 30,
-            "&:hover": { backgroundColor: "#e0e0e0" },
-          }}
-        >
-          <FaCamera style={{ fontSize: "1rem" }} />
-        </IconButton>
-      </label>
     </Box>
 
     <Box>
-      <Typography>메모</Typography>
+      <Typography sx={{fontWeight:600,}}>메모</Typography>
       <TextField
         sx={{
-          width: 270,
-          marginLeft: 8,
-          marginTop: -3,
+          backgroundColor: "#F8F8F8",
+          width: "100%",
         }}
         multiline
         rows={5}
@@ -431,7 +421,7 @@ const PlantPest = () => {
       <Box
         sx={{
           padding: "16px",
-          backgroundColor: "#f5f5f5",
+          backgroundColor: "#ffffff",
           minHeight: "100vh",
         }}
       >

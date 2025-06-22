@@ -56,42 +56,33 @@ const RepottingContent = ({
       className="repotting-date"
       sx={{
         display: "flex",
-        alignItems: "center", // 수직 가운데 정렬
-        gap: 1, // 요소 사이 간격
+        alignItems: "center",
+        gap: 1,
       }}
     >
-      <Typography className="date-label">분갈이날짜</Typography>
-      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocal="ko">
-        <DatePicker
-          value={dayjs(repottingDate)}
-          onChange={(newValue) => setRepottingDate(newValue)}
-          format="YYYY.MM.DD"
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              variant="outlined"
-              size="small"
-              className="input-field-wrapper"
-              InputProps={{
-                sx: {
-                  width: 200,
-                  borderRadius: "8px",
-                  backgroundColor: "#f0f0f0",
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "transparent",
-                  },
-                  "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "transparent",
-                  },
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "transparent",
-                  },
-                },
-              }}
-            />
-          )}
-        />
-      </LocalizationProvider>
+      <Typography className="date-label">분갈이 날짜</Typography>
+      <Box sx={{ marginTop: "10px" }}>
+        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ko">
+          <DatePicker
+            value={dayjs(repottingDate)}
+            onChange={(newValue) => setRepottingDate(newValue)}
+            format="YYYY.MM.DD"
+            sx={{
+              width: 250,
+              backgroundColor: "#F8F8F8",
+              borderRadius: "8px",
+              marginBottom: "10px",
+              marginLeft: 1,
+            }}
+            slotProps={{
+              textField: {
+                variant: "outlined",
+                size: "small",
+              },
+            }}
+          />
+        </LocalizationProvider>
+      </Box>
     </Box>
 
     <Box
@@ -102,7 +93,12 @@ const RepottingContent = ({
         gap: 1, // 요소 사이 간격
       }}
     >
-      <Typography className="soil-status-label">흙종류</Typography>
+      <Typography
+        className="soil-status-label"
+        sx={{ marginBottom: "25px", marginLeft: "1px" }}
+      >
+        흙종류
+      </Typography>
       <TextField
         className="soil-status-textfield"
         multiline
@@ -111,8 +107,8 @@ const RepottingContent = ({
         onChange={(e) => setSoilConditionText(e.target.value)}
         variant="outlined"
         sx={{
-          width: 200,
-          marginLeft: 10,
+          marginLeft: "33px",
+          width: "250px",
         }}
       />
     </Box>
@@ -122,7 +118,7 @@ const RepottingContent = ({
       <TextField
         className="repotting-memo-textfield"
         multiline
-        rows={3}
+        rows={5}
         value={repottingMemoText}
         onChange={(e) => setRepottingMemoText(e.target.value)}
         variant="outlined"
@@ -142,7 +138,7 @@ const RepottingContent = ({
               borderRadius: "20px",
               backgroundColor: "#4B6044 !important",
               "&:hover": {
-                backgroundColor: "#6e927e !important",
+                backgroundColor: "#88AE97 !important",
               },
             }
           : undefined
@@ -358,7 +354,7 @@ const PlantRepotting = () => {
       <Box
         sx={{
           padding: "16px",
-          backgroundColor: "#f5f5f5",
+          backgroundColor: "#ffffff",
           minHeight: "100vh",
         }}
       >
