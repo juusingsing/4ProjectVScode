@@ -48,6 +48,7 @@ const UserView = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { showAlert } = useCmDialog();
+  const { showConfirm } = useCmDialog(); 
   const [logoutDeleteAlarm] = useLogoutAlarmMutation();
   const [dropDeleteAlarm] = useDropAlarmMutation();
 
@@ -70,8 +71,22 @@ const UserView = () => {
 
   const handleLogout = async () => {
 
-    try {
+    showConfirm(
+      '로그아웃 하시겠습니까?',
+      () => {
+        // yes callback - 실행
+        console.log('실행 확인');
+        logOutYesCall();
+      },
+      () => {
+        // no callback - 취소
+        console.log('실행 취소');
+      }
+    );
+  };
 
+  const logOutYesCall = async () => {
+    try {
       const response = await logoutDeleteAlarm({}).unwrap();
         
           // 알람 끄기 - Android cancelAlarm 호출
@@ -91,9 +106,24 @@ const UserView = () => {
       dispatch(setAlertCheck(true));
       navigate('/');
     }
-  };
+  }
 
   const handleDeleteClick = async () => {
+    showConfirm(
+      '회원탈퇴 하시겠습니까?',
+      () => {
+        // yes callback - 실행
+        console.log('실행 확인');
+        DeleteYesCall();
+      },
+      () => {
+        // no callback - 취소
+        console.log('실행 취소');
+      }
+    );
+  };
+
+  const DeleteYesCall = async () => {
     try {
 
       const response2 = await dropDeleteAlarm({}).unwrap();
@@ -118,7 +148,7 @@ const UserView = () => {
     } catch (error) {
       showAlert(error.data?.message || '회원탈퇴에 실패했습니다. 서버 오류 또는 네트워크 문제.');
     }
-  };
+  }
 
  
 

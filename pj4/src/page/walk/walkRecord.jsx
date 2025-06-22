@@ -396,6 +396,15 @@ const WalkTracker = () => {
     setZoom(10); // 다른 값으로 임시 변경
     setTimeout(() => setZoom(18), 100); // 다시 18로 설정
     setNearbyMarkers([]); // 주변건물마커 삭제
+
+    if(isRunning && startLocation && timerRef.current != null) {
+      console.log("타이머 돌아가는중");
+      return;
+    }
+
+    setStartLocation(null);
+    setEndLocation(null);
+
     // firstMapping();
   };
 

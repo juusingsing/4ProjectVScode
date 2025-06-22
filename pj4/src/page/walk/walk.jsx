@@ -5,7 +5,7 @@ import {
   usePetImgLoadQuery,
   usePetCurrentWalkLoadQuery,
 } from "../../features/pet/petWalkApi";
-import { Button } from "@mui/material";
+import { Button, Box } from "@mui/material";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -126,7 +126,12 @@ const Main = () => {
   };
 
   return (
-    <>
+    <Box
+      sx={{
+        width: "100%",
+        p: "0",
+      }}
+    >
       <Button
         onClick={() => navigate(-1)}
         sx={{
@@ -140,7 +145,7 @@ const Main = () => {
           marginTop: "25px",
           position: "absolute",
           marginBottom: "20px",
-          zIndex: 9999, 
+          zIndex: 9999,
           "&:hover": {
             backgroundColor: "#363636",
           },
@@ -164,29 +169,26 @@ const Main = () => {
       >
         {/* 상단 대표 이미지 및 버튼 */}
         <div
-
-
           style={{
             position: "relative",
             width: "100%",
-            maxWidth: "448px",
+            // maxWidth: "448px",
             height: "240px",
             // borderRadius: "12px",
             overflow: "hidden",
             marginBottom: "1.5rem",
+            backgroundImage: `url(${runningDog})`,
+            backgroundSize: "cover", // 이미지를 요소에 맞게 자르기
+            backgroundPosition: "center", // 가운데 정렬
+            backgroundRepeat: "no-repeat", // 반복 금지
           }}
         >
-          <img
-            src={runningDog}
-            alt="Running Dog"
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          />
           <button
             onClick={() => navigate("/pet/walkRecord.do?animalId=" + animalId)}
             // 동물아이디   사진찍을때쓸 다음 워크아이디저장
             style={{
-              position: "absolute",
-              right: "1rem",
+              position:"absolute",
+              right: "20px",
               bottom: "1rem",
               backgroundColor: "#ca8a04",
               color: "white",
@@ -200,6 +202,7 @@ const Main = () => {
               justifyContent: "center",
               textAlign: "center",
               lineHeight: "1.25rem",
+              zIndex: 9999,
             }}
           >
             RUN
@@ -258,8 +261,10 @@ const Main = () => {
 
         {/* 이미지 갤러리 */}
         <div style={{ width: "100%", textAlign: "center" }}>
-          <p style={{ color: "#4b5563", marginRight: "270px"}}>최근 산책 풍경</p>
-          <div style={{ width: "100%", maxWidth: "448px", padding: "1rem" }}>
+          <p style={{ color: "#4b5563", marginRight: "270px" }}>
+            최근 산책 풍경
+          </p>
+          <div style={{ width: "92%", maxWidth: "448px", padding:"0px 15px"}}>
             {isLoading ? (
               <div>이미지 로딩 중...</div>
             ) : !images || images.length === 0 ? (
@@ -271,9 +276,10 @@ const Main = () => {
             ) : images.length <= 8 ? (
               <div
                 style={{
+                  width:"100%",
                   display: "flex",
                   flexWrap: "wrap",
-                  gap: "0.5rem",
+                  justifyContent: "space-between",
                 }}
               >
                 {images.map((image, idx) => (
@@ -283,6 +289,7 @@ const Main = () => {
                       flex: "0 0 23%",
                       borderRadius: 8,
                       overflow: "hidden",
+                      marginBottom:10,
                     }}
                   >
                     <img
@@ -384,7 +391,7 @@ const Main = () => {
           </div>
         )}
       </div>
-    </>
+    </Box>
   );
 };
 

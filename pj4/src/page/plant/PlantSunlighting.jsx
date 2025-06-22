@@ -114,18 +114,22 @@ const SunlightContent = ({
     <Box className="light-status-section">
       <Typography
         className="light-status-title"
-        sx={{ marginBottom: "20px", marginLeft: "10px" }}
+        sx={{ marginBottom: "25px", marginLeft: "11px" }}
       >
         빛의 상태
       </Typography>
       <TextField
-        className="sunlight-status-textfield"
+        sx={{
+          backgroundColor: "#F8F8F8",
+          width: "100%",
+          mb: 1.5,
+        }}
         multiline
         rows={5}
         value={sunlightStatusText}
         onChange={(e) => setSunlightStatusText(e.target.value)}
         variant="outlined"
-        sx={{ marginLeft: "10px", width: "330px" }}
+
       />
     </Box>
 
@@ -136,16 +140,17 @@ const SunlightContent = ({
       sx={
         editingLog !== false
           ? {
-              width: "200px",
-              marginTop: "20px",
-              marginInline: "22%",
-              borderRadius: "20px",
-              backgroundColor: "#4B6044 !important",
-              "&:hover": {
-                backgroundColor: "#6e927e !important",
-              },
-            }
-          : undefined
+                backgroundColor: "#4B6044 !important", // 저장
+                "&:hover": {
+                  backgroundColor: "#88AE97 !important",
+                },
+              }
+            : {
+                backgroundColor: "#86ad97 !important", // 수정
+                "&:hover": {
+                  backgroundColor: "#88AE97 !important",
+                },
+              }
       }
     >
       {editingLog !== false ? "저장" : "수정"}
@@ -156,7 +161,7 @@ const SunlightContent = ({
         <IconButton onClick={() => setShowWaterLogs(!showWaterLogs)}>
           <ArrowDropDownIcon />
         </IconButton>
-        <Typography>기록 리스트</Typography>
+        <Typography>일조량 일지</Typography>
       </Box>
 
       {showWaterLogs &&
@@ -388,20 +393,35 @@ const PlantSunlighting = () => {
         </Button>
 
         <Box
-          className="plant-info-header"
           sx={{
-            marginLeft: 3,
+            display: "flex",
+            gap: 3,
+            alignItems: "center",
           }}
         >
           <Box
-            className="plant-details"
             sx={{
-              marginTop: 3,
+              width: "60%",
+              mt: 1,
             }}
           >
-            <Box className="plant-detail-row">
-              <Typography className="plant-label">식물 이름</Typography>
-              <Box className="plant-value-box">
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                mb: 2,
+              }}
+            >
+              <Typography className="plant-label">동물 이름</Typography>
+              <Box
+                sx={{
+                  backgroundColor: "#f0f0f0",
+                  borderRadius: "5px",
+                  padding: "4px 12px",
+                  display: "inline-block",
+                  width: 100,
+                }}
+              >
                 <Typography sx={{ fontSize: "0.8rem", textAlign: "center" }}>
                   {/* 배열안에 데이터 있음 */}
                   {plantInfo?.data && plantInfo.data.length > 0
@@ -410,9 +430,24 @@ const PlantSunlighting = () => {
                 </Typography>
               </Box>
             </Box>
-            <Box className="plant-detail-row">
-              <Typography className="plant-label">입수일 날짜</Typography>
-              <Box className="plant-value-box">
+
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                mb: 1,
+              }}
+            >
+              <Typography className="plant-label">입양일 날짜</Typography>
+              <Box
+                sx={{
+                  backgroundColor: "#f0f0f0",
+                  borderRadius: "5px",
+                  padding: "4px 12px",
+                  display: "inline-block",
+                  width: 100,
+                }}
+              >
                 <Typography sx={{ fontSize: "0.8rem", textAlign: "center" }}>
                   {/* 배열안에 데이터 있음 */}
                   {plantInfo?.data && plantInfo.data.length > 0
@@ -422,13 +457,18 @@ const PlantSunlighting = () => {
               </Box>
             </Box>
           </Box>
+
           <Avatar
+            sx={{
+              width: "110px",
+              height: "110px",
+              border: "1px solid #e0e0e0",
+            }}
             src={
               plantInfo?.data[0]?.fileId && plantInfo.data.length > 0
                 ? `${process.env.REACT_APP_API_BASE_URL}/file/imgDown.do?fileId=${plantInfo.data[0].fileId}`
                 : DefaultImage
             }
-            className="plant-avatar"
           />
         </Box>
 

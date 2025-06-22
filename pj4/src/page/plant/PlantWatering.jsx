@@ -24,6 +24,7 @@ import {
   TimePicker,
 } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
+import "dayjs/locale/ko";
 
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import Combo from "../combo/combo"; // 이 경로가 정확한지 확인하세요.
@@ -122,7 +123,11 @@ const WateringContent = ({
               onSelectionChange={setAlarmCycle}
               defaultValue={alarmList?.[0]?.alamrCycleCode}
               sx={{
-                width: "80px",
+                fontSize: 14,
+                width: "90px",
+                height: "52px",
+                backgroundColor: "#F8F8F8",
+                borderRadius: "8px",
               }}
             />
           </Box>
@@ -152,6 +157,21 @@ const WateringContent = ({
                 });
               }}
               ampm
+              slotProps={{
+                textField: {
+                  size: "small",
+                  InputProps: {
+                    sx: {
+                      fontSize: 14,
+                      borderRadius: "8px",
+                      backgroundColor: "#F8F8F8",
+                      width: "140px",
+                      height: "53px",
+                      pl: "15px",
+                    },
+                  },
+                },
+              }}
             />
           </Box>
           {user && alarmToggle === true ? (
@@ -190,7 +210,7 @@ const WateringContent = ({
                 />
               }
               label=""
-              sx={{ ml: 0, ml: 3,}} // 왼쪽 여백 제거
+              sx={{ ml: 0, ml: 3 }} // 왼쪽 여백 제거
             />
           ) : null}
         </Box>
@@ -215,6 +235,21 @@ const WateringContent = ({
             renderInput={(params) => (
               <TextField size="small" {...params} fullWidth />
             )}
+            slotProps={{
+              textField: {
+                size: "small",
+                InputProps: {
+                  sx: {
+                    fontSize: 14,
+                    borderRadius: "8px",
+                    backgroundColor: "#F8F8F8",
+                    width: "250px",
+                    height: "51px",
+                    pl: "28px",
+                  },
+                },
+              },
+            }}
           />
         </Box>
 
@@ -236,7 +271,7 @@ const WateringContent = ({
           sx={{
             backgroundColor: "#A6D0E2",
             borderRadius: "30px",
-            marginLeft: "120px",
+            marginLeft: "105px",
             width: "150px",
             height: "50px",
           }}
@@ -527,12 +562,12 @@ const PlantWatering = () => {
     try {
       const response = await AlarmCreate(data).unwrap();
       console.log("응답 내용 >>", response); // 여기에 찍히는 걸 확인해야 해!
-      alert("등록성공ㅎㅎㅎ");
+      showAlert("등록성공");
 
       alarmSet(); // alarmList 추가되면 리렌더링
     } catch (error) {
       console.error("요청 실패:", error);
-      alert("등록실패!!!!!!!!!!");
+      showAlert("등록실패");
     }
   };
 
@@ -578,12 +613,12 @@ const PlantWatering = () => {
     try {
       const response = await WaterCreate(data).unwrap();
       console.log("응답 내용 >>", response); // 여기에 찍히는 걸 확인해야 해!
-      alert("등록성공ㅎㅎㅎ");
+      showAlert("등록성공");
 
       waterListLoad(); // 페이지 다시렌더링유도
     } catch (error) {
       console.error("요청 실패:", error);
-      alert("등록실패!!!!!!!!!!");
+      showAlert("등록실패");
     }
   };
 
@@ -596,12 +631,12 @@ const PlantWatering = () => {
     try {
       const response = await WaterDelete(data).unwrap();
       console.log("응답 내용 >>", response); // 여기에 찍히는 걸 확인해야 해!
-      alert("삭제성공ㅎㅎㅎ");
+      showAlert("삭제성공");
 
       waterListLoad(); // 페이지 다시렌더링유도
     } catch (error) {
       console.error("요청 실패:", error);
-      alert("삭제실패!!!!!!!!!!");
+      showAlert("삭제실패");
     }
   };
 
@@ -671,7 +706,7 @@ const PlantWatering = () => {
   };
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ko">
       <Box
         sx={{
           padding: "16px",
@@ -693,26 +728,43 @@ const PlantWatering = () => {
             borderRadius: "55%",
             color: "#fff",
           }}
-          onClick={() => navigate(`/PlantUpdate.do?plantId=${plantId}`)}
+          onClick={() => {
+            navigate(`/PlantUpdate.do?plantId=${plantId}`);
+          }}
         >
           수정
         </Button>
 
         <Box
-          className="plant-info-header"
           sx={{
-            marginLeft: 3,
+            display: "flex",
+            gap: 3,
+            alignItems: "center",
           }}
         >
           <Box
-            className="plant-details"
             sx={{
-              marginTop: 3,
+              width: "60%",
+              mt: 1,
             }}
           >
-            <Box className="plant-detail-row">
-              <Typography className="plant-label">식물 이름</Typography>
-              <Box className="plant-value-box">
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                mb: 2,
+              }}
+            >
+              <Typography className="plant-label">동물 이름</Typography>
+              <Box
+                sx={{
+                  backgroundColor: "#f0f0f0",
+                  borderRadius: "5px",
+                  padding: "4px 12px",
+                  display: "inline-block",
+                  width: 100,
+                }}
+              >
                 <Typography sx={{ fontSize: "0.8rem", textAlign: "center" }}>
                   {/* 배열안에 데이터 있음 */}
                   {plantInfo?.data && plantInfo.data.length > 0
@@ -721,9 +773,24 @@ const PlantWatering = () => {
                 </Typography>
               </Box>
             </Box>
-            <Box className="plant-detail-row">
-              <Typography className="plant-label">입수일 날짜</Typography>
-              <Box className="plant-value-box">
+
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                mb: 1,
+              }}
+            >
+              <Typography className="plant-label">입양일 날짜</Typography>
+              <Box
+                sx={{
+                  backgroundColor: "#f0f0f0",
+                  borderRadius: "5px",
+                  padding: "4px 12px",
+                  display: "inline-block",
+                  width: 100,
+                }}
+              >
                 <Typography sx={{ fontSize: "0.8rem", textAlign: "center" }}>
                   {/* 배열안에 데이터 있음 */}
                   {plantInfo?.data && plantInfo.data.length > 0
@@ -733,13 +800,18 @@ const PlantWatering = () => {
               </Box>
             </Box>
           </Box>
+
           <Avatar
+            sx={{
+              width: "110px",
+              height: "110px",
+              border: "1px solid #e0e0e0",
+            }}
             src={
               plantInfo?.data[0]?.fileId && plantInfo.data.length > 0
                 ? `${process.env.REACT_APP_API_BASE_URL}/file/imgDown.do?fileId=${plantInfo.data[0].fileId}`
                 : DefaultImage
             }
-            className="plant-avatar"
           />
         </Box>
 
@@ -747,12 +819,12 @@ const PlantWatering = () => {
           <Tabs
             value={currentTab}
             onChange={handleTabChange}
+            className="plant-care-tabs"
             TabIndicatorProps={{ style: { backgroundColor: "black" } }}
             sx={{
               "& .MuiTab-root": {
                 color: "#aaa", // 기본 글자 색
               },
-
               "& .Mui-selected": {
                 color: "#303030",
                 fontWeight: 600,
@@ -768,7 +840,6 @@ const PlantWatering = () => {
             <Tab label="병충해" />
           </Tabs>
         </Box>
-
         <Box className="tab-content-display">
           <WateringContent
             alarmList={alarmList}

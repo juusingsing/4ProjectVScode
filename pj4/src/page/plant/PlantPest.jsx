@@ -65,7 +65,7 @@ const PestContent = ({
             onChange={(newValue) => setPlantPestDate(newValue)}
             format="YYYY.MM.DD"
             sx={{
-              width: 250,
+              width: 272,
               backgroundColor: "#F8F8F8",
               borderRadius: "8px",
               marginBottom: "10px",
@@ -93,7 +93,9 @@ const PestContent = ({
           marginBottom: 1,
         }}
       >
-        <Typography sx={{ marginLeft: "1px", marginTop:-1, fontWeight:600, }}>사진</Typography>
+        <Typography sx={{ marginLeft: "1px", marginTop: -1, fontWeight: 600 }}>
+          사진
+        </Typography>
 
         <label htmlFor="file">
           <img
@@ -111,7 +113,7 @@ const PestContent = ({
 
       {/* 파일명 표시 */}
       {selectedFileName && (
-        <Typography sx={{ marginTop: 1, display: "block" }}>
+        <Typography sx={{ marginTop: 1, ml: 8 }}>
           선택된 파일: {selectedFileName}
         </Typography>
       )}
@@ -127,11 +129,12 @@ const PestContent = ({
     </Box>
 
     <Box>
-      <Typography sx={{fontWeight:600,}}>메모</Typography>
+      <Typography sx={{ fontWeight: 600 }}>메모</Typography>
       <TextField
         sx={{
           backgroundColor: "#F8F8F8",
           width: "100%",
+          mb: 1.5,
         }}
         multiline
         rows={5}
@@ -143,20 +146,22 @@ const PestContent = ({
 
     <Button
       variant="contained"
+      className="save-button"
       onClick={handleSave}
       sx={
         editingLog !== false
           ? {
-              width: "200px",
-              marginTop: "20px",
-              marginInline: "22%",
-              borderRadius: "20px",
-              backgroundColor: "#4B6044 !important",
+              backgroundColor: "#4B6044 !important", // 저장
               "&:hover": {
-                backgroundColor: "#6e927e !important",
+                backgroundColor: "#88AE97 !important",
               },
             }
-          : undefined
+          : {
+              backgroundColor: "#86ad97 !important", // 수정
+              "&:hover": {
+                backgroundColor: "#88AE97 !important",
+              },
+            }
       }
     >
       {editingLog !== false ? "저장" : "수정"}
@@ -194,7 +199,7 @@ const PestContent = ({
                 }}
               >
                 <CheckBoxIcon sx={{ fontSize: 18, color: "#333", mr: 1 }} />
-                일조량 확인
+                병충해 확인
               </legend>
 
               <Box className="log-details">
@@ -339,7 +344,7 @@ const PlantPest = () => {
         .unwrap()
         .then((res) => {
           showAlert(res.message);
-          setPlantPestDate(null);
+          setPlantPestDate(dayjs());
           setPlantPestMemo("");
           setEditingLog(true);
           setSelectedFile(null);
@@ -357,7 +362,7 @@ const PlantPest = () => {
         .unwrap()
         .then((res) => {
           showAlert(res.message);
-          setPlantPestDate(null);
+          setPlantPestDate(dayjs());
           setPlantPestMemo("");
           setEditingLog(true);
           setSelectedFile(null);
@@ -376,6 +381,12 @@ const PlantPest = () => {
     try {
       await deletePestLogs(id).unwrap(); // 삭제 요청
       showAlert("일지가 성공적으로 삭제되었습니다.");
+
+      setPlantPestDate(dayjs());
+      setPlantPestMemo("");
+      setEditingLog(true);
+      setSelectedFile(null);
+      setSelectedFileName("");
 
       refetch();
     } catch (error) {
@@ -447,20 +458,35 @@ const PlantPest = () => {
         </Button>
 
         <Box
-          className="plant-info-header"
           sx={{
-            marginLeft: 3,
+            display: "flex",
+            gap: 3,
+            alignItems: "center",
           }}
         >
           <Box
-            className="plant-details"
             sx={{
-              marginTop: 3,
+              width: "60%",
+              mt: 1,
             }}
           >
-            <Box className="plant-detail-row">
-              <Typography className="plant-label">식물 이름</Typography>
-              <Box className="plant-value-box">
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                mb: 2,
+              }}
+            >
+              <Typography className="plant-label">동물 이름</Typography>
+              <Box
+                sx={{
+                  backgroundColor: "#f0f0f0",
+                  borderRadius: "5px",
+                  padding: "4px 12px",
+                  display: "inline-block",
+                  width: 100,
+                }}
+              >
                 <Typography sx={{ fontSize: "0.8rem", textAlign: "center" }}>
                   {/* 배열안에 데이터 있음 */}
                   {plantInfo?.data && plantInfo.data.length > 0
@@ -469,9 +495,24 @@ const PlantPest = () => {
                 </Typography>
               </Box>
             </Box>
-            <Box className="plant-detail-row">
-              <Typography className="plant-label">입수일 날짜</Typography>
-              <Box className="plant-value-box">
+
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                mb: 1,
+              }}
+            >
+              <Typography className="plant-label">입양일 날짜</Typography>
+              <Box
+                sx={{
+                  backgroundColor: "#f0f0f0",
+                  borderRadius: "5px",
+                  padding: "4px 12px",
+                  display: "inline-block",
+                  width: 100,
+                }}
+              >
                 <Typography sx={{ fontSize: "0.8rem", textAlign: "center" }}>
                   {/* 배열안에 데이터 있음 */}
                   {plantInfo?.data && plantInfo.data.length > 0
@@ -481,13 +522,18 @@ const PlantPest = () => {
               </Box>
             </Box>
           </Box>
+
           <Avatar
+            sx={{
+              width: "110px",
+              height: "110px",
+              border: "1px solid #e0e0e0",
+            }}
             src={
               plantInfo?.data[0]?.fileId && plantInfo.data.length > 0
                 ? `${process.env.REACT_APP_API_BASE_URL}/file/imgDown.do?fileId=${plantInfo.data[0].fileId}`
                 : DefaultImage
             }
-            className="plant-avatar"
           />
         </Box>
 

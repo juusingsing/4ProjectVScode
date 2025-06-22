@@ -265,10 +265,10 @@ const WriteList = () => {
             onChange={(newValue) => {
               setSearch({
                 ...search,
-                startDate: newValue.format("YYYY-MM-DD"),
+                startDate: newValue.format("YYYY.MM.DD"),
               });
             }}
-            format="YYYY-MM-DD"
+            format="YYYY.MM.DD"
             slotProps={{
               textField: {
                 variant: "standard",
@@ -313,7 +313,7 @@ const WriteList = () => {
             onChange={(newValue) => {
               setSearch({ ...search, endDate: newValue.format("YYYY.MM.DD") });
             }}
-            format="YYYY-MM-DD"
+            format="YYYY.MM.DD"
             slotProps={{
               textField: {
                 variant: "standard",

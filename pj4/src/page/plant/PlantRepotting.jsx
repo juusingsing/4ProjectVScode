@@ -56,8 +56,8 @@ const RepottingContent = ({
       className="repotting-date"
       sx={{
         display: "flex",
+        justifyContent: "space-between",
         alignItems: "center",
-        gap: 1,
       }}
     >
       <Typography className="date-label">분갈이 날짜</Typography>
@@ -68,7 +68,7 @@ const RepottingContent = ({
             onChange={(newValue) => setRepottingDate(newValue)}
             format="YYYY.MM.DD"
             sx={{
-              width: 250,
+              width: 270,
               backgroundColor: "#F8F8F8",
               borderRadius: "8px",
               marginBottom: "10px",
@@ -89,6 +89,7 @@ const RepottingContent = ({
       className="soil-status-section"
       sx={{
         display: "flex",
+        justifyContent: "space-between",
         alignItems: "center", // 수직 가운데 정렬
         gap: 1, // 요소 사이 간격
       }}
@@ -108,7 +109,7 @@ const RepottingContent = ({
         variant="outlined"
         sx={{
           marginLeft: "33px",
-          width: "250px",
+          width: 270,
         }}
       />
     </Box>
@@ -116,7 +117,11 @@ const RepottingContent = ({
     <Box className="repotting-memo">
       <Typography className="repotting-memo-label">메모</Typography>
       <TextField
-        className="repotting-memo-textfield"
+        sx={{
+          backgroundColor: "#F8F8F8",
+          width: "100%",
+          mb: 1.5,
+        }}
         multiline
         rows={5}
         value={repottingMemoText}
@@ -132,16 +137,17 @@ const RepottingContent = ({
       sx={
         editingLog !== false
           ? {
-              width: "200px",
-              marginTop: "20px",
-              marginInline: "22%",
-              borderRadius: "20px",
-              backgroundColor: "#4B6044 !important",
+              backgroundColor: "#4B6044 !important", // 저장
               "&:hover": {
                 backgroundColor: "#88AE97 !important",
               },
             }
-          : undefined
+          : {
+              backgroundColor: "#86ad97 !important", // 수정
+              "&:hover": {
+                backgroundColor: "#88AE97 !important",
+              },
+            }
       }
     >
       {editingLog !== false ? "저장" : "수정"}
@@ -296,7 +302,7 @@ const PlantRepotting = () => {
         .unwrap()
         .then((res) => {
           showAlert(res.message);
-          setRepottingDate(null);
+          setRepottingDate(dayjs());
           setSoilConditionText("");
           setRepottingMemoText("");
           setEditingLog(true);
@@ -312,7 +318,7 @@ const PlantRepotting = () => {
         .unwrap()
         .then((res) => {
           showAlert(res.message);
-          setRepottingDate(null);
+          setRepottingDate(dayjs());
           setSoilConditionText("");
           setRepottingMemoText("");
           setEditingLog(true);
@@ -330,6 +336,11 @@ const PlantRepotting = () => {
     try {
       await deleteRepottingLogs(id).unwrap(); // 삭제 요청
       showAlert("일지가 성공적으로 삭제되었습니다.");
+
+      setRepottingDate(dayjs());
+      setSoilConditionText("");
+      setRepottingMemoText("");
+      setEditingLog(true);
 
       refetch();
     } catch (error) {
@@ -380,20 +391,35 @@ const PlantRepotting = () => {
         </Button>
 
         <Box
-          className="plant-info-header"
           sx={{
-            marginLeft: 3,
+            display: "flex",
+            gap: 3,
+            alignItems: "center",
           }}
         >
           <Box
-            className="plant-details"
             sx={{
-              marginTop: 3,
+              width: "60%",
+              mt: 1,
             }}
           >
-            <Box className="plant-detail-row">
-              <Typography className="plant-label">식물 이름</Typography>
-              <Box className="plant-value-box">
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                mb: 2,
+              }}
+            >
+              <Typography className="plant-label">동물 이름</Typography>
+              <Box
+                sx={{
+                  backgroundColor: "#f0f0f0",
+                  borderRadius: "5px",
+                  padding: "4px 12px",
+                  display: "inline-block",
+                  width: 100,
+                }}
+              >
                 <Typography sx={{ fontSize: "0.8rem", textAlign: "center" }}>
                   {/* 배열안에 데이터 있음 */}
                   {plantInfo?.data && plantInfo.data.length > 0
@@ -402,9 +428,24 @@ const PlantRepotting = () => {
                 </Typography>
               </Box>
             </Box>
-            <Box className="plant-detail-row">
-              <Typography className="plant-label">입수일 날짜</Typography>
-              <Box className="plant-value-box">
+
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                mb: 1,
+              }}
+            >
+              <Typography className="plant-label">입양일 날짜</Typography>
+              <Box
+                sx={{
+                  backgroundColor: "#f0f0f0",
+                  borderRadius: "5px",
+                  padding: "4px 12px",
+                  display: "inline-block",
+                  width: 100,
+                }}
+              >
                 <Typography sx={{ fontSize: "0.8rem", textAlign: "center" }}>
                   {/* 배열안에 데이터 있음 */}
                   {plantInfo?.data && plantInfo.data.length > 0
@@ -414,13 +455,18 @@ const PlantRepotting = () => {
               </Box>
             </Box>
           </Box>
+
           <Avatar
+            sx={{
+              width: "110px",
+              height: "110px",
+              border: "1px solid #e0e0e0",
+            }}
             src={
               plantInfo?.data[0]?.fileId && plantInfo.data.length > 0
                 ? `${process.env.REACT_APP_API_BASE_URL}/file/imgDown.do?fileId=${plantInfo.data[0].fileId}`
                 : DefaultImage
             }
-            className="plant-avatar"
           />
         </Box>
 

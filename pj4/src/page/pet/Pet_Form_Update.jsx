@@ -84,9 +84,11 @@ const Pet_Form_Update = () => {
       }
     }
   }, [data]);
+  
   useEffect(() => {
     console.log("existingImageUrl 상태 업데이트 됨:", existingImageUrl);
   }, [existingImageUrl]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -327,14 +329,13 @@ const Pet_Form_Update = () => {
               },
             }}
             sx={{
-              backgroundColor: "#F4EEEE",
-              borderRadius: "12px",
+              backgroundColor: "#F8F8F8",
+              borderRadius: "8px",
               px: 2,
               py: 1,
               minHeight: 70,
               textDecoration: "none",
               fontWeight: "normal",
-              color: "#000",
               display: "flex",
               alignItems: "flex-start", // 텍스트 상단 정렬
             }}
@@ -346,7 +347,7 @@ const Pet_Form_Update = () => {
             variant="contained"
             sx={{
               backgroundColor: "#88AE97",
-              borderRadius: "20px",
+              borderRadius: "8px",
               px: 6,
               py: 1,
               fontSize: 14,
@@ -359,7 +360,7 @@ const Pet_Form_Update = () => {
             variant="contained"
             sx={{
               backgroundColor: "#A44D4D",
-              borderRadius: "20px",
+              borderRadius: "8px",
               px: 6,
               py: 1,
               fontSize: 14,
@@ -384,9 +385,9 @@ const FormRow = ({
   fieldKey = "",
 }) => {
   // 필드 조건별 스타일 정의
-  let backgroundColor = "#F4EEEE";
+  let backgroundColor = "#F8F8F8";
   let border = "1px solid #ccc";
-  let borderRadius = "20px";
+  let borderRadius = "8px";
   let textDecoration = "none";
   let fontWeight = "normal";
   let color = "inherit";
@@ -425,7 +426,7 @@ const FormRow = ({
           },
         }}
         sx={{
-          width: "160px",
+          width: "240px",
           backgroundColor,
           border,
           borderRadius,
@@ -460,10 +461,10 @@ const DateInputRow = ({ label, value, onChange }) => {
               InputProps: {
                 readOnly: true,
                 sx: {
-                  width: 160,
-                  height: 40,
-                  backgroundColor: "#F4EEEE",
-                  borderRadius: "13px",
+                  width: "240px",
+                  height: "40px",
+                  backgroundColor: "#F8F8F8",
+                  borderRadius: "8px",
                   fontSize: "13px",
                   fontWeight: "normal", // ✅ 진하지 않게
                   pr: "12px", // 아이콘 공간 확보

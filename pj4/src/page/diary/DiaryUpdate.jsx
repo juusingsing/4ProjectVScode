@@ -46,10 +46,11 @@ const DiaryUpdate = () => {
 
   useEffect(() => {
     if (data?.success) {
+      const dayjsDate = data.data.diaryDate?.substring(0, 10);
       setDiary(data.data);
       setTitle(data.data.diaryTitle);
       setContent(data.data.diaryContent);
-      setDate(data.data.diaryDate?.substring(0, 10));
+      setDate(dayjs(dayjsDate));
       setDiaryType(data.data.diaryType);
       setIsOn(data.data.diaryType === "N01");
       setExistingFiles(data.data.postFiles || []);
@@ -227,7 +228,7 @@ const DiaryUpdate = () => {
                 날짜
               </Typography>
               <DatePicker
-                value={dayjs(date)}
+                value={date}
                 onChange={(newValue) => setDate(newValue)}
                 format="YYYY.MM.DD"
                 slotProps={{

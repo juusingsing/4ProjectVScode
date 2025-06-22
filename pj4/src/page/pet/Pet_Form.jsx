@@ -228,8 +228,8 @@ const Pet_Form = () => {
               },
             }}
             sx={{
-              backgroundColor: "#D9D9D9",
-              borderRadius: "12px",
+              backgroundColor: "#F8F8F8",
+              borderRadius: "8px",
               px: 2,
               py: 1,
               minHeight: 70,
@@ -295,10 +295,10 @@ const FormRow = ({
           },
         }}
         sx={{
-          width: "160px",
-          backgroundColor: "#E0E0E0",
+          width: "240px",
+          backgroundColor: "#F8F8F8",
           border: "1px solid #ccc",
-          borderRadius: "20px",
+          borderRadius: "8px",
           px: 2,
           py: 1,
           fontWeight: "normal",
@@ -330,10 +330,10 @@ const DateInputRow = ({ label, value, onChange }) => {
               InputProps: {
                 readOnly: true,
                 sx: {
-                  width: 160,
-                  height: 40,
-                  backgroundColor: "#D9D9D9",
-                  borderRadius: "13px",
+                  width: "240px",
+                  height: "40px",
+                  backgroundColor: "#F8F8F8",
+                  borderRadius: "8px",
                   fontSize: "13px",
                   fontWeight: "normal", // ✅ 진하지 않게
                   pr: "12px", // 아이콘 공간 확보

@@ -9,6 +9,7 @@ import {
   TextField,
   Typography,
   InputBase,
+  Avatar,
 } from "@mui/material";
 
 import { CmUtil } from "../../cm/CmUtil";
@@ -19,8 +20,8 @@ import dayjs from "dayjs";
 
 import { useCmDialog } from "../../cm/CmDialogUtil";
 import { Tabs, Tab } from "@mui/material";
-import Combo from "../../page/combo/combo";
-import { useLocation, useNavigate } from "react-router-dom";
+import Combo from "../combo/combo";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import Stack from "@mui/material/Stack";
 import { usePet_Form_HospitalMutation } from "../../features/pet/petApi"; // 경로는 실제 프로젝트에 맞게 조정
 import { usePet_Form_Hospital_UpdateMutation } from "../../features/pet/petApi";
@@ -32,130 +33,275 @@ import CheckBoxIcon from "@mui/icons-material/CheckBox"; // 체크된 박스 아
 import { useComboListByGroupQuery } from "../../features/combo/combo";
 import { useGetPetByIdQuery } from "../../features/pet/petApi";
 
-const FormRow1 = ({
-  label,
-  value = "",
-  onChange,
-  multiline = false,
-  inputRef,
-  fieldKey = "",
+import DefaultImage from "../../image/dafault-animal.png";
+
+const RepottingContent = ({
+  animalVisitDate,
+  setAnimalVisitDate,
+  animalHospitalName,
+  setAnimalHospitalName,
+  animalMedication,
+  setAnimalMedication,
+  animalTreatmentType,
+  setAnimalTreatmentType,
+  animalTreatmentMemo,
+  setAnimalTreatmentMemo,
+  handleSubmit,
+  toggleDropdown,
+  expanded,
+  records,
+  handleDelete,
+  handleEdit,
+  visibleCount,
+  handleLoadMore,
+  treatmentTypeMap,
+  isEditing,
 }) => {
-  let backgroundColor = "#E0E0E0";
-  let border = "1px solid #ccc";
-  let borderRadius = "20px";
-  let textDecoration = "none";
-  let fontWeight = "normal";
-  let color = "inherit";
-  let minHeight = undefined;
-
-  if (fieldKey === "notes") {
-    backgroundColor = "#F4EEEE";
-    fontWeight = "bold";
-    color = "#000";
-    minHeight = 80;
-  }
-
   return (
-    <Box sx={{ display: "flex", alignItems: "flex-start", mb: 2 }}>
-      <Typography
+    <Box>
+      <Box
         sx={{
-          width: "90px",
-          fontSize: 14,
-          fontWeight: "normal",
-          mt: multiline ? "6px" : 0,
-          position: "relative",
-          left: 20,
-          top: 5,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: 1,
         }}
       >
-        {label}
-      </Typography>
-      <InputBase
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={`${label} 입력`}
-        multiline={multiline}
-        inputRef={inputRef}
-        inputProps={{
-          style: {
-            padding: 0,
-            textAlign: "center",
-            fontSize: "14px",
-            ...(multiline ? { paddingTop: 4 } : {}),
-          },
-        }}
-        sx={{
-          left: "130px",
-          width: "142px",
-          height: "30px",
-          backgroundColor: "#F4EEEE",
-          border,
-          borderRadius: "11px",
-          px: 1,
-          py: 1,
-          fontWeight,
-          textDecoration,
-          color,
-          ...(multiline && { minHeight }),
-        }}
-      />
-    </Box>
-  );
-};
+        <Typography sx={{ fontWeight: "700", marginTop: 1 }}>
+          날짜 🔔
+        </Typography>
 
-const DateInputRow = ({ label, value, onChange }) => {
-  return (
-    <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-      <Typography
-        sx={{
-          width: 66, // 넉넉한 고정 너비
-          fontSize: 14,
-          fontWeight: 500,
-          textAlign: "center",
-          mr: 3, // label과 DatePicker 사이 간격
-        }}
-      >
-        {label}
-      </Typography>
-
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DatePicker
-          value={dayjs(value)}
-          onChange={onChange}
-          format="YYYY.MM.DD"
-          slotProps={{
-            textField: {
-              variant: "outlined",
-              size: "small",
-              fullWidth: false,
-              InputProps: {
-                readOnly: true,
-                sx: {
-                  left: 133,
-                  width: 141,
-                  height: 30,
-                  backgroundColor: "#F4EEEE",
-                  borderRadius: "10px",
-                  fontSize: "12px",
-                  fontWeight: "normal",
-                  pr: "12px",
-                  pl: "29px",
-                  "& input": {
-                    textAlign: "center",
-                    padding: 0,
+        <Box sx={{ marginTop: "10px" }}>
+          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ko">
+            <DatePicker
+              format="YYYY.MM.DD"
+              value={animalVisitDate}
+              onChange={(newValue) => {
+                setAnimalVisitDate(newValue);
+              }}
+              renderInput={(params) => (
+                <TextField size="small" {...params} fullWidth />
+              )}
+              slotProps={{
+                textField: {
+                  size: "small",
+                  InputProps: {
+                    sx: {
+                      fontSize: 14,
+                      borderRadius: "8px",
+                      backgroundColor: "#F8F8F8",
+                      width: "150px",
+                      pl: "28px",
+                    },
                   },
                 },
-              },
-              inputProps: {
-                style: {
-                  textAlign: "center",
-                  
-                },
-              },
+              }}
+            />
+          </LocalizationProvider>
+        </Box>
+      </Box>
+
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: 1,
+        }}
+      >
+        <Typography sx={{ fontWeight: "700", marginTop: 1 }}>
+          병원이름
+        </Typography>
+
+        <TextField
+          className="sunlight-status-textfield"
+          multiline
+          rows={1.2}
+          value={animalHospitalName}
+          onChange={(e) => setAnimalHospitalName(e.target.value)}
+          variant="outlined"
+          sx={{
+            width: "150px",
+            "& .MuiOutlinedInput-root": {
+              backgroundColor: "#F8F8F8",
+              borderRadius: "8px",
+              padding: "0px", // 내부 패딩 제거
+            },
+            "& .MuiInputBase-input": {
+              padding: "6px 8px", // 텍스트 입력 공간의 패딩 조절
+              fontSize: "14px", // 폰트 사이즈 줄이면 높이도 줄어듦
             },
           }}
         />
-      </LocalizationProvider>
+      </Box>
+
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Typography sx={{ fontWeight: "700", marginTop: 1 }}>처방약</Typography>
+
+        <TextField
+          className="sunlight-status-textfield"
+          multiline
+          rows={1.2}
+          value={animalMedication}
+          onChange={(e) => setAnimalMedication(e.target.value)}
+          variant="outlined"
+          sx={{
+            width: "150px",
+            "& .MuiOutlinedInput-root": {
+              backgroundColor: "#F8F8F8",
+              borderRadius: "8px",
+              padding: "0px", // 내부 패딩 제거
+            },
+            "& .MuiInputBase-input": {
+              padding: "6px 8px", // 텍스트 입력 공간의 패딩 조절
+              fontSize: "14px", // 폰트 사이즈 줄이면 높이도 줄어듦
+            },
+          }}
+        />
+      </Box>
+
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: 2,
+        }}
+      >
+        <Typography sx={{ marginTop: 2 }}>진료내용</Typography>
+        <Combo
+          groupId="Medical"
+          onSelectionChange={setAnimalTreatmentType}
+          defaultValue={animalTreatmentType}
+          sx={{
+            fontSize: 14,
+            width: "150px",
+            height: "37px",
+            backgroundColor: "#F8F8F8",
+            borderRadius: "8px",
+          }}
+        />
+      </Box>
+
+      <Box sx={{ marginBottom: 2 }}>
+        <TextField
+          className="sunlight-status-textfield"
+          multiline
+          rows={5}
+          value={animalTreatmentMemo}
+          onChange={(e) => setAnimalTreatmentMemo(e.target.value)}
+          variant="outlined"
+        />
+      </Box>
+
+      <Button
+        variant="contained"
+        className="save-button"
+        onClick={handleSubmit}
+        sx={
+          !isEditing
+            ? {
+                backgroundColor: "#4B6044 !important", // 저장
+                "&:hover": {
+                  backgroundColor: "#88AE97 !important",
+                },
+              }
+            : {
+                backgroundColor: "#86ad97 !important", // 수정
+                "&:hover": {
+                  backgroundColor: "#88AE97 !important",
+                },
+              }
+        }
+      >
+        {!isEditing ? "저장" : "수정"}
+      </Button>
+
+      <Typography
+        variant="h6"
+        onClick={toggleDropdown}
+        sx={{ cursor: "pointer", fontWeight: "bold", mt: 2 }}
+      >
+        {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />} 기록 리스트
+      </Typography>
+
+      {expanded && (
+        <Box mt={3} sx={{ maxHeight: 400, overflowY: "auto" }}>
+          {records.slice(0, visibleCount).map((record) => (
+            <Box
+              component="fieldset"
+              key={record.animalHospitalTreatmentId}
+              sx={{
+                mb: 2,
+                border: "1px solid #ccc",
+                p: 2,
+                position: "relative",
+              }}
+            >
+              <legend
+                style={{
+                  fontWeight: "bold",
+                  padding: "0 8px",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <CheckBoxIcon sx={{ fontSize: 18, color: "#333", mr: 1 }} />
+                병원 진료 확인
+              </legend>
+              <Typography variant="subtitle2" sx={{ mb: 3 }}>
+                {dayjs(record.animalVisitDate).format("YYYY.MM.DD")}{" "}
+                {record.animalHospitalName} |{" "}
+                {record.animalTreatmentType
+                  ? treatmentTypeMap[record.animalTreatmentType]
+                  : "없음"}
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{ fontWeight: "normal", mb: 0.5 }}
+              >
+                처방약 : {record.animalMedication}
+              </Typography>
+              <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
+                진료 내용 : {record.animalTreatmentMemo}
+              </Typography>
+              <Box position="absolute" top={8} right={8}>
+                <Button color="black">
+                  <span
+                    onClick={() =>
+                      handleDelete(record.animalHospitalTreatmentId)
+                    }
+                    style={{ cursor: "pointer" }}
+                  >
+                    삭제
+                  </span>
+                  <span style={{ margin: "0 6px" }}>|</span>
+                  <span
+                    onClick={() => handleEdit(record)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    수정
+                  </span>
+                </Button>
+              </Box>
+            </Box>
+          ))}
+        </Box>
+      )}
+
+      {expanded && visibleCount < records.length && (
+        <Box textAlign="center" mt={1}>
+          <Button variant="outlined" onClick={handleLoadMore}>
+            + 더보기
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 };
@@ -163,10 +309,14 @@ const DateInputRow = ({ label, value, onChange }) => {
 const Pet_Form_Hospital = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [animalId, setAnimalId] = useState(null);
-  const { data, isLoading: isPetLoading } = useGetPetByIdQuery(animalId, {
-    skip: !animalId,
-  });
+  const [searchParams] = useSearchParams();
+  const animalId = searchParams.get("animalId"); // 동물아이디 animalId parm에 저장
+  const { data: petInfo, isLoading: isPetLoading } = useGetPetByIdQuery(
+    animalId,
+    {
+      skip: !animalId,
+    }
+  );
   const pathToTabIndex = {
     "/pet/petFormHospital.do": 0,
     "/pet/petFormEatAlarm.do": 1,
@@ -192,7 +342,7 @@ const Pet_Form_Hospital = () => {
   const [records, setRecords] = useState([]);
   const [expanded, setExpanded] = useState(false);
   const [visibleCount, setVisibleCount] = useState(5); // 현재 보여줄 데이터 개수
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(false); // true 수정  false 저장
   const [editId, setEditId] = useState(null);
   const [animalHospitalTreatmentId, setAnimalHospitalTreatmentId] =
     useState(null);
@@ -212,9 +362,9 @@ const Pet_Form_Hospital = () => {
 
   console.log("동물 ID 확인:", animalId);
   useEffect(() => {
-    if (data?.data) {
-      const fetchedPet = data.data;
-      console.log("확인해야할 콘솔:", data);
+    if (petInfo?.data) {
+      const fetchedPet = petInfo.data;
+      console.log("확인해야할 콘솔:", petInfo);
       setAnimalName(fetchedPet.animalName || "");
 
       setAnimalAdoptionDate(
@@ -232,10 +382,10 @@ const Pet_Form_Hospital = () => {
         setExistingImageUrl("");
       }
     }
-    console.log("✅ RTK Query 응답 data:", data);
+    console.log("✅ RTK Query 응답 data:", petInfo);
     console.log("existingImageUrl:", existingImageUrl);
     console.log("imageFile:", imageFile);
-  }, [data]);
+  }, [petInfo]);
 
   useEffect(() => {
     if (!expanded) {
@@ -283,18 +433,19 @@ const Pet_Form_Hospital = () => {
         prev.filter((r) => r.animalHospitalTreatmentId !== id)
       );
       showAlert("삭제가 완료되었습니다.");
+      // 초기화
+      setAnimalVisitDate(dayjs());
+      setAnimalHospitalName("");
+      setAnimalMedication("");
+      setAnimalTreatmentType("");
+      setAnimalTreatmentMemo("");
+      setIsEditing(false);
+      setEditId(null);
     } catch (error) {
       console.error("삭제 오류:", error);
       showAlert("삭제 중 오류가 발생했습니다.");
     }
   };
-  useEffect(() => {
-    const searchParams = new URLSearchParams(location.search);
-    const idFromQuery = searchParams.get("animalId");
-    if (idFromQuery) {
-      setAnimalId(idFromQuery);
-    }
-  }, [location.search]);
 
   useEffect(() => {
     console.log("comboData : " + comboData);
@@ -414,362 +565,166 @@ const Pet_Form_Hospital = () => {
   };
 
   return (
-    <Box>
-      {/* 전체 폼 박스 */}
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Box
-        component="form"
-        onSubmit={handleSubmit}
         sx={{
-          width: "100%",
-          maxWidth: 360, // Android 화면 폭
-          height: 640, // Android 화면 높이
-          margin: "0 auto",
-          overflowY: "auto", // 스크롤 가능하게
-          borderRadius: "12px",
-          backgroundColor: "#fff",
-          display: "flex",
-          gap: 2,
-          alignItems: "flex-start",
-          padding: 2,
+          padding: "16px",
+          backgroundColor: "#ffffff",
+          minHeight: "100vh",
         }}
       >
-        {/* 왼쪽 입력 */}
-        <Box sx={{ marginTop: "30px" }}>
-          <Stack direction="row" spacing={2} alignItems="center">
-            <Typography variant="subtitle1">동물 이름</Typography>
-            <div
-              style={{
-                backgroundColor: "#F4EEEE",
-                width: 130,
-                borderRadius: "20px",
-                textAlign: "center",
-              }}
-            >
-              <Typography>{animalName}</Typography>
-            </div>
-          </Stack>
+        {/*식물 정보 수정 버튼*/}
+        <Button
+          sx={{
+            marginTop: "10",
+            marginLeft: 40,
+            backgroundColor: "#889F7F",
+            width: 40,
+            height: 30,
+            minWidth: "unset",
+            padding: 0,
+            fontSize: "12px",
+            borderRadius: "55%",
+            color: "#fff",
+          }}
+          onClick={() => {
+            navigate(`/pet/petFormUpdate.do?animalId=${animalId}`);
+          }}
+        >
+          수정
+        </Button>
 
-          <Stack direction="row" spacing={2} alignItems="center">
-            <Typography variant="subtitle1">입양일</Typography>
-            <div
-              style={{
-                position: "absolute",
-                left: "94px",
-                backgroundColor: "#F4EEEE",
-                width: 130,
-                borderRadius: "20px",
-                textAlign: "center",
-              }}
-            >
-              <Typography>
-                {animalAdoptionDate?.format("YYYY-MM-DD")}
-              </Typography>
-            </div>
-          </Stack>
-          <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
-            <Button
-              variant="contained"
-              onClick={() => navigate(`/pet/walk.do?animalId=${animalId}`)}
+        <Box
+          sx={{
+            display: "flex",
+            gap: 3,
+          }}
+        >
+          <Box
+            sx={{
+              width: "60%",
+            }}
+          >
+            <Box
               sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                mb: 1,
+              }}
+            >
+              <Typography className="plant-label">동물 이름</Typography>
+              <Box
+                sx={{
+                  backgroundColor: "#f0f0f0",
+                  borderRadius: "5px",
+                  padding: "4px 12px",
+                  display: "inline-block",
+                  width: 100,
+                }}
+              >
+                <Typography sx={{ fontSize: "0.8rem", textAlign: "center" }}>
+                  {/* 배열안에 데이터 있음 */}
+                  {petInfo?.data ? petInfo.data.animalName : "정보 없음"}
+                </Typography>
+              </Box>
+            </Box>
 
-                left: -5,
-                top:2,
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                mb: 1,
+              }}
+            >
+              <Typography className="plant-label">입양일 날짜</Typography>
+              <Box
+                sx={{
+                  backgroundColor: "#f0f0f0",
+                  borderRadius: "5px",
+                  padding: "4px 12px",
+                  display: "inline-block",
+                  width: 100,
+                }}
+              >
+                <Typography sx={{ fontSize: "0.8rem", textAlign: "center" }}>
+                  {/* 배열안에 데이터 있음 */}
+                  {petInfo?.data
+                    ? petInfo.data.animalAdoptionDate
+                    : "정보 없음"}
+                </Typography>
+              </Box>
+            </Box>
+
+            <Button
+              sx={{
+                color: "white",
+                top: 2,
                 backgroundColor: "#88AE97",
-                borderRadius: "30px",
-                width: 200,
+                borderRadius: "8px",
+                width: "100%",
                 height: 40,
-                px: 6,
-                py: 1.5,
                 fontSize: 13,
                 fontWeight: "bold",
               }}
+              onClick={() => navigate(`/pet/walk.do?animalId=${animalId}`)}
             >
               산책하기
             </Button>
           </Box>
-        </Box>
-        {/* 오른쪽 이미지 */}
-        <Box sx={{ position: "absolute", left: "270px", top: 40 }}>
-          <Box
-            sx={{
-              width: 100,
-              height: 100,
-              borderRadius: "50%",
-              overflow: "hidden",
-              border: "3px solid white",
-              backgroundColor: "#A5B1AA",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <img
-              src={fileUrl ? "http://192.168.0.30:8081" + fileUrl : imageFile}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-              }}
-            />
-          </Box>
 
-          <Button
-            variant="contained"
-            size="small"
+          <Avatar
             sx={{
-              position: "relative",
-              top: -130,
-              right: -80,
-              backgroundColor: "#889F7F",
-              color: "#fff",
-              fontSize: "12px",
-              fontWeight: "normal",
-              borderRadius: "55%",
-              width: 40,
-              height: 30,
-              minWidth: "unset",
-              padding: 0,
-              marginLeft: "10px",
-              zIndex: 2,
-              textTransform: "none",
+              width: "110px",
+              height: "110px",
+              border: "1px solid #e0e0e0",
             }}
-            onClick={() => {
-              navigate(`/pet/petFormUpdate.do?animalId=${animalId}`);
-            }}
-          >
-            수정
-          </Button>
-        </Box>
-      </Box>
-
-      {/* ✅ 탭은 폼 바깥에 위치 */}
-      {/* 폼 컴포넌트 아래 탭 - 간격 좁히기 */}
-      <Box
-        sx={{
-          width: "100%",
-          maxWidth: 400,
-          mx: "auto",
-          mt: -60,
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <Tabs
-          value={selectedTab}
-          onChange={handleTabChange}
-          variant="fullWidth"
-          sx={{
-            width: 360,
-            minHeight: "36px",
-            "& .MuiTab-root": {
-              fontSize: "13px",
-              color: "#777",
-              fontWeight: 500,
-              minHeight: "36px",
-              borderBottom: "2px solid transparent",
-            },
-            "& .Mui-selected": {
-              color: "#000",
-              fontWeight: 600,
-            },
-            "& .MuiTabs-indicator": {
-              backgroundColor: "#000",
-            },
-          }}
-        >
-          <Tab label="병원진료" />
-          <Tab label="먹이알림" />
-          <Tab label="훈련/행동" />
-        </Tabs>
-      </Box>
-      <Box sx={{ width: "100%", maxWidth: 400, mx: "auto", mt: 2 }}>
-        <DateInputRow
-          label="날짜"
-          value={animalVisitDate}
-          onChange={setAnimalVisitDate}
-        />
-        <FormRow1
-          label="병원 이름"
-          value={animalHospitalName}
-          onChange={setAnimalHospitalName}
-          inputRef={animalHospitalNameRef}
-        />
-        <FormRow1
-          label="처방약"
-          value={animalMedication}
-          onChange={setAnimalMedication}
-          inputRef={animalMedicationRef}
-        />
-        <Box sx={{ display: "flex", alignItems: "center", mb: 2, gap: 13 }}>
-          <Typography
-            sx={{
-              width: 92,
-              fontSize: 14,
-              fontWeight: 500,
-              textAlign: "center",
-              height: 30,
-            }}
-          >
-            진료 내용
-          </Typography>
-          <Combo
-            groupId="Medical"
-            onSelectionChange={setAnimalTreatmentType}
-            defaultValue={animalTreatmentType}
-            sx={{
-              width: "145px",
-              borderRadius: "20px",
-              backgroundColor: "#F4EEEE",
-              position: "relative",
-              top: "-10px",
-              left: "22px",
-              "& .MuiOutlinedInput-notchedOutline": { border: "none" },
-              "&:hover .MuiOutlinedInput-notchedOutline": { border: "none" },
-              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                border: "none",
-              },
-              "& .MuiSelect-select": { padding: "3px 14px" },
-              "& .MuiSelect-icon": { color: "#888" },
-              flex: 1,
-            }}
+            src={
+              petInfo?.data?.fileUrl
+                ? "http://192.168.0.30:8081" + petInfo?.data?.fileUrl
+                : DefaultImage
+            }
           />
         </Box>
-        <Box sx={{ display: "flex", flexDirection: "column", mb: 5 }}>
-          <InputBase
-            value={animalTreatmentMemo}
-            onChange={(e) => setAnimalTreatmentMemo(e.target.value)}
-            inputRef={animalTreatmentMemoRef}
-            multiline
-            inputProps={{
-              style: {
-                padding: 0,
-                paddingTop: 4,
-                fontSize: 13,
-              },
-            }}
-            sx={{
-              backgroundColor: "#F4EEEE",
-              borderRadius: "12px",
-              px: 2,
-              py: 1,
-              height: "100px",
-              left: 18,
-              width: 345,
-              minHeight: 70,
-              textDecoration: "none",
-              fontWeight: "normal",
-              color: "#000",
-              display: "flex",
-              alignItems: "flex-start",
-            }}
+
+        <Box className="tab-menu-container">
+          <Tabs
+            value={selectedTab}
+            onChange={handleTabChange}
+            className="plant-care-tabs"
+            TabIndicatorProps={{ style: { backgroundColor: "black" } }}
+          >
+            <Tab label="병원진료" />
+            <Tab label="먹이알림" />
+            <Tab label="훈련/행동" />
+          </Tabs>
+        </Box>
+
+        <Box className="tab-content-display">
+          <RepottingContent
+            animalVisitDate={animalVisitDate}
+            setAnimalVisitDate={setAnimalVisitDate}
+            animalHospitalName={animalHospitalName}
+            setAnimalHospitalName={setAnimalHospitalName}
+            animalMedication={animalMedication}
+            setAnimalMedication={setAnimalMedication}
+            animalTreatmentType={animalTreatmentType}
+            setAnimalTreatmentType={setAnimalTreatmentType}
+            animalTreatmentMemo={animalTreatmentMemo}
+            setAnimalTreatmentMemo={setAnimalTreatmentMemo}
+            handleSubmit={handleSubmit}
+            toggleDropdown={toggleDropdown}
+            expanded={expanded}
+            records={records}
+            handleDelete={handleDelete}
+            handleEdit={handleEdit}
+            visibleCount={visibleCount}
+            handleLoadMore={handleLoadMore}
+            treatmentTypeMap={treatmentTypeMap}
+            isEditing={isEditing}
           />
         </Box>
-        <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
-          <Button
-            onClick={handleSubmit}
-            variant="contained"
-            sx={{
-              backgroundColor: isEditing ? "#88AE97" : "#4B6044",
-              borderRadius: "20px",
-              px: 4,
-              py: 1,
-              fontSize: 14,
-              width: 200,
-              marginTop: "-20px",
-            }}
-          >
-            {isEditing ? "수정" : "저장"}
-          </Button>
-        </Box>
-        <Box sx={{ maxWidth: 600, mx: "auto", p: 2 }}>
-          <Box
-            display="flex"
-            alignItems="center"
-            justifyContent="space-between"
-          >
-            <Typography
-              variant="h6"
-              onClick={toggleDropdown}
-              sx={{ cursor: "pointer", fontWeight: "bold" }}
-            >
-              {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />} 기록 리스트
-            </Typography>
-          </Box>
-
-          {expanded && (
-            <Box mt={3} sx={{ maxHeight: 400, overflowY: "auto" }}>
-              {records.slice(0, visibleCount).map((record) => (
-                <Box
-                  component="fieldset"
-                  key={record.animalHospitalTreatmentId}
-                  sx={{
-                    mb: 2,
-                    border: "1px solid #ccc",
-                    p: 2,
-                    position: "relative",
-                  }}
-                >
-                  <legend
-                    style={{
-                      fontWeight: "bold",
-                      padding: "0 8px",
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                  >
-                    <CheckBoxIcon sx={{ fontSize: 18, color: "#333", mr: 1 }} />
-                    병원 진료 확인
-                  </legend>
-                  <Typography variant="subtitle2" sx={{ mb: 3 }}>
-                    {dayjs(record.animalVisitDate).format("YYYY.MM.DD")}{" "}
-                    {record.animalHospitalName} |{" "}
-                    {record.animalTreatmentType
-                      ? treatmentTypeMap[record.animalTreatmentType]
-                      : "없음"}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    sx={{ fontWeight: "normal", mb: 0.5 }}
-                  >
-                    처방약 : {record.animalMedication}
-                  </Typography>
-                  <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
-                    진료 내용 : {record.animalTreatmentMemo}
-                  </Typography>
-                  <Box position="absolute" top={8} right={8}>
-                    <Button color="black">
-                      <span
-                        onClick={() =>
-                          handleDelete(record.animalHospitalTreatmentId)
-                        }
-                        style={{ cursor: "pointer" }}
-                      >
-                        삭제
-                      </span>
-                      <span style={{ margin: "0 6px" }}>|</span>
-                      <span
-                        onClick={() => handleEdit(record)}
-                        style={{ cursor: "pointer" }}
-                      >
-                        수정
-                      </span>
-                    </Button>
-                  </Box>
-                </Box>
-              ))}
-            </Box>
-          )}
-
-          {expanded && visibleCount < records.length && (
-            <Box textAlign="center" mt={1}>
-              <Button variant="outlined" onClick={handleLoadMore}>
-                + 더보기
-              </Button>
-            </Box>
-          )}
-        </Box>
       </Box>
-    </Box>
+    </LocalizationProvider>
   );
 };
 export default Pet_Form_Hospital;

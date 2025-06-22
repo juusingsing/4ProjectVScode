@@ -34,7 +34,11 @@ const PlantUpdate = ({ mode = "create" }) => {
 
   const navigate = useNavigate();
 
-  const { data: fetchedPlantData, isSuccess } = usePlantInfoQuery(plantId, {
+  const {
+    data: fetchedPlantData,
+    isSuccess,
+    refetch,
+  } = usePlantInfoQuery(plantId, {
     skip: !isEdit || !plantId,
   });
 
@@ -53,6 +57,10 @@ const PlantUpdate = ({ mode = "create" }) => {
   const [createPlant] = useCreatePlantMutation();
 
   const [plantDeleteAlarm] = usePlantDeleteAlarmMutation();
+
+  useEffect(() => {
+    refetch();
+  }, []);
 
   useEffect(() => {
     if (isEdit && isSuccess && fetchedPlantData?.data?.length > 0) {
@@ -126,28 +134,26 @@ const PlantUpdate = ({ mode = "create" }) => {
     console.log(plantId);
     if (window.confirm("정말 삭제하시겠습니까?")) {
       try {
-
         plantDeleteAlarm({
-        petId: plantId,
-        category: "PLA",
-      })
-        .unwrap()
-        .then((response) => {
-          console.log(`동물아이디${plantId}의 모든알람 상태 업데이트 완료`);
-        
-          // 알람 끄기 - Android cancelAlarm 호출
-          if (window.Android && window.Android.cancelAlarm) {
-            for (let i = 0; i < response?.data?.length; i++) {
-              const alarmId = response.data[i].alarmId;
-              window.Android.cancelAlarm(String(alarmId));
-            }
-          }
+          petId: plantId,
+          category: "PLA",
         })
-        .catch((err) => {
-          console.error("알람 업데이트 실패", err);
-          showAlert("알람 상태 업데이트 실패");
-        });
+          .unwrap()
+          .then((response) => {
+            console.log(`동물아이디${plantId}의 모든알람 상태 업데이트 완료`);
 
+            // 알람 끄기 - Android cancelAlarm 호출
+            if (window.Android && window.Android.cancelAlarm) {
+              for (let i = 0; i < response?.data?.length; i++) {
+                const alarmId = response.data[i].alarmId;
+                window.Android.cancelAlarm(String(alarmId));
+              }
+            }
+          })
+          .catch((err) => {
+            console.error("알람 업데이트 실패", err);
+            showAlert("알람 상태 업데이트 실패");
+          });
 
         await deletePlant({ plantId: plantId }).unwrap();
         showAlert("삭제 성공");
@@ -187,9 +193,19 @@ const PlantUpdate = ({ mode = "create" }) => {
           </Button>
         </div>
 
-        <Stack spacing={2} className="plant-form-stack">
+        <Stack
+          sx={{
+            alignItems: "center",
+            marginTop: "20px",
+          }}
+        >
           <Box
-            sx={{ textAlign: "center", position: "relative", marginBottom: 3 }}
+            sx={{
+              textAlign: "center",
+              position: "relative",
+              marginBottom: 3,
+              mt: 5,
+            }}
           >
             <Avatar
               src={imagePreview}
@@ -221,50 +237,106 @@ const PlantUpdate = ({ mode = "create" }) => {
             </label>
           </Box>
 
-          <Box className="form-row">
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 2,
+            }}
+          >
             <Typography className="label-text">식물 이름</Typography>
             <TextField
               value={plantName}
               onChange={(e) => setPlantName(e.target.value)}
               variant="outlined"
               size="small"
-              className="input-field-wrapper"
-            />
-          </Box>
-
-          <Box className="form-row">
-            <Typography className="label-text">식물 종류</Typography>
-            <Combo
-              groupId="PlantType"
-              defaultValue={plantType} //기본값이 아니라 상태 변수 사용
-              onSelectionChange={setPlantType}
-              sx={{ width: "200px" }}
-            />
-          </Box>
-
-          <Box className="form-row">
-            <Typography className="label-text">식물 입수일</Typography>
-            <DatePicker
-              value={plantPurchaseDate}
-              onChange={(newValue) => setPlantPurchaseDate(newValue)}
-              format="YYYY-MM-DD"
-              slotProps={{
-                textField: {
-                  variant: "outlined",
-                  size: "small",
-                  className: "input-field-wrapper",
+              sx={{
+                width: "240px",
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor: "#F8F8F8",
+                  borderRadius: "8px",
+                  padding: "0px", // 내부 패딩 제거
+                },
+                "& .MuiInputBase-input": {
+                  padding: "8px 8px", // 텍스트 입력 공간의 패딩 조절
+                  fontSize: "16px", // 폰트 사이즈 줄이면 높이도 줄어듦
                 },
               }}
             />
           </Box>
 
-          <Box className="form-row">
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              marginBottom: 2 /* 각 행 간 간격 */,
+              gap: 2 /* 라벨과 입력 필드 사이 간격 */,
+            }}
+          >
+            <Typography className="label-text">식물 종류</Typography>
+            <Combo
+              groupId="PlantType"
+              defaultValue={plantType} //기본값이 아니라 상태 변수 사용
+              onSelectionChange={setPlantType}
+              sx={{
+                fontSize: 14,
+                width: "240px",
+                height: "37px",
+                backgroundColor: "#F8F8F8",
+                borderRadius: "8px",
+              }}
+            />
+          </Box>
+
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 2 /* 라벨과 입력 필드 사이 간격 */,
+            }}
+          >
+            <Typography className="label-text">식물 입수일</Typography>
+            <DatePicker
+              value={plantPurchaseDate}
+              onChange={(newValue) => setPlantPurchaseDate(newValue)}
+              format="YYYY.MM.DD"
+              slotProps={{
+                textField: {
+                  size: "small",
+                  InputProps: {
+                    sx: {
+                      fontSize: 14,
+                      borderRadius: "8px",
+                      backgroundColor: "#F8F8F8",
+                      width: "240px",
+                      pl: "28px",
+                    },
+                  },
+                },
+              }}
+            />
+          </Box>
+
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              marginBottom: 2 /* 각 행 간 간격 */,
+              gap: 2 /* 라벨과 입력 필드 사이 간격 */,
+            }}
+          >
             <Typography className="label-text">햇빛/그늘 선호</Typography>
             <Combo
               groupId="SunType"
               defaultValue={sunlightPreference} //기본값이 아니라 상태 변수 사용
               onSelectionChange={setSunlightPreference}
-              sx={{ width: "200px" }}
+              sx={{
+                fontSize: 14,
+                width: "240px",
+                height: "37px",
+                backgroundColor: "#F8F8F8",
+                borderRadius: "8px",
+              }}
             />
           </Box>
 
@@ -275,22 +347,65 @@ const PlantUpdate = ({ mode = "create" }) => {
               onChange={(e) => setPlantGrowthStatus(e.target.value)}
               variant="outlined"
               size="small"
-              className="input-field-wrapper"
+              sx={{
+                width: "240px",
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor: "#F8F8F8",
+                  borderRadius: "8px",
+                  padding: "0px", // 내부 패딩 제거
+                },
+                "& .MuiInputBase-input": {
+                  padding: "8px 8px", // 텍스트 입력 공간의 패딩 조절
+                  fontSize: "16px", // 폰트 사이즈 줄이면 높이도 줄어듦
+                },
+              }}
             />
           </Box>
 
-          <Stack
+          <Box
+            sx={{ display: "flex", justifyContent: "center", mt: 3, gap: 5 }}
+          >
+            <Button
+              onClick={handleSubmit} // ✅ 직접 이벤트 연결
+              variant="contained"
+              sx={{
+                backgroundColor: "#88AE97",
+                borderRadius: "8px",
+                px: 6,
+                py: 1,
+                fontSize: 14,
+              }}
+            >
+              수정
+            </Button>
+            <Button
+              type="button"
+              variant="contained"
+              sx={{
+                backgroundColor: "#A44D4D",
+                borderRadius: "8px",
+                px: 6,
+                py: 1,
+                fontSize: 14,
+              }}
+              onClick={handleDelete}
+            >
+              삭제
+            </Button>
+          </Box>
+          {/* <Stack
             direction="row"
             spacing={2}
             justifyContent="center"
             sx={{ mt: 3 }}
           >
-            {isEdit && <Button
-            sx={{
-              
-            }} onClick={handleDelete}>삭제</Button>}
+            {isEdit && (
+              <Button sx={{}} onClick={handleDelete}>
+                삭제
+              </Button>
+            )}
             <Button onClick={handleSubmit}>수정</Button>
-          </Stack>
+          </Stack> */}
         </Stack>
       </Box>
     </LocalizationProvider>

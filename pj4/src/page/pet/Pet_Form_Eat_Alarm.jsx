@@ -3,10 +3,10 @@ import {
   Box,
   Button,
   Typography,
-  InputBase,
   TextField,
   Switch,
   Grid,
+  Avatar,
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 
@@ -18,9 +18,8 @@ import { CmUtil } from "../../cm/CmUtil";
 
 import { useCmDialog } from "../../cm/CmDialogUtil";
 import { Tabs, Tab } from "@mui/material";
-import Combo from "../../page/combo/combo";
+import Combo from "../combo/combo";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import Stack from "@mui/material/Stack";
 import { useGetPetByIdQuery } from "../../features/pet/petApi";
 import {
   useAlarmCreateMutation,
@@ -28,81 +27,341 @@ import {
   useAlarmUpdateMutation,
   useAlarmDeleteMutation,
 } from "../../features/alarm/alarmApi";
-import { InputAdornment } from "@mui/material";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import AlarmMinus from "../../image/alarmMinus.png";
-import { set } from "react-hook-form";
-const FormRow1 = ({
-  label,
-  value = "",
-  onChange,
-  multiline = false,
-  inputRef,
-  fieldKey = "",
+import DefaultImage from "../../image/dafault-animal.png";
+
+const RepottingContent = ({
+  setEatType,
+  eatType,
+  alarmName,
+  setAlarmName,
+  setAlarmCycle,
+  alarmCycle,
+  alarmTime,
+  setAlarmTime,
+  alarmDate,
+  setAlarmDate,
+  alarmCreate,
+  alarmList,
+  toggleAlarm,
+  alarmDelete,
 }) => {
-  let backgroundColor = "#E0E0E0";
-  let border = "1px solid #ccc";
-  let borderRadius = "20px";
-  let textDecoration = "none";
-  let fontWeight = "normal";
-  let color = "inherit";
-  let minHeight = undefined;
-
-  if (fieldKey === "notes") {
-    backgroundColor = "#D9D9D9";
-    fontWeight = "bold";
-    color = "#000";
-    minHeight = 80;
-  }
-
   return (
-    <Box sx={{ display: "flex", alignItems: "flex-start", mb: 2 }}>
-      <Typography
-        sx={{
-          position: 'absolute',
-          top: '160px',
-          left: '30px',
-          width: "90px",
-          fontSize: 14,
-          fontWeight: "normal",
-          mt: multiline ? "6px" : 0,
-          position: "relative",
-        }}
-      >
-        {label}
-      </Typography>
-      <InputBase
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={"ex)브랜드/양"}
-        multiline={multiline}
-        inputRef={inputRef}
-        inputProps={{
-          style: {
-            padding: 0,
-            textAlign: "center",
-            fontSize: "14px",
-            ...(multiline ? { paddingTop: 4 } : {}),
-          },
-        }}
-        sx={{
-          position: 'absolute',
-          top: '285px',
-          left: '100px',
-          width: "270px",
-          height: "35px",
-          backgroundColor,
-          border,
-          borderRadius: "11px",
-          px: 1,
-          py: 1,
-          fontWeight,
-          textDecoration,
-          color,
-          ...(multiline && { minHeight }),
-        }}
-      />
-    </Box>
+    <>
+      {/* 알림 설정 영역 */}
+      <Box>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            marginBottom: 1.5,
+            justifyContent: "space-between",
+          }}
+        >
+          <Typography sx={{ fontWeight: "700", marginTop: -5, marginRight: 2 }}>
+            먹이 알림설정 🔔
+          </Typography>
+          <Combo
+            groupId="EatType"
+            onSelectionChange={setEatType}
+            defaultValue={eatType}
+            sx={{
+              fontSize: 14,
+              width: "150px",
+              height: "37px",
+              backgroundColor: "#F8F8F8",
+              borderRadius: "8px",
+              marginLeft: 10,
+            }}
+          />
+        </Box>
+
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 1.5,
+          }}
+        >
+          <Typography className="light-status-title">먹이이름</Typography>
+          <TextField
+            className="sunlight-status-textfield"
+            multiline
+            rows={1.2}
+            value={alarmName}
+            onChange={(e) => setAlarmName(e.target.value)}
+            variant="outlined"
+            sx={{
+              width: "273px",
+              "& .MuiOutlinedInput-root": {
+                backgroundColor: "#F8F8F8",
+                borderRadius: "8px",
+                padding: "0px", // 내부 패딩 제거
+              },
+              "& .MuiInputBase-input": {
+                padding: "6px 8px", // 텍스트 입력 공간의 패딩 조절
+                fontSize: "14px", // 폰트 사이즈 줄이면 높이도 줄어듦
+              },
+            }}
+          />
+        </Box>
+
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginLeft: 10,
+          }}
+        >
+          <Box>
+            <Typography className="light-status-title">주기</Typography>
+            <Combo
+              groupId="AlarmCycle"
+              onSelectionChange={setAlarmCycle}
+              defaultValue={alarmCycle}
+              sx={{
+                fontSize: 14,
+                width: "120px",
+                height: "35px",
+                backgroundColor: "#F8F8F8",
+                borderRadius: "8px",
+                mt: -2.0,
+              }}
+            />
+          </Box>
+
+          <Box>
+            <Typography className="light-status-title">시각</Typography>
+            <Box>
+              <LocalizationProvider
+                dateAdapter={AdapterDayjs}
+                adapterLocale="ko"
+              >
+                <TimePicker
+                  ampm
+                  value={alarmTime}
+                  onChange={(newValue) => {
+                    setAlarmTime(newValue);
+                  }}
+                  slotProps={{
+                    textField: {
+                      size: "small",
+                      InputProps: {
+                        sx: {
+                          fontSize: 14,
+                          borderRadius: "8px",
+                          backgroundColor: "#F8F8F8",
+                          width: "130px",
+                          pl: "15px",
+                        },
+                      },
+                    },
+                  }}
+                />
+              </LocalizationProvider>
+            </Box>
+          </Box>
+        </Box>
+
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: 3,
+            marginBottom: 1.3,
+          }}
+        >
+          <Box
+            sx={{
+              mt: 1,
+            }}
+          >
+            <Typography className="light-status-title">알림날짜</Typography>
+          </Box>
+          <Box sx={{ marginTop: "10px" }}>
+            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ko">
+              <DatePicker
+                format="YYYY.MM.DD"
+                value={alarmDate}
+                onChange={(newValue) => {
+                  setAlarmDate(newValue);
+                }}
+                renderInput={(params) => (
+                  <TextField size="small" {...params} fullWidth />
+                )}
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    InputProps: {
+                      sx: {
+                        fontSize: 14,
+                        borderRadius: "8px",
+                        backgroundColor: "#F8F8F8",
+                        width: "271px",
+                        pl: "28px",
+                      },
+                    },
+                  },
+                }}
+              />
+            </LocalizationProvider>
+          </Box>
+        </Box>
+
+        <Button
+          variant="contained"
+          className="save-button"
+          onClick={alarmCreate}
+          sx={{
+            backgroundColor: "#4B6044 !important", // 저장
+            "&:hover": {
+              backgroundColor: "#88AE97 !important",
+            },
+          }}
+        >
+          알림등록
+        </Button>
+
+        <Box
+          sx={{
+            width: "320px",
+            mt: 2,
+            border: "1px solid #ccc",
+            borderRadius: "10px",
+            p: 2,
+            boxShadow: "0 0 4px rgba(0,0,0,0.1)",
+          }}
+        >
+          <Typography
+            variant="h6"
+            align="center"
+            sx={{
+              fontWeight: "bold",
+              borderBottom: "1px solid #ccc",
+              paddingBottom: 1.7,
+            }}
+          >
+            알림 목록
+          </Typography>
+
+          {alarmList.map((alarm, idx) => (
+            <Grid
+              item
+              xs={12}
+              key={idx}
+              container
+              alignItems="center"
+              sx={{
+                py: 1,
+                width: "100%",
+                display: "flex",
+                justifyContent: "space-between",
+                borderBottom: "1px solid #ccc",
+              }}
+            >
+              {/* 알람 이름 */}
+              <Grid item xs={5}>
+                <Typography
+                  sx={{
+                    fontSize: 14,
+                    width: 50,
+                  }}
+                >
+                  {alarm.alarmName}
+                </Typography>
+              </Grid>
+              <Grid item xs={1}>
+                <Typography
+                  sx={{
+                    fontSize: 12,
+                    color: "#777",
+                    width: 30,
+                  }}
+                >
+                  {alarm.type}
+                </Typography>
+              </Grid>
+
+              {/* 주기 */}
+              <Grid item xs={1}>
+                <Typography
+                  sx={{
+                    fontSize: 13,
+                  }}
+                >
+                  {alarm.alarmCycle}일
+                </Typography>
+              </Grid>
+
+              <Grid item xs={2}>
+                <Typography
+                  sx={{
+                    fontSize: 13,
+                  }}
+                >
+                  {`${alarm.hour}:${alarm.min.toString().padStart(2, "0")}`}
+                </Typography>
+              </Grid>
+
+              {/* 스위치 */}
+              <Grid item xs={2}>
+                <Switch
+                  checked={alarm.enabled}
+                  onChange={() => toggleAlarm(alarm.alarmId)}
+                  color="default"
+                  size="small"
+                  sx={{
+                    width: 45,
+                    height: 30,
+                    padding: 0,
+                    "& .MuiSwitch-switchBase": {
+                      padding: "2px",
+                      "&.Mui-checked": {
+                        transform: "translateX(16px)",
+                        color: "#fff",
+                        "& + .MuiSwitch-track": {
+                          backgroundColor: "#90caf9",
+                          opacity: 1,
+                        },
+                      },
+                    },
+                    "& .MuiSwitch-thumb": {
+                      //스위치 동그라미 크기 조절
+                      width: 25,
+                      height: 25,
+                      boxShadow: "0 0 2px rgba(0, 0, 0, 0.2)",
+                    },
+                    "& .MuiSwitch-track": {
+                      borderRadius: 10,
+                      backgroundColor: "#e0e0e0",
+                      opacity: 1,
+                    },
+                  }}
+                />
+              </Grid>
+
+              {/* 삭제 버튼 */}
+              <Grid item xs={1}>
+                <IconButton
+                  onClick={() => alarmDelete(alarm.alarmId)}
+                  size="small"
+                  sx={{ p: 0 }}
+                >
+                  <img
+                    src={AlarmMinus}
+                    alt="알람 삭제"
+                    style={{ width: 24, height: 24 }}
+                  />
+                </IconButton>
+              </Grid>
+            </Grid>
+          ))}
+        </Box>
+      </Box>
+    </>
   );
 };
 
@@ -130,11 +389,15 @@ const Pet_Form_Eat_Alarm = () => {
   const [alarmList, setAlarmList] = useState([]);
   const [isActive, setIsActive] = useState("");
   const { showAlert } = useCmDialog();
+  const { showConfirm } = useCmDialog(); 
   const [animalName, setAnimalName] = useState("");
   const [animalAdoptionDate, setAnimalAdoptionDate] = useState(dayjs());
-  const { data, isLoading: isPetLoading } = useGetPetByIdQuery(animalId, {
-    skip: !animalId,
-  }); // 그 동물아이디의 정보 가져오기 ( 헤더 삽입할 데이터 조회 )
+  const { data: petInfo, isLoading: isPetLoading } = useGetPetByIdQuery(
+    animalId,
+    {
+      skip: !animalId,
+    }
+  ); // 그 동물아이디의 정보 가져오기 ( 헤더 삽입할 데이터 조회 )
   const [imageFile, setImageFile] = useState(null);
   const [existingImageUrl, setExistingImageUrl] = useState("");
   const [fileUrl, setFileUrl] = useState();
@@ -305,9 +568,9 @@ const Pet_Form_Eat_Alarm = () => {
 
   console.log("동물 ID 확인:", animalId); // → 8이어야 정상
   useEffect(() => {
-    console.log("data : ", data);
-    if (data?.data) {
-      const fetchedPet = data.data;
+    console.log("petInfo : ", petInfo);
+    if (petInfo?.data) {
+      const fetchedPet = petInfo.data;
       setAnimalName(fetchedPet.animalName || "");
 
       setAnimalAdoptionDate(
@@ -325,7 +588,7 @@ const Pet_Form_Eat_Alarm = () => {
         setExistingImageUrl("");
       }
     }
-  }, [data]);
+  }, [petInfo]);
 
   const handleTabChange = (event, newValue) => {
     setSelectedTab(newValue);
@@ -391,12 +654,12 @@ const Pet_Form_Eat_Alarm = () => {
       setAlarmTime(dayjs().hour(9).minute(0)); // 시간 초기화
       setAlarmDate(dayjs()); // 날짜 초기화
 
-      alert("등록성공ㅎㅎㅎ");
+      showAlert("등록성공");
 
       await alarmSet();
     } catch (error) {
       console.error("요청 실패:", error);
-      alert("등록실패!!!!!!!!!!");
+      showAlert("등록실패");
     }
   };
 
@@ -442,9 +705,23 @@ const Pet_Form_Eat_Alarm = () => {
   };
 
   const alarmDelete = (alarmId) => {
-    const isConfirmed = window.confirm("알람을 삭제하시겠습니까?");
+    // const isConfirmed = window.confirm("알람을 삭제하시겠습니까?");
 
-    if (!isConfirmed) return; // 아니오를 누르면 종료
+    showConfirm(
+      '알람을 삭제하시겠습니까?',
+      () => {
+        // yes callback - 삭제 실행
+        console.log('삭제 확인');
+        alarmDelete2(alarmId);
+      },
+      () => {
+        // no callback - 취소
+        console.log('삭제 취소');
+      }
+    );
+}
+
+const alarmDelete2 = (alarmId) => {
 
     // 2. 서버 상태 업데이트
     alarmDel({
@@ -472,179 +749,134 @@ const Pet_Form_Eat_Alarm = () => {
   };
 
   return (
-    <Box>
-      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ko">
-        <Box sx={{}}>
-          {/* 전체 폼 박스 */}
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
+    <>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <Box
+          sx={{
+            padding: "16px",
+            backgroundColor: "#ffffff",
+            minHeight: "100vh",
+          }}
+        >
+          {/*식물 정보 수정 버튼*/}
+          <Button
             sx={{
-              width: "100%",
-              maxWidth: 360, // Android 화면 폭
-              margin: "0 auto",
-              overflowY: "auto", // 스크롤 가능하게
-              borderRadius: "12px",
-              backgroundColor: "#fff",
-              display: "flex",
-              gap: 2,
-              alignItems: "flex-start",
-              padding: 2,
+              marginTop: "10",
+              marginLeft: 40,
+              backgroundColor: "#889F7F",
+              width: 40,
+              height: 30,
+              minWidth: "unset",
+              padding: 0,
+              fontSize: "12px",
+              borderRadius: "55%",
+              color: "#fff",
+            }}
+            onClick={() => {
+              navigate(`/pet/petFormUpdate.do?animalId=${animalId}`);
             }}
           >
-            {/* 왼쪽 입력 */}
-            <Box sx={{ marginTop: "30px" }}>
-              <Stack direction="row" spacing={2} alignItems="center" sx={{ position: 'absoulte', top: '48px', left: '48px' }}>
-                <Typography variant="subtitle1" sx={{ position: 'absolute', left: '30px', top: '46px', width: '100px' }}>동물 이름</Typography>
-                <div
-                  style={{
-                    position: "absolute",
-                    left: "94px",
-                    top: '48px',
-                    backgroundColor: "#F4EEEE",
-                    width: 130,
-                    borderRadius: "20px",
-                    textAlign: "center",
-                  }}
-                >
-                  <Typography>{animalName}</Typography>
-                </div>
-              </Stack>
+            수정
+          </Button>
 
-              <Stack direction="row" spacing={2} alignItems="center" sx={{ position: 'absolute', top: '80px', left: '20px' }}>
-                <Typography variant="subtitle1" sx={{ position: 'absolute', left: '10px', top: '-6px', width: '100px' }}>입양일</Typography>
-                <div
-                  style={{
-                    position: "absolute",
-                    left: "74px",
-                    top: '-4px',
-                    backgroundColor: "#F4EEEE",
-                    width: 130,
-                    borderRadius: "20px",
-                    textAlign: "center",
-                  }}
-                >
-                  <Typography>
-                    {animalAdoptionDate?.format("YYYY-MM-DD")}
-                  </Typography>
-                </div>
-              </Stack>
-              <Box sx={{ display: "flex", justifyContent: "center", mt: 2, marginLeft: '-51px', }}>
-                <Button
-                  variant="contained"
-                  onClick={() => navigate(`/pet/walk.do?animalId=${animalId}`)}
-                  sx={{
-                    position: "absolute",
-                    left: "30px",
-                    top: '120px',
-                    backgroundColor: "#88AE97",
-                    borderRadius: "30px",
-                    width: 200,
-                    height: 40,
-                    px: 6,
-                    py: 1.5,
-                    fontSize: 13,
-                    fontWeight: "bold",
-
-                  }}
-                >
-                  산책하기
-                </Button>
-              </Box>
-            </Box>
-            {/* 오른쪽 이미지 */}
-            <Box sx={{ position: "absolute", left: "270px", top: 40 }}>
+          <Box
+            sx={{
+              display: "flex",
+              gap: 3,
+            }}
+          >
+            <Box
+              sx={{
+                width: "60%",
+              }}
+            >
               <Box
                 sx={{
-                  width: 100,
-                  height: 100,
-                  borderRadius: "50%",
-                  overflow: "hidden",
-                  border: "3px solid white",
-                  backgroundColor: "#A5B1AA",
                   display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
+                  justifyContent: "space-between",
+                  mb: 1,
                 }}
               >
-                <img
-                  src={
-                    fileUrl ? "http://192.168.0.30:8081" + fileUrl : imageFile
-                  }
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
+                <Typography className="plant-label">동물 이름</Typography>
+                <Box
+                  sx={{
+                    backgroundColor: "#f0f0f0",
+                    borderRadius: "5px",
+                    padding: "4px 12px",
+                    display: "inline-block",
+                    width: 100,
                   }}
-                />
+                >
+                  <Typography sx={{ fontSize: "0.8rem", textAlign: "center" }}>
+                    {/* 배열안에 데이터 있음 */}
+                    {petInfo?.data ? petInfo.data.animalName : "정보 없음"}
+                  </Typography>
+                </Box>
               </Box>
-              <Button
-                variant="contained"
-                size="small"
+
+              <Box
                 sx={{
-                  position: "relative",
-                  top: -130,
-                  right: -80,
-                  backgroundColor: "#889F7F",
-                  color: "#fff",
-                  fontSize: "12px",
-                  fontWeight: "normal",
-                  borderRadius: "55%",
-                  width: 40,
-                  height: 30,
-                  minWidth: "unset",
-                  padding: 0,
-                  marginLeft: "10px",
-                  zIndex: 2,
-                  textTransform: "none",
-                }}
-                onClick={() => {
-                  navigate(`/pet/petFormUpdate.do?animalId=${animalId}`);
+                  display: "flex",
+                  justifyContent: "space-between",
+                  mb: 1,
                 }}
               >
-                수정
+                <Typography className="plant-label">입양일 날짜</Typography>
+                <Box
+                  sx={{
+                    backgroundColor: "#f0f0f0",
+                    borderRadius: "5px",
+                    padding: "4px 12px",
+                    display: "inline-block",
+                    width: 100,
+                  }}
+                >
+                  <Typography sx={{ fontSize: "0.8rem", textAlign: "center" }}>
+                    {/* 배열안에 데이터 있음 */}
+                    {petInfo?.data
+                      ? petInfo.data.animalAdoptionDate
+                      : "정보 없음"}
+                  </Typography>
+                </Box>
+              </Box>
+
+              <Button
+                sx={{
+                  color: "white",
+                  top: 2,
+                  backgroundColor: "#88AE97",
+                  borderRadius: "8px",
+                  width: "100%",
+                  height: 40,
+                  fontSize: 13,
+                  fontWeight: "bold",
+                }}
+                onClick={() => navigate(`/pet/walk.do?animalId=${animalId}`)}
+              >
+                산책하기
               </Button>
             </Box>
+
+            <Avatar
+              sx={{
+                width: "110px",
+                height: "110px",
+                border: "1px solid #e0e0e0",
+              }}
+              src={
+                petInfo?.data?.fileUrl
+                  ? "http://192.168.0.30:8081" + petInfo?.data?.fileUrl
+                  : DefaultImage
+              }
+            />
           </Box>
 
-          {/* ✅ 탭은 폼 바깥에 위치 */}
-          {/* 폼 컴포넌트 아래 탭 - 간격 좁히기 */}
-          <Box
-            sx={{
-              position: "absolute",
-              left: "10px",
-              top: '192px',
-              width: "100%",
-              maxWidth: 400,
-              mx: "auto",
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
+          <Box className="tab-menu-container">
             <Tabs
               value={selectedTab}
               onChange={handleTabChange}
-              variant="fullWidth"
-              sx={{
-                position: 'absolute',
-
-                width: 360,
-                minHeight: "36px",
-                "& .MuiTab-root": {
-                  fontSize: "13px",
-                  color: "#777",
-                  fontWeight: 500,
-                  minHeight: "36px",
-                  borderBottom: "2px solid transparent",
-                },
-                "& .Mui-selected": {
-                  color: "#0174C5",
-                  fontWeight: 600,
-                },
-                "& .MuiTabs-indicator": {
-                  backgroundColor: "#000",
-                },
-              }}
+              className="plant-care-tabs"
+              TabIndicatorProps={{ style: { backgroundColor: "black" } }}
             >
               <Tab label="병원진료" />
               <Tab label="먹이알림" />
@@ -652,351 +884,27 @@ const Pet_Form_Eat_Alarm = () => {
             </Tabs>
           </Box>
 
-          <Box sx={{ width: "100%", marginTop: '30px' }}>
-            <Box sx={{
-              position: "absolute",
-              left: "30px",
-              top: '255px',
-            }}>
-              <Typography fontWeight="bold" fontSize="14px">
-                먹이 알림 설정🔔
-              </Typography>
-            </Box>
-
-            <Combo
-              sx={{
-                width: 95,
-                height: 28,
-                position: "absolute",
-                left: "160px",
-                top: '143px',
-                borderRadius: "8px",
-                fontSize: "13px",
-                padding: "0 8px",
-                backgroundColor: "white",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                textAlign: 'center',
-
-
-                // 내부 선택 영역 스타일
-                "& .MuiSelect-select": {
-                  paddingRight: "0px",
-                  paddingLeft: "0px",
-                  display: "flex",
-                  alignItems: "center",
-                  width: "100%",
-                  border: "none",
-                  textAlign: 'center',
-                },
-
-                // 드롭다운 화살표 아이콘 스타일
-                "& .MuiSvgIcon-root": {
-                  position: "absolute",
-                  right: 3, // 우측방향 조절
-                  top: "40%", //화살표 위쪽 위치
-                  transform: "translateY(-50%)", //y축방향 위 아래
-                  fontSize: "22px", // 화살표 크기
-                  pointerEvents: "none",
-                },
-
-
-              }}
-              groupId="EatType"
-              onSelectionChange={setEatType}
-              defaultValue={eatType}
+          <Box className="tab-content-display">
+            <RepottingContent
+              setEatType={setEatType}
+              eatType={eatType}
+              alarmName={alarmName}
+              setAlarmName={setAlarmName}
+              setAlarmCycle={setAlarmCycle}
+              alarmCycle={alarmCycle}
+              alarmTime={alarmTime}
+              setAlarmTime={setAlarmTime}
+              alarmDate={alarmDate}
+              setAlarmDate={setAlarmDate}
+              alarmCreate={alarmCreate}
+              alarmList={alarmList}
+              toggleAlarm={toggleAlarm}
+              alarmDelete={alarmDelete}
             />
-            <FormRow1
-              label="먹이 이름:"
-              value={alarmName}
-              onChange={setAlarmName}
-              inputRef={alarmNameRef}
-            />
-
-            <Typography sx={{ position: 'absolute', left: '100px', top: '330px' }}>
-              주기
-            </Typography>
-            <Combo
-              sx={{
-                width: 90,
-                height: 30,
-                position: "absolute",
-                left: '100px',
-                top: '190px',
-                borderRadius: "8px",
-                // border: "1px solid black",
-                fontSize: "13px",
-                padding: "0 8px",
-                backgroundColor: "white",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-
-                // 내부 선택 영역 스타일
-                "& .MuiSelect-select": {
-                  paddingRight: "0px",
-                  paddingLeft: "0px",
-                  display: "flex",
-                  alignItems: "center",
-                  width: "100%",
-                  border: "none",
-                },
-
-                // 드롭다운 화살표 아이콘 스타일
-                "& .MuiSvgIcon-root": {
-                  position: "absolute",
-                  right: 3, // 우측방향 조절
-                  top: "40%", //화살표 위쪽 위치
-                  transform: "translateY(-50%)", //y축방향 위 아래
-                  fontSize: "22px", // 화살표 크기
-                  pointerEvents: "none",
-                },
-
-
-              }}
-              groupId="AlarmCycle"
-              onSelectionChange={setAlarmCycle}
-              defaultValue={alarmCycle}
-            ></Combo>
-            <Typography sx={{ position: 'absolute', top: '330px', left: '230px' }}>
-              시각
-            </Typography>
-            <TimePicker
-              value={alarmTime}
-              onChange={(newValue) => setAlarmTime(newValue)}
-              ampm
-              closeOnSelect
-              slotProps={{
-                textField: {
-                  InputProps: {
-                    readOnly: true,
-                    sx: {
-                      borderRadius: "11px", // !important 추가
-                      // border: "1px solid black",
-                      width: "130px",
-                      height: "31px",
-                      fontSize: "13px",
-                      bottom: "104px",
-                      position: 'absolute',
-                      top: '165px',
-                      left: "230px",
-                      textAlign: "center",
-                      pl:'20px'
-                    },
-                  },
-                },
-              }}
-            ></TimePicker>
-
-
-            <Button
-              onClick={alarmCreate}
-              variant="contained"
-              sx={{
-                backgroundColor: "#88AE97",
-                borderRadius: "20px",
-                px: 4,
-                py: 1,
-                fontSize: 14,
-                position: 'absolute',
-                top: '440px',
-                left: '130px'
-              }}
-            >
-              알림 등록
-            </Button>
-
-            <Typography
-              sx={{
-                top: '397px',
-                position: "absolute",
-                left: '28px',
-                fontSize: "14px",
-              }}
-            >
-              알림 날짜:
-            </Typography>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                value={dayjs(alarmDate)}
-                onChange={(newValue) => setAlarmDate(newValue)}
-                format="YYYY.MM.DD"
-                slotProps={{
-                  textField: {
-                    InputProps: {
-                      readOnly: true,
-                      sx: {
-                        borderRadius: "11px", // !important 추가
-                        // border: "1px solid black",
-                        width: "260px",
-                        height: "31px",
-                        fontSize: "13px",
-                        bottom: "175px",
-                        position: 'absolute',
-                        left: '100px',
-                        top: '200px',
-                        pl:'89px'
-                      },
-                    },
-                  },
-                }}
-              />
-            </LocalizationProvider>
-          </Box>
-        </Box>
-        <Box sx={{ position: 'absolute', top: '490px', left: '10px' }}>
-          <Box
-            sx={{
-              width: "320px",
-              mx: "auto",
-              mt: 2,
-              border: "1px solid #ccc",
-              borderRadius: "10px",
-              p: 2,
-              boxShadow: "0 0 4px rgba(0,0,0,0.1)",
-
-            }}
-          >
-            <Typography
-              variant="h6"
-              gutterBottom
-              align="center"
-              sx={{
-                fontWeight: "bold",
-                borderBottom: "1px solid #ccc",
-                pb: 1,
-                top: -10,
-                position: "relative",
-              }}
-            >
-              알림 목록
-            </Typography>
-
-            {alarmList.map((alarm, idx) => (
-              <Grid
-                key={idx}
-                container
-                alignItems="center"
-                spacing={1}
-                sx={{ py: 1, position: "relative", top: 0 }}
-              >
-                {/* 알람 이름 + 종류 */}
-                <Grid item xs={5}>
-                  <Typography
-                    sx={{
-                      width: 100,
-                      fontSize: 14,
-                      left: -10,
-                      position: "relative",
-                      textAlign: "center",
-                    }}
-                  >
-                    {alarm.alarmName}
-                  </Typography>
-                  <Typography
-                    sx={{
-                      width: 100,
-                      fontSize: 12,
-                      color: "#777",
-                      left: 60,
-                      position: "relative",
-                      top: -18,
-                      textAlign: "center",
-                    }}
-                  >
-                    {alarm.type}
-                  </Typography>
-                </Grid>
-
-                {/* 주기 + 시간 */}
-                <Grid item xs={3}>
-                  <Typography
-                    sx={{
-                      width: 100,
-                      fontSize: 13,
-                      left: 16,
-                      position: "relative",
-                      top: 3,
-                      textAlign: "center",
-                    }}
-                  >
-                    {alarm.alarmCycle}일
-                  </Typography>
-                  <Typography
-                    sx={{
-                      width: 100,
-                      fontSize: 13,
-                      left: 90,
-                      position: "relative",
-                      top: -17,
-                      textAlign: "center",
-                    }}
-                  >
-                    {`${alarm.hour}:${alarm.min.toString().padStart(2, "0")}`}
-                  </Typography>
-                </Grid>
-
-                {/* 스위치 */}
-                <Grid item xs={2}>
-                  <Switch
-                    checked={alarm.enabled}
-                    onChange={() => toggleAlarm(alarm.alarmId)}
-                    color="default"
-                    size="small"
-                    sx={{
-                      width: 50,
-                      height: 30,
-                      left: 70,
-                      top: -6,
-                      padding: 0,
-                      "& .MuiSwitch-switchBase": {
-                        padding: "2px",
-                        "&.Mui-checked": {
-                          transform: "translateX(16px)",
-                          color: "#fff",
-                          "& + .MuiSwitch-track": {
-                            backgroundColor: "#90caf9",
-                            opacity: 1,
-                          },
-                        },
-                      },
-                      "& .MuiSwitch-thumb": {
-                        //스위치 동그라미 크기 조절
-                        width: 25,
-                        height: 25,
-                        boxShadow: "0 0 2px rgba(0, 0, 0, 0.2)",
-                      },
-                      "& .MuiSwitch-track": {
-                        borderRadius: 10,
-                        backgroundColor: "#e0e0e0",
-                        opacity: 1,
-                      },
-                    }}
-                  />
-                  {/* 삭제 버튼 */}
-                  <Grid item xs={2}>
-                    <IconButton
-                      onClick={() => alarmDelete(alarm.alarmId)}
-                      size="small"
-                      sx={{ p: 0, left: 30, top: -7 }}
-                    >
-                      <img
-                        src={AlarmMinus}
-                        alt="알람 삭제"
-                        style={{ width: 24, height: 24 }}
-                      />
-                    </IconButton>
-                  </Grid>
-                </Grid>
-
-
-              </Grid>
-            ))}
           </Box>
         </Box>
       </LocalizationProvider>
-    </Box>
+    </>
   );
 };
 export default Pet_Form_Eat_Alarm;
