@@ -208,6 +208,7 @@ const DiaryCreate = () => {
                           borderRadius: "20px",
                           backgroundColor: "#F8F8F8",
                           width: "160px",
+                          pl:'28px'
                         },
                       },
                     },
@@ -318,7 +319,7 @@ const DiaryCreate = () => {
                 rows={8}
                 fullWidth
                 variant="outlined"
-                inputProps={{ maxLength: 1300, style: { textAlign: "center" } }}
+                inputProps={{ maxLength: 1300, }}
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     borderRadius: "15px",
