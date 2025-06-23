@@ -529,8 +529,8 @@ const Pet_Form_Eat_Alarm = () => {
             alarmCycle: cycleDays,
             type: type,
             enabled: isactive, // 초기에는 켜져있다고 가정
-            message: "알람아이디 : " + alarmId + " // " + cycleDays + "분주기",
-            // message: "물 주는 시간입니다!"
+            // message: "알람아이디 : " + alarmId + " // " + cycleDays + "분주기",
+            message: petInfo.data.animalName+"에게 "+type+"을 줄 시간입니다.",
           };
         });
 

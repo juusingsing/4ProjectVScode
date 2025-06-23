@@ -518,8 +518,8 @@ const PlantWatering = () => {
             min,
             alarmCycle: cycleDays,
             enabled: isactive, // 초기에는 켜져있다고 가정
-            message: "알람아이디 : " + alarmId + " // " + cycleDays + "분주기",
-            // message: "물 주는 시간입니다!"
+            // message: "알람아이디 : " + alarmId + " // " + cycleDays + "분주기",
+            message: plantInfo.data[0].plantName+"에게 물 주는 시간입니다!"
           };
         });
 
@@ -770,7 +770,7 @@ const PlantWatering = () => {
                 mb: 2,
               }}
             >
-              <Typography className="plant-label">동물 이름</Typography>
+              <Typography className="plant-label">식물 이름</Typography>
               <Box
                 sx={{
                   backgroundColor: "#f0f0f0",
