@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { GoogleMap, LoadScript, Marker, Polyline } from '@react-google-maps/api';
 import { Button, Box, Typography } from '@mui/material';
+import { useCmDialog } from '../../cm/CmDialogUtil';
 //d
 const containerStyle = {
   width: '370px',
@@ -33,6 +34,7 @@ const Dnlcl = () => {
   const [lastRecordedPosition, setLastRecordedPosition] = useState(null);
   const [running, setRunning] = useState(false);
   const intervalRef = useRef(null);
+   const { showAlert } = useCmDialog();
 
   // 주변 장소 콜백 등록
   useEffect(() => {
@@ -46,7 +48,7 @@ const Dnlcl = () => {
             address: place.vicinity,
           }));
           /* 이부분에서 병원 표에 대입할수있음 */
-          alert("주변 병원:\n" + places.map(p => `${p.name} (${p.address})`).join('\n'));
+          showAlert("주변 병원:\n" + places.map(p => `${p.name} (${p.address})`).join('\n'));
         }
       } catch (e) {
         console.error("onNearbyPlaces 오류:", e);

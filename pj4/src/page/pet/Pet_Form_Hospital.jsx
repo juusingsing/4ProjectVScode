@@ -307,6 +307,7 @@ const RepottingContent = ({
 };
 
 const Pet_Form_Hospital = () => {
+  const { showConfirm } = useCmDialog(); 
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
@@ -412,6 +413,21 @@ const Pet_Form_Hospital = () => {
   };
 
   const handleDelete = async (id) => {
+    showConfirm(
+      '알람을 삭제하시겠습니까?',
+      () => {
+        // yes callback - 실행
+        console.log('실행 확인');
+        handleDelete2(id);
+      },
+      () => {
+        // no callback - 취소
+        console.log('실행 취소');
+      }
+    );
+  }
+
+  const handleDelete2 = async (id) => {
     try {
       // API 호출해서 서버에 del_yn='Y'로 변경 요청
       const response = await fetch(
@@ -432,7 +448,7 @@ const Pet_Form_Hospital = () => {
       setRecords((prev) =>
         prev.filter((r) => r.animalHospitalTreatmentId !== id)
       );
-      showAlert("삭제가 완료되었습니다.");
+      showAlert("삭제 성공!");
       // 초기화
       setAnimalVisitDate(dayjs());
       setAnimalHospitalName("");
@@ -534,7 +550,7 @@ const Pet_Form_Hospital = () => {
             r.animalHospitalTreatmentId === editId ? updatedData : r
           )
         );
-        showAlert("수정이 완료되었습니다.");
+        showAlert("수정 성공!");
       } else {
         const result = await petFormHospital(formData).unwrap();
         const newRecord = {
@@ -547,7 +563,7 @@ const Pet_Form_Hospital = () => {
           animalTreatmentMemo,
         };
         setRecords((prev) => [newRecord, ...prev]);
-        showAlert("등록이 완료되었습니다.");
+        showAlert("등록 성공!");
       }
 
       // 초기화

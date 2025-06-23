@@ -28,6 +28,7 @@ import DefaultImage from "../../image/default-plant.png";
 import back from "../../image/back.png";
 
 const PlantUpdate = ({ mode = "create" }) => {
+  const { showConfirm } = useCmDialog(); 
   const [searchParams] = useSearchParams();
   const plantId = searchParams.get("plantId"); // 식물아이디 plantId parm에 저장
   const isEdit = mode === "edit" || !!plantId;
@@ -116,11 +117,11 @@ const PlantUpdate = ({ mode = "create" }) => {
     try {
       if (isEdit) {
         await updatePlant(formData).unwrap();
-        showAlert("수정 성공");
+        showAlert("수정 성공!");
         navigate(-1);
       } else {
         const result = await createPlant(formData).unwrap();
-        showAlert("등록 성공");
+        showAlert("등록 성공!");
         navigate(`/PlantUpdate/${result.plantId}`);
         return;
       }
@@ -132,8 +133,13 @@ const PlantUpdate = ({ mode = "create" }) => {
 
   const handleDelete = async () => {
     console.log(plantId);
-    if (window.confirm("정말 삭제하시겠습니까?")) {
-      try {
+
+    showConfirm(
+      '알람을 삭제하시겠습니까?',
+      async () => {
+        // yes callback - 실행
+        console.log('실행 확인');
+        try {
         plantDeleteAlarm({
           petId: plantId,
           category: "PLA",
@@ -156,12 +162,18 @@ const PlantUpdate = ({ mode = "create" }) => {
           });
 
         await deletePlant({ plantId: plantId }).unwrap();
-        showAlert("삭제 성공");
+        showAlert("삭제 성공!");
         navigate("/home.do?tab=N02");
       } catch {
         showAlert("삭제 실패");
       }
-    }
+      },
+      () => {
+        // no callback - 취소
+        console.log('실행 취소');
+      }
+    );
+
   };
 
   return (

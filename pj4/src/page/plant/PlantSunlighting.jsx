@@ -129,7 +129,6 @@ const SunlightContent = ({
         value={sunlightStatusText}
         onChange={(e) => setSunlightStatusText(e.target.value)}
         variant="outlined"
-
       />
     </Box>
 
@@ -140,17 +139,17 @@ const SunlightContent = ({
       sx={
         editingLog !== false
           ? {
-                backgroundColor: "#4B6044 !important", // 저장
-                "&:hover": {
-                  backgroundColor: "#88AE97 !important",
-                },
-              }
-            : {
-                backgroundColor: "#86ad97 !important", // 수정
-                "&:hover": {
-                  backgroundColor: "#88AE97 !important",
-                },
-              }
+              backgroundColor: "#4B6044 !important", // 저장
+              "&:hover": {
+                backgroundColor: "#88AE97 !important",
+              },
+            }
+          : {
+              backgroundColor: "#86ad97 !important", // 수정
+              "&:hover": {
+                backgroundColor: "#88AE97 !important",
+              },
+            }
       }
     >
       {editingLog !== false ? "저장" : "수정"}
@@ -227,6 +226,7 @@ const SunlightContent = ({
 
 // 메인 컴포넌트
 const PlantSunlighting = () => {
+  const { showConfirm } = useCmDialog();
   const navigate = useNavigate();
   const location = useLocation();
   const { showAlert } = useCmDialog();
@@ -310,7 +310,8 @@ const PlantSunlighting = () => {
       updateSunlightLogs(formData)
         .unwrap()
         .then((res) => {
-          showAlert(res.message);
+          // showAlert(res.message);
+          showAlert("수정 성공!");
           setSelectedSunlight(null);
           setSunlightStatusText("");
           setEditingLog(true);
@@ -325,7 +326,8 @@ const PlantSunlighting = () => {
       saveSunlightInfo(formData)
         .unwrap()
         .then((res) => {
-          showAlert(res.message);
+          // showAlert(res.message);
+          showAlert("저장 성공!");
           setSelectedSunlight(null);
           setSunlightStatusText("");
           setEditingLog(true);
@@ -340,16 +342,27 @@ const PlantSunlighting = () => {
   };
 
   const handleDeleteLog = async (id) => {
-    try {
-      await deleteSunlightLogs(id).unwrap(); // 삭제 요청
-      showAlert("일지가 성공적으로 삭제되었습니다.");
+    showConfirm(
+      "알람을 삭제하시겠습니까?",
+      async () => {
+        // yes callback - 실행
+        console.log("실행 확인");
+        try {
+          await deleteSunlightLogs(id).unwrap(); // 삭제 요청
+          showAlert("삭제 성공!");
 
-      // 삭제 성공 후, 서버에서 최신 일지 목록을 다시 가져와 UI 업데이트
-      refetch();
-    } catch (error) {
-      console.error("삭제실패:", error);
-      showAlert("삭제 중 오류 발생");
-    }
+          // 삭제 성공 후, 서버에서 최신 일지 목록을 다시 가져와 UI 업데이트
+          refetch();
+        } catch (error) {
+          console.error("삭제실패:", error);
+          showAlert("삭제 중 오류 발생");
+        }
+      },
+      () => {
+        // no callback - 취소
+        console.log("실행 취소");
+      }
+    );
   };
 
   const handleEditLog = (id) => {

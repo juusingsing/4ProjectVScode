@@ -95,7 +95,7 @@ const Alarmdb = () => {
           }
         } catch (e) {
           console.error("Android Alarm 호출 중 오류:", e);
-          alert("Android Alarm 호출 중 오류:");
+          showAlert("Android Alarm 호출 중 오류:");
         }
 
 

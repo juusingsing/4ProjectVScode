@@ -239,6 +239,7 @@ const RepottingContent = ({
 const Pet_Form_Training_And_Action = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { showConfirm } = useCmDialog(); 
 
   const [searchParams] = useSearchParams();
   const animalId = searchParams.get("animalId"); // 동물아이디 animalId parm에 저장
@@ -337,6 +338,21 @@ const Pet_Form_Training_And_Action = () => {
   };
 
   const handleDelete = async (id) => {
+    showConfirm(
+      '알람을 삭제하시겠습니까?',
+      () => {
+        // yes callback - 실행
+        console.log('실행 확인');
+        handleDelete2(id);
+      },
+      () => {
+        // no callback - 취소
+        console.log('실행 취소');
+      }
+    );
+  }
+
+  const handleDelete2 = async (id) => {
     try {
       // API 호출해서 서버에 del_yn='Y'로 변경 요청
       const response = await fetch(
@@ -355,7 +371,7 @@ const Pet_Form_Training_And_Action = () => {
 
       // 성공하면 화면에서 해당 항목 제거
       setRecords((prev) => prev.filter((r) => r.animalTrainingAction !== id));
-      showAlert("삭제가 완료되었습니다.");
+      showAlert("삭제 성공!");
     } catch (error) {
       console.error("삭제 오류:", error);
       showAlert("삭제 중 오류가 발생했습니다.");
@@ -445,7 +461,7 @@ const Pet_Form_Training_And_Action = () => {
         setRecords((prev) =>
           prev.map((r) => (r.animalTrainingAction === editId ? updatedData : r))
         );
-        showAlert("수정이 완료되었습니다.");
+        showAlert("수정 성공!");
       } else {
         const result = await petFormTrainingAndAction(formData).unwrap();
         const newRecord = {
@@ -456,7 +472,7 @@ const Pet_Form_Training_And_Action = () => {
           animalTrainingMemo,
         };
         setRecords((prev) => [newRecord, ...prev]);
-        showAlert("등록이 완료되었습니다.");
+        showAlert("등록 성공!");
       }
 
       // 초기화

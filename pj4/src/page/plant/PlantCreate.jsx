@@ -14,6 +14,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import { FaCamera } from "react-icons/fa";
+import { useCmDialog } from "../../cm/CmDialogUtil";
 import DefaultImage from "../../image/default-plant.png";
 import { useCreatePlantMutation } from "../../features/plant/plantApi";
 import Combo from "../combo/combo";
@@ -30,6 +31,7 @@ const PlantCreate = () => {
   const [files, setFiles] = useState([]);
   const [createPlant] = useCreatePlantMutation();
   const navigate = useNavigate();
+  const { showAlert } = useCmDialog();
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
@@ -62,7 +64,7 @@ const PlantCreate = () => {
 
     try {
       await createPlant(formData).unwrap();
-      alert("등록 성공");
+      showAlert("등록 성공!");
       setPlantName("");
       setPlantType("");
       setPlantPurchaseDate(null);
@@ -72,7 +74,7 @@ const PlantCreate = () => {
       setFiles([]);
       navigate("/home.do");
     } catch (err) {
-      alert("등록 실패");
+      showAlert("등록 실패");
     }
   };
 
@@ -80,7 +82,7 @@ const PlantCreate = () => {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div className="header-icon-container">
         <Button
-          onClick={() => navigate("/home.do")}
+          onClick={() => navigate("/home.do?tab=N02")}
           sx={{
             display: "flex",
             justifyContent: "center",
@@ -144,13 +146,16 @@ const PlantCreate = () => {
               variant="outlined"
               size="small"
               className="input-field-wrapper"
-              InputProps={{
-                sx: {
-                  borderRadius: "20px",
-                  backgroundColor: "#f0f0f0",
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "transparent",
-                  },
+              sx={{
+                width: "150px",
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor: "#F8F8F8",
+                  borderRadius: "8px",
+                  padding: "0px", // 내부 패딩 제거
+                },
+                "& .MuiInputBase-input": {
+                  padding: "6px 8px", // 텍스트 입력 공간의 패딩 조절
+                  fontSize: "14px", // 폰트 사이즈 줄이면 높이도 줄어듦
                 },
               }}
             />
@@ -161,7 +166,15 @@ const PlantCreate = () => {
             <Combo
               groupId="PlantType"
               onSelectionChange={setPlantType}
-              sx={{ width: "200px" }}
+              defaultValue={plantType}
+              sx={{
+                fontSize: 14,
+                width: "210px",
+                height: "37px",
+                backgroundColor: "#F8F8F8",
+                borderRadius: "8px",
+                mt:-2,
+              }}
             />
           </Box>
 
@@ -170,30 +183,25 @@ const PlantCreate = () => {
             <DatePicker
               value={dayjs(plantPurchaseDate)}
               onChange={(newValue) => setPlantPurchaseDate(newValue)}
-              inputFormat="YYYY-MM-DD"
+              format="YYYY.MM.DD"
               renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  size="small"
-                  className="input-field-wrapper"
-                  InputProps={{
-                    sx: {
-                      borderRadius: "8px",
-                      backgroundColor: "#f0f0f0",
-                      "& .MuiOutlinedInput-notchedOutline": {
-                        borderColor: "transparent",
-                      },
-                      "&:hover .MuiOutlinedInput-notchedOutline": {
-                        borderColor: "transparent",
-                      },
-                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                        borderColor: "transparent",
-                      },
-                    },
-                  }}
-                />
+                <TextField size="small" {...params} fullWidth />
               )}
+              slotProps={{
+                textField: {
+                  size: "small",
+                  InputProps: {
+                    sx: {
+                      fontSize: 14,
+                      borderRadius: "8px",
+                      backgroundColor: "#F8F8F8",
+                      width: "210px",
+                      height: "38px",
+                      pl: "72px",
+                    },
+                  },
+                },
+              }}
             />
           </Box>
 
@@ -202,56 +210,56 @@ const PlantCreate = () => {
             <Combo
               groupId="SunType"
               onSelectionChange={setSunlightPreference}
-              sx={{ width: "200px" }}
-            />
-          </Box>
-
-          <Box className="form-row status-field">
-            <Typography className="label-text">생육 상태</Typography>
-            <TextField
-              value={plantGrowthStatus}
-              onChange={(e) => setPlantGrowthStatus(e.target.value)}
-              multiline
-              rows={3}
-              variant="outlined"
-              size="small"
-              className="input-field-wrapper"
-              InputProps={{
-                sx: {
-                  borderRadius: "8px",
-                  backgroundColor: "#f0f0f0",
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "transparent",
-                  },
-                  "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "transparent",
-                  },
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "transparent",
-                  },
-                },
+              defaultValue={sunlightPreference}
+              sx={{
+                fontSize: 14,
+                width: "210px",
+                height: "37px",
+                backgroundColor: "#F8F8F8",
+                borderRadius: "8px",
+                mt:-2,
               }}
             />
           </Box>
 
-          <Button
-            variant="contained"
-            onClick={handleSubmit}
-            className="register-button"
+          <Box
             sx={{
-              backgroundColor: "#4B6044",
-              borderRadius: 20,
-              padding: "10px 24px",
-              fontSize: "1rem",
-              fontWeight: "bold",
-              width: "200px",
-              marginleft: "500px",
-              marginTop: "30px",
-              height: "50px",
+              alignItems: "center",
+              mb: 1.5,
             }}
+            className="status-field"
           >
-            식물 등록
-          </Button>
+            <Typography className="label-text">생육 상태</Typography>
+            <TextField
+              sx={{
+                borderRadius:"8px",
+                backgroundColor: "#F8F8F8",
+                width: "100%",
+                mb: 1.5,
+              }}
+              multiline
+              rows={1.5}
+              value={plantGrowthStatus}
+              onChange={(e) => setPlantGrowthStatus(e.target.value)}
+              variant="outlined"
+            />
+          </Box>
+
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <Button
+              variant="contained"
+              onClick={handleSubmit}
+              sx={{
+                backgroundColor: "#556B2F",
+                borderRadius: "8px",
+                px: 4,
+                py: 1,
+                fontSize: 14,
+              }}
+            >
+              식물 등록
+            </Button>
+          </Box>
         </Stack>
       </Box>
     </LocalizationProvider>

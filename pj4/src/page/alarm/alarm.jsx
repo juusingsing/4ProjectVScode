@@ -3,10 +3,11 @@ import { GoogleMap, LoadScript, Marker, Polyline } from '@react-google-maps/api'
 import { Button, Box, Typography } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { useCmDialog } from '../../cm/CmDialogUtil';
 
 const Alarm = () => {
   const [formattedTime, setFormattedTime] = useState('');
+  const { showAlert } = useCmDialog();
 
   useEffect(() => {
   const alarmData = {
@@ -36,7 +37,7 @@ const Alarm = () => {
     }
   } catch (e) {
     console.error("Android Alarm 호출 중 오류:", e);
-    alert("Android Alarm 호출 중 오류:");
+    showAlert("Android Alarm 호출 중 오류:");
   }
 }, []);
 
@@ -81,7 +82,7 @@ const Alarm = () => {
           if (window.Android && window.Android.cancelAlarm) {
               window.Android.cancelAlarm();
           } else {
-              alert("AndroidInterface is not available.");
+              showAlert("AndroidInterface is not available.");
           }
       }}>
           알람 취소

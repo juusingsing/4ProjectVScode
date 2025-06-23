@@ -235,9 +235,11 @@ const Main = () => {
                   marginTop: "0.25rem",
                 }}
               >
-                {walkInfoview && walkInfoview.length > 0 && (
-                  <div>{formatDate(walkInfoview[0].walkDt)}</div>
-                )}
+                {walkInfoview ? ( <div>{formatDate(walkInfoview[0].walkDt)}</div> ) :
+                 (<div style={{
+                  backgroundColor: "#f3f4f6",
+                  borderRadius: "12px",
+                }}>기록이 없습니다.</div>)}
               </div>
             </div>
 
@@ -253,7 +255,11 @@ const Main = () => {
                   marginTop: "0.25rem",
                 }}
               >
-                {walkInfoview && <div>{walkInfoview[0].walkTime}</div>}
+                {walkInfoview ? ( <div>{walkInfoview[0].walkTime} </div> ) :
+                 (<div style={{
+                  backgroundColor: "#f3f4f6",
+                  borderRadius: "12px",
+                }}>기록이 없습니다.</div>)}
               </div>
             </div>
           </div>

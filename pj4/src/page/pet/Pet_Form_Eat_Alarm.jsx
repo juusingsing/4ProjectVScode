@@ -548,7 +548,7 @@ const Pet_Form_Eat_Alarm = () => {
           }
         } catch (e) {
           // console.error("Android Alarm 호출 중 오류:", e);
-          alert("Android Alarm 호출 중 오류:");
+          showAlert ("Android Alarm 호출 중 오류:");
         }
       } else {
         // showAlert("데이터조회실패1");
@@ -654,7 +654,7 @@ const Pet_Form_Eat_Alarm = () => {
       setAlarmTime(dayjs().hour(9).minute(0)); // 시간 초기화
       setAlarmDate(dayjs()); // 날짜 초기화
 
-      showAlert("등록성공");
+      showAlert("등록 성공!");
 
       await alarmSet();
     } catch (error) {
@@ -741,6 +741,7 @@ const alarmDelete2 = (alarmId) => {
         setAlarmList((prevList) =>
           prevList.filter((alarm) => alarm.alarmId !== alarmId)
         );
+        showAlert("삭제 성공!");
       })
       .catch((err) => {
         console.error("알람 업데이트 실패", err);

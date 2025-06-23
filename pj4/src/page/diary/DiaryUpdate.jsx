@@ -140,7 +140,7 @@ const DiaryUpdate = () => {
     showConfirm("정말 삭제하시겠습니까?", async () => {
       const res = await diaryDelete({ diaryId: id }).unwrap();
       if (res.success) {
-        showAlert("일기 삭제가 삭제되었습니다.", () =>
+        showAlert("일기 삭제 성공! 일기 목록으로 이동합니다.", () =>
           navigate("/diary/list.do")
         );
       } else {

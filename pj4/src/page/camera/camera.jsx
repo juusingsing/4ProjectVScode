@@ -3,12 +3,13 @@ import { useImgSaveMutation } from '../../features/img/imgApi';
 import axios from "axios";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules';
-
+import { useCmDialog } from '../../cm/CmDialogUtil';
 
 const Camera = () => {
   const [imageSrc, setImageSrc] = useState(null);
   const [imgSave] = useImgSaveMutation();
   const [images, setImages] = useState([]);
+  const { showAlert } = useCmDialog();
 
   useEffect(() => {
     // Android에서 사진을 받는 함수 등록
@@ -45,7 +46,7 @@ const Camera = () => {
     if (window.Android && typeof window.Android.openCamera === 'function') {
       window.Android.openCamera(); // 안드로이드 함수 호출
     } else {
-      alert('Android 인터페이스를 사용할 수 없습니다.');
+      showAlert('Android 인터페이스를 사용할 수 없습니다.');
     }
   };
 
@@ -72,7 +73,7 @@ const Camera = () => {
                 if (error.data) {
                 console.error('서버 응답:', error.data);
                 }
-            alert('이미지 업로드 중 오류가 발생했습니다.');
+            showAlert('이미지 업로드 중 오류가 발생했습니다.');
         }
   };
 

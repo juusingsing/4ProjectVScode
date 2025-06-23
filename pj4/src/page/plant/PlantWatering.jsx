@@ -97,9 +97,12 @@ const WateringContent = ({
               <Button
                 sx={{
                   backgroundColor: "#88AE97",
-                  width: "30px",
-                  padding: "12px",
-                  fontSize: "16px",
+                  width: "40px",
+                  fontSize: "13px",
+                  borderRadius: "25px",
+                  height: "30px",
+                  marginLeft: "10px",
+                  marginTop: -3,
                 }}
                 variant="contained"
                 onClick={alarmCreate}
@@ -340,6 +343,7 @@ const WateringContent = ({
 };
 
 const PlantWatering = () => {
+  const { showConfirm } = useCmDialog();
   const navigate = useNavigate();
   const location = useLocation();
   const user = useSelector((state) => state.user.user);
@@ -534,7 +538,7 @@ const PlantWatering = () => {
           }
         } catch (e) {
           console.error("Android Alarm 호출 중 오류:", e);
-          alert("Android Alarm 호출 중 오류:");
+          showAlert("Android Alarm 호출 중 오류:");
         }
       } else {
         showAlert("데이터조회실패1");
@@ -562,7 +566,7 @@ const PlantWatering = () => {
     try {
       const response = await AlarmCreate(data).unwrap();
       console.log("응답 내용 >>", response); // 여기에 찍히는 걸 확인해야 해!
-      showAlert("등록성공");
+      showAlert("등록 성공!");
 
       alarmSet(); // alarmList 추가되면 리렌더링
     } catch (error) {
@@ -587,7 +591,7 @@ const PlantWatering = () => {
       });
 
       console.log(`서버 알람 ${alarmList[0].alarmId} 상태 업데이트 완료`);
-      showAlert("수정 성공");
+      showAlert("수정 성공!");
 
       // 프론트 상태 업데이트 (불필요한 필드는 생략 가능)
       setAlarmList([
@@ -613,7 +617,7 @@ const PlantWatering = () => {
     try {
       const response = await WaterCreate(data).unwrap();
       console.log("응답 내용 >>", response); // 여기에 찍히는 걸 확인해야 해!
-      showAlert("등록성공");
+      showAlert("등록 성공!");
 
       waterListLoad(); // 페이지 다시렌더링유도
     } catch (error) {
@@ -628,16 +632,27 @@ const PlantWatering = () => {
       waterId: waterId, // << 변수값 넣으면됨
     };
 
-    try {
-      const response = await WaterDelete(data).unwrap();
-      console.log("응답 내용 >>", response); // 여기에 찍히는 걸 확인해야 해!
-      showAlert("삭제성공");
+    showConfirm(
+      "알람을 삭제하시겠습니까?",
+      async () => {
+        // yes callback - 실행
+        console.log("실행 확인");
+        try {
+          const response = await WaterDelete(data).unwrap();
+          console.log("응답 내용 >>", response); // 여기에 찍히는 걸 확인해야 해!
+          showAlert("삭제 성공!");
 
-      waterListLoad(); // 페이지 다시렌더링유도
-    } catch (error) {
-      console.error("요청 실패:", error);
-      showAlert("삭제실패");
-    }
+          waterListLoad(); // 페이지 다시렌더링유도
+        } catch (error) {
+          console.error("요청 실패:", error);
+          showAlert("삭제실패");
+        }
+      },
+      () => {
+        // no callback - 취소
+        console.log("실행 취소");
+      }
+    );
   };
 
   const toggleAlarm = (alarmId) => {

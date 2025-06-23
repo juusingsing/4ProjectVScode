@@ -18,6 +18,7 @@ import { CmUtil } from "../../cm/CmUtil";
 import { useCmDialog } from "../../cm/CmDialogUtil";
 import { usePet_FormMutation } from "../../features/pet/petApi";
 import back from "../../image/back.png";
+import DefaultAnimal from "../../image/dafault-animal.png";
 
 import { useNavigate } from "react-router-dom";
 dayjs.locale("ko");
@@ -138,7 +139,7 @@ const Pet_Form = () => {
           }}
         >
           <Avatar
-            src={imageFile ? URL.createObjectURL(imageFile) : ""}
+            src={imageFile ? URL.createObjectURL(imageFile) : DefaultAnimal}
             sx={{ width: 100, height: 100 }}
           />
           <IconButton
@@ -197,6 +198,9 @@ const Pet_Form = () => {
             name="gender"
             value={gender}
             onChange={(e) => setGender(e.target.value)}
+            sx={{
+              ml:4
+            }}
           >
             <FormControlLabel
               value="F"
@@ -248,7 +252,7 @@ const Pet_Form = () => {
             variant="contained"
             sx={{
               backgroundColor: "#556B2F",
-              borderRadius: "20px",
+              borderRadius: "8px",
               px: 4,
               py: 1,
               fontSize: 14,
@@ -334,10 +338,10 @@ const DateInputRow = ({ label, value, onChange }) => {
                   height: "40px",
                   backgroundColor: "#F8F8F8",
                   borderRadius: "8px",
-                  fontSize: "13px",
+                  fontSize: "14px",
                   fontWeight: "normal", // ✅ 진하지 않게
                   pr: "12px", // 아이콘 공간 확보
-                  pl: "33px", // 좌측 패딩 확보 날짜 텍스트 정중앙에 오게하기.
+                  pl: "72px", // 좌측 패딩 확보 날짜 텍스트 정중앙에 오게하기.
                   "& input": {
                     textAlign: "center", // ✅ 날짜 가운데 정렬
                     padding: 0, // ✅ 모든 방향 패딩 제거

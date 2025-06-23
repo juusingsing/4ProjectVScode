@@ -1,5 +1,5 @@
 import { Box, TextField, Typography, IconButton, Button } from "@mui/material";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -8,7 +8,7 @@ import dayjs from "dayjs";
 
 import { CmUtil } from "../../cm/CmUtil";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useCmDialog } from "../../cm/CmDialogUtil";
 
 import back from "../../image/back.png";
@@ -21,6 +21,8 @@ import "../../css/diaryCreate.css";
 import { useDiaryCreateMutation } from "../../features/diary/diaryApi";
 
 const DiaryCreate = () => {
+  const [searchParams] = useSearchParams();
+ 
   const user = useSelector((state) => state.user.user);
   const titleRef = useRef();
   const contentRef = useRef();
@@ -28,7 +30,9 @@ const DiaryCreate = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [date, setDate] = useState(dayjs());
-  const [diaryType, setDiaryType] = useState("N01");
+  const [diaryType, setDiaryType] = useState("");
+  const paramsDiaryType = searchParams.get("diaryType");
+   
   const [files, setFiles] = useState([]);
 
   const [diaryCreate] = useDiaryCreateMutation();
@@ -36,6 +40,15 @@ const DiaryCreate = () => {
 
   const navigate = useNavigate();
   const maxFile = 5;
+
+  useEffect(() => {
+    if (paramsDiaryType == "N01"){ // 동물
+      setIsOn(true);
+    } else {
+      setIsOn(false);
+    }
+     setDiaryType(paramsDiaryType);
+  },[]);
 
   const handleFileChange = (e) => {
     const newFiles = Array.from(e.target.files);
@@ -117,7 +130,9 @@ const DiaryCreate = () => {
   };
 
   const [isOn, setIsOn] = useState(true);
+  
   const handleToggle = () => {
+
     const newState = !isOn;
     setIsOn(newState);
     setDiaryType(newState ? "N01" : "N02");

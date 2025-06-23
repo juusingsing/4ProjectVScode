@@ -48,7 +48,7 @@ const DiaryList = () => {
                         일기
                     </Typography>
                     <Box className='diary-top-section-button'>
-                        <Button onClick={() => navigate('/diary/create.do')} className="diary-add-button"
+                        <Button onClick={() => navigate(`/diary/create.do?diaryType=${diaryType.diaryType}`)} className="diary-add-button"
                             sx={{ p: 0, width: '38px', width: '38px', minWidth: '38px' }}>
                             <img src={add} alt="" className="diary-add"></img>
                         </Button>

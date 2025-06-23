@@ -23,7 +23,10 @@ import { CmUtil } from "../../cm/CmUtil";
 import { useCmDialog } from "../../cm/CmDialogUtil";
 import back from "../../image/back.png";
 
+import DefaultAnimal from "../../image/dafault-animal.png";
+
 const Pet_Form_Update = () => {
+  const { showConfirm } = useCmDialog();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const animalIdStr = searchParams.get("animalId");
@@ -84,7 +87,7 @@ const Pet_Form_Update = () => {
       }
     }
   }, [data]);
-  
+
   useEffect(() => {
     console.log("existingImageUrl 상태 업데이트 됨:", existingImageUrl);
   }, [existingImageUrl]);
@@ -147,43 +150,54 @@ const Pet_Form_Update = () => {
       return;
     }
 
-    try {
+    showConfirm(
+      "알람을 삭제하시겠습니까?",
+      async () => {
+        // yes callback - 실행
+        console.log("실행 확인");
+        try {
+          petDeleteAlarm({
+            petId: animalId,
+            category: "ANI",
+          })
+            .unwrap()
+            .then((response) => {
+              console.log(
+                `동물아이디${animalId}의 모든알람 상태 업데이트 완료`
+              );
+              console.log("전체 응답:", response);
 
-      petDeleteAlarm({
-        petId: animalId,
-        category: "ANI",
-      })
-        .unwrap()
-        .then((response) => {
-          console.log(`동물아이디${animalId}의 모든알람 상태 업데이트 완료`);
-          console.log("전체 응답:", response);
-        
-          // 알람 끄기 - Android cancelAlarm 호출
-          if (window.Android && window.Android.cancelAlarm) {
-            console.log("response.data.length = " ,response.data.length);
-            for (let i = 0; i < response?.data?.length; i++) {
-              const alarmId = response.data[i].alarmId;
-              window.Android.cancelAlarm(String(alarmId));
-            }
+              // 알람 끄기 - Android cancelAlarm 호출
+              if (window.Android && window.Android.cancelAlarm) {
+                console.log("response.data.length = ", response.data.length);
+                for (let i = 0; i < response?.data?.length; i++) {
+                  const alarmId = response.data[i].alarmId;
+                  window.Android.cancelAlarm(String(alarmId));
+                }
+              }
+            })
+            .catch((err) => {
+              console.error("알람 업데이트 실패", err);
+              showAlert("알람 상태 업데이트 실패");
+            });
+
+          const result = await deletePet({ animalId }).unwrap();
+          if (result.success) {
+            showAlert("삭제 성공!");
+            navigate("/home.do");
+          } else {
+            showAlert(result.message || "삭제 실패");
           }
-        })
-        .catch((err) => {
-          console.error("알람 업데이트 실패", err);
-          showAlert("알람 상태 업데이트 실패");
-        });
-
-
-      const result = await deletePet({ animalId }).unwrap();
-      if (result.success) {
-        showAlert("삭제 성공!");
-        navigate("/home.do");
-      } else {
-        showAlert(result.message || "삭제 실패");
+        } catch (err) {
+          console.error(err);
+          showAlert("삭제 중 오류가 발생했습니다.");
+        }
+      },
+      () => {
+        // no callback - 취소
+        console.log("실행 취소");
       }
-    } catch (err) {
-      console.error(err);
-      showAlert("삭제 중 오류가 발생했습니다.");
-    }
+    );
   };
   return (
     <>
@@ -237,7 +251,7 @@ const Pet_Form_Update = () => {
                 ? "http://192.168.0.30:8081" + fileUrl
                 : imageFile
                 ? URL.createObjectURL(imageFile)
-                : existingImageUrl
+                : DefaultAnimal
             }
             sx={{ width: 100, height: 100 }}
           />

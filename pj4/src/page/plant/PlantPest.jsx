@@ -254,6 +254,7 @@ const PestContent = ({
 
 // 메인 컴포넌트
 const PlantPest = () => {
+  const { showConfirm } = useCmDialog();
   const navigate = useNavigate();
   const location = useLocation();
   const { showAlert } = useCmDialog();
@@ -343,7 +344,8 @@ const PlantPest = () => {
       updatePestLogs(formData)
         .unwrap()
         .then((res) => {
-          showAlert(res.message);
+          // showAlert(res.message);
+          showAlert("수정 성공!");
           setPlantPestDate(dayjs());
           setPlantPestMemo("");
           setEditingLog(true);
@@ -361,7 +363,8 @@ const PlantPest = () => {
       savePestInfo(formData)
         .unwrap()
         .then((res) => {
-          showAlert(res.message);
+          // showAlert(res.message);
+          showAlert("저장 성공!");
           setPlantPestDate(dayjs());
           setPlantPestMemo("");
           setEditingLog(true);
@@ -378,21 +381,32 @@ const PlantPest = () => {
   };
 
   const handleDeleteLog = async (id) => {
-    try {
-      await deletePestLogs(id).unwrap(); // 삭제 요청
-      showAlert("일지가 성공적으로 삭제되었습니다.");
+    showConfirm(
+      "알람을 삭제하시겠습니까?",
+      async () => {
+        // yes callback - 실행
+        console.log("실행 확인");
+        try {
+          await deletePestLogs(id).unwrap(); // 삭제 요청
+          showAlert("삭제 성공!");
 
-      setPlantPestDate(dayjs());
-      setPlantPestMemo("");
-      setEditingLog(true);
-      setSelectedFile(null);
-      setSelectedFileName("");
+          setPlantPestDate(dayjs());
+          setPlantPestMemo("");
+          setEditingLog(true);
+          setSelectedFile(null);
+          setSelectedFileName("");
 
-      refetch();
-    } catch (error) {
-      console.error("삭제실패:", error);
-      showAlert("삭제 중 오류 발생");
-    }
+          refetch();
+        } catch (error) {
+          console.error("삭제실패:", error);
+          showAlert("삭제 중 오류 발생");
+        }
+      },
+      () => {
+        // no callback - 취소
+        console.log("실행 취소");
+      }
+    );
   };
 
   const handleEditLog = (id) => {

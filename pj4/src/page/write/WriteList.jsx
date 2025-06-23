@@ -118,9 +118,10 @@ const WriteList = () => {
     {
       field: "writingTitle",
       headerName: "제목",
-      width: 200,
+      width: 170,
       dbName: "writing_title",
       headerAlign: "center",
+      align: "center",
     },
     {
       field: "createDt",
