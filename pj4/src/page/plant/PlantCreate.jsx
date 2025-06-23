@@ -8,11 +8,13 @@ import {
   Stack,
   Avatar,
   IconButton,
+  InputBase,
 } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
+import "dayjs/locale/ko";
 import { FaCamera } from "react-icons/fa";
 import { useCmDialog } from "../../cm/CmDialogUtil";
 import DefaultImage from "../../image/default-plant.png";
@@ -72,14 +74,14 @@ const PlantCreate = () => {
       setPlantGrowthStatus("");
       setImagePreview(null);
       setFiles([]);
-      navigate("/home.do");
+      navigate("/home.do?tab=N02");
     } catch (err) {
       showAlert("등록 실패");
     }
   };
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ko">
       <div className="header-icon-container">
         <Button
           onClick={() => navigate("/home.do?tab=N02")}
@@ -173,7 +175,7 @@ const PlantCreate = () => {
                 height: "37px",
                 backgroundColor: "#F8F8F8",
                 borderRadius: "8px",
-                mt:-2,
+                mt: -2,
               }}
             />
           </Box>
@@ -217,7 +219,7 @@ const PlantCreate = () => {
                 height: "37px",
                 backgroundColor: "#F8F8F8",
                 borderRadius: "8px",
-                mt:-2,
+                mt: -2,
               }}
             />
           </Box>
@@ -230,18 +232,29 @@ const PlantCreate = () => {
             className="status-field"
           >
             <Typography className="label-text">생육 상태</Typography>
-            <TextField
-              sx={{
-                borderRadius:"8px",
-                backgroundColor: "#F8F8F8",
-                width: "100%",
-                mb: 1.5,
-              }}
-              multiline
-              rows={1.5}
+            <InputBase
               value={plantGrowthStatus}
               onChange={(e) => setPlantGrowthStatus(e.target.value)}
-              variant="outlined"
+              multiline
+              inputProps={{
+                style: {
+                  padding: 0,
+                  paddingTop: 4,
+                  fontSize: 13,
+                },
+              }}
+              sx={{
+                backgroundColor: "#F8F8F8",
+                borderRadius: "8px",
+                px: 2,
+                py: 1,
+                minHeight: 70,
+                textDecoration: "none",
+                fontWeight: "normal",
+                color: "#000",
+                display: "flex",
+                alignItems: "flex-start",
+              }}
             />
           </Box>
 

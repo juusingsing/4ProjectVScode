@@ -130,7 +130,9 @@ const WriteCreate = () => {
       >
         {/*뒤로가기 버튼*/}
         <Button
-          onClick={() => window.history.back()}
+          onClick={() => navigate(
+                  `/write/list.do?sortation=${writingSortation}&category=${writingCategory}`
+                )}
           // variant="contained"
           sx={{
             display: "flex",

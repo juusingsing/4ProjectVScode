@@ -5,6 +5,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
+import "dayjs/locale/ko";
 
 import { CmUtil } from "../../cm/CmUtil";
 import { useSelector } from "react-redux";
@@ -194,7 +195,7 @@ const DiaryCreate = () => {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 variant="outlined"
-                inputProps={{ maxLength: 100, style: { textAlign: "center" } }}
+                inputProps={{ maxLength: 100, style: { textAlign: "left" } }}
                 InputProps={{
                   sx: {
                     textAlign: "center",
@@ -207,7 +208,7 @@ const DiaryCreate = () => {
               />
             </Box>
             <Box mt={-4.5} mr={1.5} gap={1} className="diary-date">
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ko">
                 <Typography variant="h6" alignContent={"center"}>
                   날짜
                 </Typography>

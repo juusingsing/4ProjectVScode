@@ -68,14 +68,14 @@ const RepottingContent = ({
         }}
       >
         <Typography sx={{ fontWeight: "700", marginTop: 1 }}>
-          날짜 🔔
+          날짜
         </Typography>
 
         <Box sx={{ marginTop: "10px" }}>
           <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ko">
             <DatePicker
               format="YYYY.MM.DD"
-              value={animalVisitDate}
+              value={dayjs(animalVisitDate)}
               onChange={(newValue) => {
                 setAnimalVisitDate(newValue);
               }}

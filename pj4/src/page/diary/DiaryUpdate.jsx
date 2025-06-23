@@ -223,7 +223,7 @@ const DiaryUpdate = () => {
             />
           </Box>
           <Box mt={-4.5} mr={1.5} gap={1} className="diary-date">
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ko">
               <Typography variant="h6" alignContent={"center"}>
                 날짜
               </Typography>

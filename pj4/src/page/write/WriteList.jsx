@@ -14,8 +14,9 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 
-import React, { useEffect, useRef, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+
+import React, { act, useEffect, useRef, useState } from "react";
+import { useNavigate, useSearchParams, useLocation, Link } from "react-router-dom";
 import { useWriteListQuery } from "../../features/write/writeApi";
 import { DataGrid } from "@mui/x-data-grid";
 import { Pagination, Typography } from "@mui/material";
@@ -25,6 +26,7 @@ import add from "../../image/add.png";
 import "../../css/writeList.css";
 import ToggleCombo from "../../page/combo/ToggleCombo";
 
+
 const WriteList = () => {
   // 검색 조건을 관리하는 상태
   const [search, setSearch] = useState({
@@ -33,6 +35,8 @@ const WriteList = () => {
     endDate: CmUtil.getToday(),
   });
 
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
   const user = useSelector((state) => state.user.user);
   const startDateRef = useRef(null);
   const endDateRef = useRef(null);
@@ -43,6 +47,16 @@ const WriteList = () => {
   // 게시글 분류(동식물))를 관리하는 상태. 초기값 동물
   const [writingSortation, setwritingSortation] = useState("N01");
   const [writingCategory, setWritingCategory] = useState("C02");
+
+  // 탭 메뉴 활성 상태를 관리하는 상태. 초기값은 0번 인덱스 (첫 번째 탭)
+  const [activeTab, setActiveTab] = useState(0);
+  // 탭 메뉴의 데이터 (이름과 연결될 링크)
+  const tabs = [
+    { name: "일상", code: "C02" },
+    { name: "정보", code: "C01" },
+    { name: "질문", code: "C03" },
+  ];
+
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState({ field: "create_dt", order: "desc" });
 
@@ -67,6 +81,35 @@ const WriteList = () => {
   };
 
   const { showAlert } = useCmDialog();
+
+  useEffect(() => {
+    const paramsSortation = searchParams.get("sortation");
+    const paramsCategory = searchParams.get("category");
+
+    if(paramsSortation) {
+      setwritingSortation(paramsSortation);
+    }
+    if(paramsCategory) {
+      setWritingCategory(paramsCategory);
+    }
+    switch (writingCategory) {
+            case "C02":
+              setActiveTab(0);
+              break;
+            case "C01":
+              setActiveTab(1);
+              break;
+            case "C03":
+              setActiveTab(2);
+              break;
+            default:
+              setActiveTab(1);   // 디폴트 배열0
+          }
+  },[location.search])
+
+  useEffect(() => {
+    refetch();
+  },[writingSortation, writingCategory, activeTab])
 
   const rowsWithId = (data?.data?.list || []).map((row) => ({
     ...row,
@@ -121,11 +164,13 @@ const WriteList = () => {
       width: 170,
       dbName: "writing_title",
       headerAlign: "center",
-      align: "center",
+      align: "left",
     },
     {
       field: "createDt",
       headerName: "작성일",
+      headerAlign: "center",
+      align: "center",
       width: 100,
       renderCell: (params) => {
         const dateStr = params.value;
@@ -148,15 +193,7 @@ const WriteList = () => {
     setwritingSortation(newValue);
   };
 
-  // 탭 메뉴 활성 상태를 관리하는 상태. 초기값은 0번 인덱스 (첫 번째 탭)
-  const [activeTab, setActiveTab] = useState(0);
-
-  // 탭 메뉴의 데이터 (이름과 연결될 링크)
-  const tabs = [
-    { name: "일상", code: "C02" },
-    { name: "정보", code: "C01" },
-    { name: "질문", code: "C03" },
-  ];
+  
 
   return (
     <Box sx={{ padding: "0 20px" }}>
@@ -260,7 +297,7 @@ const WriteList = () => {
 
       {/*시작일, 종료일 */}
       <Box sx={{ mb: 2, display: "flex", gap: 2, justifyContent: "center" }}>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ko">
           <DatePicker
             value={dayjs(search.startDate)}
             onChange={(newValue) => {
@@ -307,7 +344,7 @@ const WriteList = () => {
           />
         </LocalizationProvider>
 
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ko">
           <Typography sx={{ mt: 3 }}>-</Typography>
           <DatePicker
             value={dayjs(search.endDate)}
