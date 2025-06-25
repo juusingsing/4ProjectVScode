@@ -220,7 +220,10 @@ const CmComment = ({ comment, user, writingId, refetchComments }) => {
                     >
                       수정
                     </Button>
-                    {user && !parentCommentsId && (
+                    
+                  </Box>
+                )}
+                {user && !parentCommentsId && (
                       <Box
                         sx={{
                           display: "flex",
@@ -241,8 +244,6 @@ const CmComment = ({ comment, user, writingId, refetchComments }) => {
                         </Button>
                       </Box>
                     )}
-                  </Box>
-                )}
               </Box>
             )}
           </Box>

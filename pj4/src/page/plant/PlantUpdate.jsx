@@ -12,6 +12,7 @@ import {
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
+import "dayjs/locale/ko";
 import { FaCamera } from "react-icons/fa";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import "../../css/plantCreate.css";
@@ -177,7 +178,7 @@ const PlantUpdate = ({ mode = "create" }) => {
   };
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ko">
       <Box className="plant-create-container">
         <div className="header-icon-container">
           <Button

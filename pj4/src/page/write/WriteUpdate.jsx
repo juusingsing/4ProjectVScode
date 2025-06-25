@@ -269,7 +269,7 @@ const WriteUpdate = () => {
                   "& .MuiInputBase-input": {
                     padding: "0 10px",
                     flexGrow: 1,
-                    textAlign:'center',
+                    textAlign:'left',
                   },
                 },
                 "& .MuiInputBase-input::placeholder": {

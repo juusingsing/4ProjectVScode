@@ -432,27 +432,14 @@ const PlantWatering = () => {
         // alert("데이터없음");
         return;
       }
-      console.log("aaaaaaa", response);
-      console.log("response.data:", response.data);
-      console.log(
-        "response.data.success:",
-        response.data.success,
-        typeof response.data.success
-      );
-      console.log(
-        "response.data.data:",
-        response.data.data,
-        Array.isArray(response.data.data)
-      );
 
       if (
-        response.data &&
-        Array.isArray(response.data?.data) &&
-        response.data.success
+        response?.data &&
+        Array.isArray(response?.data?.data) &&
+        response?.data?.success
       ) {
-        console.log("전체 알람 리스트:", response.data.data);
 
-        const alarms = response.data.data.map((alarm) => {
+        const alarms = response?.data?.data.map((alarm) => {
           const alarmId = parseInt(alarm.alarmId, 10);
           const petId = parseInt(alarm.petId, 10);
           const year = 2000 + parseInt(alarm.year, 10);
@@ -519,7 +506,7 @@ const PlantWatering = () => {
             alarmCycle: cycleDays,
             enabled: isactive, // 초기에는 켜져있다고 가정
             // message: "알람아이디 : " + alarmId + " // " + cycleDays + "분주기",
-            message: plantInfo.data[0].plantName+"에게 물 주는 시간입니다!"
+            message: "물 주는 시간입니다!"
           };
         });
 

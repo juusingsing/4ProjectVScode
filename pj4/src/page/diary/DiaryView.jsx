@@ -19,6 +19,7 @@ import '../../css/diaryView.css';
 const DiaryView = () => {
     const [searchParams] = useSearchParams();
     const id = searchParams.get('id');
+    const diaryType = searchParams.get('diaryType');
     const user = useSelector((state) => state.user.user)
     const { data, isLoading, error, isSuccess, refetch } = useDiaryViewQuery({ diaryId: id });
     const [diary, setDiary] = useState(null);

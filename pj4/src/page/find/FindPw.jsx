@@ -312,7 +312,7 @@ const FindPw = () => {
                     fontWeight: "400",
                   }}
                 >
-                  비밀번호 찾기
+                  비밀번호 재설정
                 </Button>
               </>
             )}

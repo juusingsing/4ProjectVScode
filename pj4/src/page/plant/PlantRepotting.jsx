@@ -337,7 +337,7 @@ const PlantRepotting = () => {
 
   const handleDeleteLog = async (id) => {
     showConfirm(
-      "알람을 삭제하시겠습니까?",
+      "일지를 삭제하시겠습니까?",
       async () => {
         // yes callback - 실행
         console.log("실행 확인");

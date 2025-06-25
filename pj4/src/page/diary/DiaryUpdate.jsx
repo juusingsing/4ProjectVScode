@@ -210,7 +210,7 @@ const DiaryUpdate = () => {
               value={title ?? ""}
               onChange={(e) => setTitle(e.target.value)}
               variant="outlined"
-              inputProps={{ maxLength: 100, style: { textAlign: "center" } }}
+              inputProps={{ maxLength: 100, style: { textAlign: "left" } }}
               InputProps={{
                 sx: {
                   textAlign: "center",
